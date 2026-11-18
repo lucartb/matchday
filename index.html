@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0b10">
+<title>Matchday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Matchday – dunkles, ruhiges Programmheft. Reihenfolge: Live → Heute (Zeitleiste) → Highlights der Woche → Woche nach Tagen. */
+:root{
+  --bg:#0a0b10;
+  --surface:#14161e;
+  --surface-2:#1b1e28;
+  --line:#242836;
+  --ink:#f3f4f8;
+  --muted:#8a90a3;
+  --faint:#5c6275;
+  --accent:#e07a5f;
+  --live:#ff3b4e;
+  --font:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --c-fussball:#7fb39a;
+  --c-darts:#d08a8a;
+  --c-rugby:#c9a77a;
+  --c-handball:#8aa6c8;
+  --c-motorsport:#a49bc6;
+  --c-rad:#c39ab3;
+  --c-sonst:#9aa0b3;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+.wrap{max-width:620px;margin:0 auto;padding:20px 16px 56px;display:flex;flex-direction:column;gap:30px}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* Kopf */
+header{display:flex;flex-direction:column;gap:4px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{margin:0;font-size:30px;font-weight:800;letter-spacing:-.02em}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--live)}
+.sub{color:var(--muted);font-size:14px;font-weight:500}
+
+.sec{display:flex;flex-direction:column;gap:12px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.sec-h h2{margin:0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.sec-h span{font-size:13px;color:var(--faint)}
+
+/* Sport-Symbol */
+.ico{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;
+  background:color-mix(in srgb,var(--sc) 13%,transparent);color:var(--sc)}
+.ico svg{width:22px;height:22px}
+.ico.sm{width:30px;height:30px;border-radius:9px}
+.ico.sm svg{width:18px;height:18px}
+
+/* Live */
+.live-card{background:linear-gradient(135deg,color-mix(in srgb,var(--live) 18%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--live) 35%,var(--line));border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.live-row{display:flex;align-items:center;gap:12px}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--live);text-transform:uppercase}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--live);animation:pulse 1.6s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--live) 70%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+
+/* Zeitleiste */
+.list{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.row{display:grid;grid-template-columns:50px 38px 1fr auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.time{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.time.open{font-size:12px;color:var(--faint);font-weight:600}
+.body{min-width:0;display:flex;flex-direction:column;gap:2px}
+.title{font-weight:700;font-size:15px;line-height:1.3}
+.meta{font-size:12.5px;color:var(--muted);line-height:1.35}
+.meta b{font-weight:600;color:var(--ink);opacity:.85}
+.side{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.pill{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill.soon{background:color-mix(in srgb,var(--accent) 18%,transparent);color:#e9b4a3}
+.pill.live{background:color-mix(in srgb,var(--live) 22%,transparent);color:#ff9aa5;display:inline-flex;align-items:center;gap:6px}
+.star{color:#d4b46a;font-size:13px}
+.ftv{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px 2px 5px;border-radius:6px;background:#f3f4f8;color:#0a0b10;vertical-align:1px;white-space:nowrap}
+.ftv svg{width:11px;height:11px}
+.mu{display:flex;flex-direction:column;gap:5px;margin-bottom:3px}
+.tm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;line-height:1.25}
+.mu.big .tm{font-size:16.5px;font-weight:800;letter-spacing:-.01em}
+.flag{width:22px;flex:0 0 22px;text-align:center;font-size:17px;line-height:1}
+.crest{flex:0 0 auto;min-width:30px;height:20px;padding:0 4px;border-radius:6px;display:inline-grid;place-items:center;font-size:9.5px;font-weight:800;letter-spacing:.02em;line-height:1}
+.crest.neutral{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.mu.big .crest{height:22px;min-width:34px;font-size:10.5px}
+.side{align-self:stretch;justify-content:center}
+.hl .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.hl .foot .tv{margin-top:0}
+.live-row .side{margin-left:auto}
+.row.tap{cursor:pointer}
+.row.tap .title{display:flex;align-items:baseline;gap:6px}
+.chev{width:14px;height:14px;flex:0 0 auto;color:var(--faint);transition:transform .2s;align-self:center}
+.row.open .chev{transform:rotate(180deg)}
+.info{grid-column:2 / -1;font-size:13px;line-height:1.5;color:#c3c8d6;background:var(--surface-2);border-radius:10px;padding:9px 11px;margin-top:2px}
+.hlstar{color:#d4b46a;font-size:12px}
+.row.past{opacity:.38}
+.more{width:100%;background:transparent;border:0;border-top:1px solid var(--line);padding:12px;color:var(--muted);font-weight:600;font-size:13.5px;cursor:pointer}
+.more:hover{color:var(--ink)}
+.empty{padding:18px 14px;color:var(--muted);font-size:14px}
+
+/* Highlights */
+.hls{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 8px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.hls::-webkit-scrollbar{display:none}
+.hl{flex:0 0 74%;max-width:280px;scroll-snap-align:start;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:14px;cursor:pointer;text-align:left;border:1px solid var(--line);
+  background:radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--sc) 13%,transparent),transparent 60%),var(--surface)}
+.hl .top{display:flex;justify-content:space-between;align-items:flex-start}
+.hl .when{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;text-align:right}
+.hl .when strong{display:block;font-size:20px;color:var(--ink);letter-spacing:-.01em;text-transform:none}
+.hl .t{font-size:17px;font-weight:800;line-height:1.25;letter-spacing:-.01em}
+.hl .c{font-size:12.5px;color:var(--muted);margin-top:4px}
+.hl .tv{font-size:12px;color:var(--muted);margin-top:auto;font-weight:600}
+
+/* Tage */
+.days{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:2px 16px 4px;scrollbar-width:none}
+.days::-webkit-scrollbar{display:none}
+.day{flex:0 0 auto;min-width:58px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:9px 8px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.day .wd{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.day .dn{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.day .dots{display:flex;gap:3px;height:6px;margin-top:2px}
+.day .dots i{width:5px;height:5px;border-radius:50%;background:var(--sc)}
+.day[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.day[aria-pressed="true"] .wd{color:var(--bg);opacity:.7}
+
+/* Gestern */
+.res .row{grid-template-columns:38px 1fr auto}
+.score{display:flex;flex-direction:column;gap:5px;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;text-align:right;margin-bottom:3px}
+.score .w{color:var(--ink)} .score .l{color:var(--faint)}
+.mu .tm.l span{color:var(--muted);font-weight:600}
+.rtext{font-size:13px;font-weight:700;color:var(--ink);text-align:right;max-width:150px}
+/* Parallel-Hinweis */
+.tcol{display:flex;flex-direction:column;gap:3px}
+.par{font-size:10.5px;font-weight:700;color:var(--muted);background:var(--surface-2);border-radius:5px;padding:1px 5px;width:max-content}
+/* Tagesleiste fixiert */
+.sticky{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0 6px;margin-top:-8px;display:flex;flex-direction:column;gap:6px}
+.swipehint{font-size:11.5px;color:var(--faint)}
+.outlook{display:flex;flex-direction:column;gap:8px}
+.outlook div{font-size:14px;color:var(--muted);padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.outlook div b{color:var(--ink);font-weight:700}
+footer{font-size:12px;color:var(--faint);line-height:1.5}
+@media (prefers-reduced-motion: reduce){.pulse{animation:none}}
+@media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1></div>
+    <div class="sub" id="sub"></div>
+  </header>
+
+  <section class="sec" id="live-sec" hidden>
+    <div class="sec-h"><h2>Jetzt live</h2></div>
+    <div id="live"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h"><h2>Heute</h2><span id="today-count"></span></div>
+    <div id="today"></div>
+  </section>
+
+  <section class="sec" id="gestern-sec">
+    <div class="sec-h"><h2>Gestern</h2><span id="gestern-count"></span></div>
+    <div id="gestern"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h"><h2>Highlights der Woche</h2><span id="hl-count"></span></div>
+    <div class="hls" id="hls"></div>
+  </section>
+
+  <section class="sec" id="week-sec">
+    <div class="sec-h"><h2>Die Woche</h2></div>
+    <div class="sticky"><div class="days" id="days" role="group" aria-label="Tag wählen"></div>
+    <div id="dayhead" class="sub"></div></div>
+    <div id="daylist"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h"><h2>Demnächst</h2></div>
+    <div class="outlook" id="outlook"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+/*DATA_START*/
+const DATA = {
+ "stand": "2026-11-18T21:30",
+ "von": "2026-11-18",
+ "bis": "2026-11-25",
+ "events": [
+  {
+   "d": "2026-11-18",
+   "t": "20:00",
+   "s": "Darts",
+   "c": "Grand Slam of Darts",
+   "ti": "Achtelfinale, Tag 1",
+   "tv": [
+    "Sport1",
+    "Joyn",
+    "DAZN"
+   ],
+   "hl": false,
+   "i": "Die 16 Gruppenbesten spielen im K.-o.-Modus um den Einzug ins Viertelfinale. Titelverteidiger ist Luke Littler, der 2025 im Finale Luke Humphries schlug. Neu 2026: Die Gruppenphase lief mit 16 Dreiergruppen."
+  },
+  {
+   "d": "2026-11-18",
+   "t": "",
+   "s": "Handball",
+   "c": "EHF Champions League",
+   "ti": "Start der Hauptrunde (Mi/Do), deutsche Teams: Magdeburg, Füchse Berlin",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "n": "Genaue Ansetzungen noch nicht bestätigt",
+   "x": true,
+   "i": "In der Hauptrunde der Champions League geht es ab jetzt um die Plätze für die K.-o.-Phase. Magdeburg und die Füchse sind die deutschen Topklubs. DAZN zeigt die Spiele mit deutscher Beteiligung."
+  },
+  {
+   "d": "2026-11-19",
+   "t": "20:00",
+   "s": "Darts",
+   "c": "Grand Slam of Darts",
+   "ti": "Achtelfinale, Tag 2",
+   "tv": [
+    "Sport1",
+    "Joyn",
+    "DAZN"
+   ],
+   "hl": false,
+   "i": "Zweiter Teil der Achtelfinals in Wolverhampton. Die genauen Duelle ergeben sich aus der Gruppenphase und stehen im Sender-Programm."
+  },
+  {
+   "d": "2026-11-19",
+   "t": "",
+   "s": "Handball",
+   "c": "Handball-Bundesliga",
+   "ti": "TBV Lemgo Lippe – VfL Gummersbach",
+   "tv": [
+    "Dyn"
+   ],
+   "hl": false,
+   "n": "Anwurfzeit noch offen",
+   "x": true,
+   "i": "Westdeutsches Traditionsduell zweier ehemaliger deutscher Meister."
+  },
+  {
+   "d": "2026-11-20",
+   "t": "20:00",
+   "s": "Darts",
+   "c": "Grand Slam of Darts",
+   "ti": "Viertelfinale, Tag 1",
+   "tv": [
+    "Sport1",
+    "Joyn",
+    "DAZN"
+   ],
+   "hl": false,
+   "i": "Die letzten Acht kämpfen ums Halbfinale, verteilt auf Freitag und Samstag."
+  },
+  {
+   "d": "2026-11-20",
+   "t": "20:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "FC Bayern – 1. FC Köln",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": true,
+   "i": "Der Rekordmeister empfängt zum Freitagsspiel nach der Länderspielpause den Effzeh. Es ist der Auftakt in den 10. Spieltag."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "05:00",
+   "s": "Motorsport",
+   "c": "Formel 1 · GP Las Vegas",
+   "ti": "Qualifying",
+   "tv": [
+    "Sky",
+    "WOW"
+   ],
+   "hl": false,
+   "i": "Nachtqualifying auf dem Las Vegas Strip, in Deutschland früh morgens. Es entscheidet über die Startaufstellung für das Rennen 24 Stunden später."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "13:30",
+   "s": "Fußball",
+   "c": "Premier League",
+   "ti": "Manchester City – Fulham",
+   "tv": [
+    "Sky",
+    "WOW"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Das Lunchtime-Spiel zum Auftakt des Premier-League-Samstags. City ist zu Hause Favorit gegen die Londoner."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "15:10",
+   "s": "Rugby",
+   "c": "Nations Championship",
+   "ti": "England – Neuseeland",
+   "tv": [],
+   "hl": true,
+   "n": "Twickenham · Sender in DE noch offen",
+   "i": "Der Klassiker in Twickenham: England gegen die All Blacks. Es ist die letzte Runde der Nations Championship vor dem Finals Weekend und entscheidet mit über die Endplatzierung."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "15:10",
+   "s": "Rugby",
+   "c": "Nations Championship",
+   "ti": "Schottland – Japan",
+   "tv": [],
+   "hl": false,
+   "n": "Sender in DE noch offen",
+   "x": true,
+   "i": "Schottland trifft in Murrayfield auf Japan, das als Gastteam für die Südhalbkugel spielt."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "15:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "Borussia Mönchengladbach – Borussia Dortmund",
+   "tv": [
+    "Sky"
+   ],
+   "hl": true,
+   "n": "Borussen-Duell",
+   "i": "Das Borussen-Duell: Gladbach empfängt den BVB. Für Dortmund ist es der letzte Bundesliga-Test vor dem Champions-League-Spiel bei Arsenal."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "15:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "1. FC Union Berlin – RB Leipzig",
+   "tv": [
+    "Sky"
+   ],
+   "hl": false,
+   "i": "Heimspiel an der Alten Försterei in Köpenick. Gegen RB Leipzig ist die Stimmung bei Union traditionell besonders aufgeladen."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "15:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "Eintracht Frankfurt – TSG Hoffenheim",
+   "tv": [
+    "Sky"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Die Eintracht empfängt Hoffenheim im Deutsche Bank Park."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "15:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "Bayer Leverkusen – SC Paderborn",
+   "tv": [
+    "Sky"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Leverkusen gegen Paderborn, das wieder in der Bundesliga spielt. Bayer ist zu Hause klarer Favorit."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "15:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "SV Elversberg – SC Freiburg",
+   "tv": [
+    "Sky"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Aufsteiger Elversberg, der Dorfklub aus dem Saarland, gegen den SC Freiburg."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "16:00",
+   "s": "Fußball",
+   "c": "Premier League",
+   "ti": "Chelsea – Leeds, Aston Villa – Sunderland, Tottenham – Ipswich, Bournemouth – Forest, Coventry – Palace",
+   "tv": [
+    "Sky",
+    "WOW"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Die parallelen Nachmittagsspiele der Premier League (15 Uhr englischer Zeit). Sky zeigt sie meist in Einzelspielen und in der Konferenz."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "17:40",
+   "s": "Rugby",
+   "c": "Nations Championship",
+   "ti": "Irland – Südafrika",
+   "tv": [],
+   "hl": true,
+   "n": "Dublin · Sender in DE noch offen",
+   "i": "Das Duell der beiden Top-Teams im Weltrugby der letzten Jahre im Aviva Stadium in Dublin. Südafrika ist der amtierende Weltmeister."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "17:40",
+   "s": "Rugby",
+   "c": "Nations Championship",
+   "ti": "Italien – Fidschi",
+   "tv": [],
+   "hl": false,
+   "n": "Sender in DE noch offen",
+   "x": true,
+   "i": "Italien trifft in Udine auf Fidschi, das für schnelles, offensives Rugby bekannt ist."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "18:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "FC Schalke 04 – VfB Stuttgart",
+   "tv": [
+    "Sky"
+   ],
+   "hl": false,
+   "n": "Topspiel am Samstagabend",
+   "i": "Das Topspiel am Samstagabend. Die Knappen spielen nach ihrer Rückkehr wieder Bundesliga, der VfB tritt in der Champions League an und spielt am Mittwoch bei Inter."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "18:30",
+   "s": "Fußball",
+   "c": "Premier League",
+   "ti": "Newcastle United – Arsenal",
+   "tv": [
+    "Sky",
+    "WOW"
+   ],
+   "hl": true,
+   "i": "Spitzenreiter Arsenal muss ins stimmungsvolle St. James' Park. Die Gunners gewannen zuletzt 1:0 in Liverpool, ihr erster Sieg an der Anfield Road seit 2012."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "20:00",
+   "s": "Darts",
+   "c": "Grand Slam of Darts",
+   "ti": "Viertelfinale, Tag 2",
+   "tv": [
+    "Sport1",
+    "Joyn",
+    "DAZN"
+   ],
+   "hl": false,
+   "i": "Die zweite Hälfte der Viertelfinals. Danach stehen die vier Halbfinalisten fest."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "21:10",
+   "s": "Rugby",
+   "c": "Nations Championship",
+   "ti": "Frankreich – Argentinien",
+   "tv": [],
+   "hl": false,
+   "n": "Sender in DE noch offen",
+   "x": true,
+   "i": "Spätspiel im Stade de France. Frankreich gegen die Pumas ist traditionell ein intensives, enges Duell."
+  },
+  {
+   "d": "2026-11-21",
+   "t": "21:10",
+   "s": "Rugby",
+   "c": "Nations Championship",
+   "ti": "Wales – Australien",
+   "tv": [],
+   "hl": false,
+   "n": "Sender in DE noch offen",
+   "i": "Wales empfängt die Wallabies in Cardiff, zeitgleich mit Frankreich – Argentinien."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "05:00",
+   "s": "Motorsport",
+   "c": "Formel 1 · GP Las Vegas",
+   "ti": "Rennen",
+   "tv": [
+    "Sky",
+    "WOW"
+   ],
+   "hl": true,
+   "n": "Nachtrennen, früh aufstehen",
+   "i": "Das Nachtrennen über 50 Runden auf dem 6,2 km langen Las Vegas Strip Circuit. Es ist eines der letzten Rennen der Saison, in Deutschland Sonntag um 5 Uhr früh."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "14:00",
+   "s": "Darts",
+   "c": "Grand Slam of Darts",
+   "ti": "Halbfinals",
+   "tv": [
+    "Sport1",
+    "Joyn",
+    "DAZN"
+   ],
+   "hl": false,
+   "i": "Die beiden Halbfinals am Nachmittag, die Sieger spielen am Abend um den Titel."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "15:00",
+   "s": "Handball",
+   "c": "Handball-Bundesliga · 13. Spieltag",
+   "ti": "Frisch Auf Göppingen – Füchse Berlin",
+   "tv": [
+    "Welt TV",
+    "Joyn",
+    "Dyn"
+   ],
+   "hl": false,
+   "i": "Die Füchse aus Berlin sind bei Frisch Auf in Göppingen zu Gast. Welt TV zeigt das Spiel frei empfangbar, auch kostenlos im Stream auf Joyn."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "15:00",
+   "s": "Fußball",
+   "c": "Premier League",
+   "ti": "Hull City – Brighton",
+   "tv": [
+    "Sky",
+    "WOW"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Aufsteiger Hull empfängt Brighton, das in dieser Saison oben mitspielt."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "15:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "FC Augsburg – 1. FSV Mainz 05",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Sonntagsspiel in der WWK Arena in Augsburg."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "17:30",
+   "s": "Fußball",
+   "c": "Bundesliga · 10. Spieltag",
+   "ti": "Werder Bremen – Hamburger SV",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": true,
+   "n": "Nordderby",
+   "i": "Das Nordderby! Werder gegen den HSV, eines der emotionalsten Duelle der Liga. Für den HSV ist es eines der Spiele, für das sich die Bundesliga-Rückkehr besonders lohnt."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "17:30",
+   "s": "Fußball",
+   "c": "Premier League",
+   "ti": "FC Liverpool – Manchester United",
+   "tv": [
+    "Sky",
+    "WOW"
+   ],
+   "hl": true,
+   "i": "Der größte Klassiker Englands an der Anfield Road. United steckt in dieser Saison im unteren Tabellenbereich, Liverpool will nach der Heimniederlage gegen Arsenal wieder in die Spur."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "20:30",
+   "s": "Darts",
+   "c": "Grand Slam of Darts",
+   "ti": "Finale",
+   "tv": [
+    "Sport1",
+    "Joyn",
+    "DAZN"
+   ],
+   "hl": true,
+   "i": "Endspiel des Grand Slam of Darts in Wolverhampton. Luke Littler verteidigt den Titel aus dem Vorjahr, falls er so weit kommt. Es geht um 200.000 £ Siegprämie."
+  },
+  {
+   "d": "2026-11-23",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Premier League",
+   "ti": "Brentford – Everton",
+   "tv": [
+    "Sky",
+    "WOW"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Montagsspiel zum Abschluss des Premier-League-Spieltags."
+  },
+  {
+   "d": "2026-11-24",
+   "t": "18:45",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Galatasaray – Aston Villa",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Frühes Spiel in Istanbul: Villa muss in die für ihre Stimmung berüchtigte Arena von Galatasaray."
+  },
+  {
+   "d": "2026-11-24",
+   "t": "18:45",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Bodø/Glimt – LASK",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true
+  },
+  {
+   "d": "2026-11-24",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "FC Arsenal – Borussia Dortmund",
+   "tv": [
+    "DAZN",
+    "Prime Video?"
+   ],
+   "hl": true,
+   "n": "Ein Dienstagsspiel läuft exklusiv bei Prime Video",
+   "i": "Der BVB beim Premier-League-Spitzenreiter im Emirates Stadium. Es ist eines der Topspiele des 5. CL-Spieltags."
+  },
+  {
+   "d": "2026-11-24",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "RB Leipzig – RC Lens",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "i": "Leipzig empfängt den französischen Klub aus Lens. Mit einem Heimsieg wäre Leipzig auf Kurs Richtung K.-o.-Runde."
+  },
+  {
+   "d": "2026-11-24",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Manchester City – SSC Neapel",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Ein internationales Topspiel: City empfängt Neapel."
+  },
+  {
+   "d": "2026-11-24",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Real Madrid – PSV Eindhoven",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Der Rekordsieger der Champions League empfängt die PSV im Bernabéu."
+  },
+  {
+   "d": "2026-11-24",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Feyenoord – FC Porto, Como – AEK Athen, Slovan Bratislava – Betis",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true
+  },
+  {
+   "d": "2026-11-25",
+   "t": "18:45",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Slavia Prag – Villarreal, Sabah – FC Barcelona",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true
+  },
+  {
+   "d": "2026-11-25",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "OSC Lille – FC Bayern",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": true,
+   "i": "Die Bayern beim französischen Vertreter Lille im Stade Pierre-Mauroy."
+  },
+  {
+   "d": "2026-11-25",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Inter Mailand – VfB Stuttgart",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": true,
+   "i": "Der VfB im Giuseppe-Meazza-Stadion (San Siro) bei Inter Mailand, eine der schwersten Auswärtsaufgaben der Ligaphase."
+  },
+  {
+   "d": "2026-11-25",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Paris Saint-Germain – AS Rom",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true,
+   "i": "Titelverteidiger PSG gegen die Roma."
+  },
+  {
+   "d": "2026-11-25",
+   "t": "21:00",
+   "s": "Fußball",
+   "c": "Champions League · 5. Spieltag",
+   "ti": "Sporting – Manchester United, Brügge – Liverpool, Atlético – Viking, Schachtar – Fenerbahçe",
+   "tv": [
+    "DAZN"
+   ],
+   "hl": false,
+   "x": true
+  },
+  {
+   "d": "2026-11-21",
+   "t": "",
+   "s": "Radsport",
+   "c": "Cyclocross · HG Cross",
+   "ti": "Cross Lokeren (Elite Männer)",
+   "tv": [],
+   "hl": false,
+   "n": "Startzeit und Sender in DE noch offen",
+   "i": "Belgisches Cyclocross-Rennen der HG-Cross-Serie in Lokeren, eine Woche vor dem Weltcup-Auftakt."
+  },
+  {
+   "d": "2026-11-22",
+   "t": "",
+   "s": "Radsport",
+   "c": "Cyclocross · X2O Badkamers Trofee",
+   "ti": "Be-Mine Cross Beringen (Elite Männer)",
+   "tv": [],
+   "hl": false,
+   "n": "Startzeit und Sender in DE noch offen",
+   "i": "3. Lauf der X2O Trofee auf der ehemaligen Abraumhalde in Beringen. In der X2O Trofee zählt die Gesamtzeit, ein Sturz kann teuer werden."
+  }
+ ],
+ "ausblick": [
+  "27.11.: Cyclocross-Weltcup-Auftakt in Ostrava (Freitagabend)",
+  "27.–29.11.: Darts Players Championship Finals (Minehead) – DAZN",
+  "27.–29.11.: Rugby Nations Championship, Finals Weekend (Twickenham)",
+  "29.11.: Cyclocross-Weltcup in Tábor",
+  "28.11.: Bundesliga, u. a. VfB Stuttgart – Eintracht Frankfurt (18:30, Sky)",
+  "1./2.12.: DFB-Pokal, 3. Runde"
+ ],
+ "gestern": []
+};
+/*DATA_END*/
+
+const TEAMS={
+// Nationen (Flaggen)
+"Deutschland":{f:"🇩🇪"},"England":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},"Schottland":{f:"🏴󠁧󠁢󠁳󠁣󠁴󠁿"},"Wales":{f:"🏴󠁧󠁢󠁷󠁬󠁳󠁿"},"Irland":{f:"🇮🇪"},"Frankreich":{f:"🇫🇷"},"Italien":{f:"🇮🇹"},
+"Neuseeland":{f:"🇳🇿"},"Südafrika":{f:"🇿🇦"},"Australien":{f:"🇦🇺"},"Argentinien":{f:"🇦🇷"},"Japan":{f:"🇯🇵"},"Fidschi":{f:"🇫🇯"},
+"Niederlande":{f:"🇳🇱"},"Serbien":{f:"🇷🇸"},"Griechenland":{f:"🇬🇷"},"Österreich":{f:"🇦🇹"},"Schweiz":{f:"🇨🇭"},"Spanien":{f:"🇪🇸"},"Portugal":{f:"🇵🇹"},
+"Belgien":{f:"🇧🇪"},"Dänemark":{f:"🇩🇰"},"Polen":{f:"🇵🇱"},"Kroatien":{f:"🇭🇷"},"Norwegen":{f:"🇳🇴"},"Schweden":{f:"🇸🇪"},"Türkei":{f:"🇹🇷"},
+"Tschechien":{f:"🇨🇿"},"Ungarn":{f:"🇭🇺"},"Island":{f:"🇮🇸"},"Slowenien":{f:"🇸🇮"},"Georgien":{f:"🇬🇪"},"Rumänien":{f:"🇷🇴"},"Ukraine":{f:"🇺🇦"},
+"Brasilien":{f:"🇧🇷"},"USA":{f:"🇺🇸"},"Kanada":{f:"🇨🇦"},"Mexiko":{f:"🇲🇽"},"Ägypten":{f:"🇪🇬"},"Tonga":{f:"🇹🇴"},"Samoa":{f:"🇼🇸"},"Uruguay":{f:"🇺🇾"},
+// Darts-Spieler (Flagge des Landes)
+"Luke Littler":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},"Luke Humphries":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},"Michael Smith":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},"Rob Cross":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},"Nathan Aspinall":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},"Stephen Bunting":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},
+"Josh Rock":{f:"🇬🇧"},"Gerwyn Price":{f:"🏴󠁧󠁢󠁷󠁬󠁳󠁿"},"Jonny Clayton":{f:"🏴󠁧󠁢󠁷󠁬󠁳󠁿"},"Gary Anderson":{f:"🏴󠁧󠁢󠁳󠁣󠁴󠁿"},"Peter Wright":{f:"🏴󠁧󠁢󠁳󠁣󠁴󠁿"},
+"Michael van Gerwen":{f:"🇳🇱"},"Gian van Veen":{f:"🇳🇱"},"Danny Noppert":{f:"🇳🇱"},"Wessel Nijman":{f:"🇳🇱"},"Kevin Doets":{f:"🇳🇱"},
+"Martin Schindler":{f:"🇩🇪"},"Gabriel Clemens":{f:"🇩🇪"},"Ricardo Pietreczko":{f:"🇩🇪"},"Niko Springer":{f:"🇩🇪"},"Lukas Wenig":{f:"🇩🇪"},
+"Mike De Decker":{f:"🇧🇪"},"Dimitri Van den Bergh":{f:"🇧🇪"},"Damon Heta":{f:"🇦🇺"},"Mensur Suljovic":{f:"🇦🇹"},"Beau Greaves":{f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿"},
+// Bundesliga
+"FC Bayern":{k:"FCB",c:"#c8102e",t:"#fff"},"1. FC Köln":{k:"KOE",c:"#e3001b",t:"#fff"},"Borussia Mönchengladbach":{k:"BMG",c:"#1a1a1a",t:"#fff",b:"#3a8a3a"},
+"Borussia Dortmund":{k:"BVB",c:"#f5d000",t:"#111"},"1. FC Union Berlin":{k:"FCU",c:"#d4011d",t:"#ffe14d"},"RB Leipzig":{k:"RBL",c:"#f2f2f2",t:"#c8102e"},
+"Eintracht Frankfurt":{k:"SGE",c:"#111",t:"#e1000f"},"TSG Hoffenheim":{k:"TSG",c:"#1961b5",t:"#fff"},"Bayer Leverkusen":{k:"B04",c:"#e32221",t:"#111"},
+"SC Paderborn":{k:"SCP",c:"#0b4a8f",t:"#fff"},"SV Elversberg":{k:"SVE",c:"#111",t:"#fff"},"SC Freiburg":{k:"SCF",c:"#111",t:"#e2001a"},
+"FC Schalke 04":{k:"S04",c:"#004d9d",t:"#fff"},"VfB Stuttgart":{k:"VFB",c:"#f2f2f2",t:"#e32219"},"FC Augsburg":{k:"FCA",c:"#ba3733",t:"#fff",b:"#46714d"},
+"1. FSV Mainz 05":{k:"M05",c:"#c3141e",t:"#fff"},"Werder Bremen":{k:"SVW",c:"#1d9053",t:"#fff"},"Hamburger SV":{k:"HSV",c:"#0a3f86",t:"#fff"},
+"VfL Wolfsburg":{k:"WOB",c:"#65b32e",t:"#fff"},"1. FC Heidenheim":{k:"FCH",c:"#e2001a",t:"#fff",b:"#0b2b6b"},"FC St. Pauli":{k:"STP",c:"#5b3a29",t:"#fff"},"Holstein Kiel":{k:"KSV",c:"#0a3f86",t:"#fff"},"VfL Bochum":{k:"BOC",c:"#005ca9",t:"#fff"},
+// Premier League
+"Manchester City":{k:"MCI",c:"#6cabdd",t:"#0b1f3a"},"Fulham":{k:"FUL",c:"#f2f2f2",t:"#111"},"Chelsea":{k:"CHE",c:"#034694",t:"#fff"},"Leeds United":{k:"LEE",c:"#f2f2f2",t:"#1d428a"},
+"Aston Villa":{k:"AVL",c:"#670e36",t:"#95bfe5"},"Sunderland":{k:"SUN",c:"#eb172b",t:"#fff"},"Tottenham":{k:"TOT",c:"#f2f2f2",t:"#132257"},"Ipswich":{k:"IPS",c:"#3a64a3",t:"#fff"},
+"Bournemouth":{k:"BOU",c:"#da291c",t:"#111"},"Nottingham Forest":{k:"NFO",c:"#dd0000",t:"#fff"},"Coventry City":{k:"COV",c:"#6cb4ee",t:"#0b1f3a"},"Crystal Palace":{k:"CRY",c:"#1b458f",t:"#c4122e"},
+"Newcastle United":{k:"NEW",c:"#241f20",t:"#fff"},"FC Arsenal":{k:"ARS",c:"#ef0107",t:"#fff"},"Hull City":{k:"HUL",c:"#f18a01",t:"#111"},"Brighton":{k:"BHA",c:"#0057b8",t:"#fff"},
+"FC Liverpool":{k:"LIV",c:"#c8102e",t:"#fff"},"Manchester United":{k:"MUN",c:"#da291c",t:"#fbe122"},"Brentford":{k:"BRE",c:"#e30613",t:"#fff"},"Everton":{k:"EVE",c:"#003399",t:"#fff"},
+"West Ham":{k:"WHU",c:"#7a263a",t:"#1bb1e7"},"Wolverhampton":{k:"WOL",c:"#fdb913",t:"#231f20"},
+// Champions League
+"Galatasaray":{k:"GAL",c:"#a90432",t:"#fdb912"},"Bodø/Glimt":{k:"BOD",c:"#ffe600",t:"#111"},"LASK":{k:"LASK",c:"#111",t:"#fff"},"Real Madrid":{k:"RMA",c:"#f2f2f2",t:"#00529f"},
+"PSV Eindhoven":{k:"PSV",c:"#ed1c24",t:"#fff"},"RC Lens":{k:"RCL",c:"#ffd700",t:"#e10600"},"SSC Neapel":{k:"NAP",c:"#12a0d7",t:"#fff"},"OSC Lille":{k:"LIL",c:"#e01e13",t:"#fff",b:"#0b2b6b"},
+"Inter Mailand":{k:"INT",c:"#0068a8",t:"#111"},"Paris Saint-Germain":{k:"PSG",c:"#004170",t:"#fff",b:"#da291c"},"AS Rom":{k:"ROM",c:"#8e1f2f",t:"#f0bc42"},"Slavia Prag":{k:"SLA",c:"#f2f2f2",t:"#e10600"},
+"Villarreal":{k:"VIL",c:"#ffe667",t:"#005187"},"FC Barcelona":{k:"BAR",c:"#a50044",t:"#fff",b:"#004d98"},"Sporting":{k:"SCP",c:"#008057",t:"#fff"},"Club Brügge":{k:"CLB",c:"#0067ce",t:"#fff"},
+"Atlético Madrid":{k:"ATM",c:"#cb3524",t:"#fff"},"Schachtar Donezk":{k:"SHA",c:"#f26522",t:"#111"},"Fenerbahçe":{k:"FEN",c:"#ffed00",t:"#00205b"},"Feyenoord":{k:"FEY",c:"#e00",t:"#fff"},
+"FC Porto":{k:"POR",c:"#003893",t:"#fff"},"AEK Athen":{k:"AEK",c:"#ffd200",t:"#111"},"Real Betis":{k:"BET",c:"#00954c",t:"#fff"},"Juventus":{k:"JUV",c:"#111",t:"#fff"},"AC Mailand":{k:"MIL",c:"#fb090b",t:"#111"},
+"Benfica":{k:"BEN",c:"#e83030",t:"#fff"},"Ajax":{k:"AJA",c:"#d2122e",t:"#fff"},"Celtic":{k:"CEL",c:"#018749",t:"#fff"},"Olympique Marseille":{k:"OM",c:"#2faee0",t:"#fff"},"Aston Villa FC":{k:"AVL",c:"#670e36",t:"#95bfe5"},
+// Handball
+"TBV Lemgo Lippe":{k:"TBV",c:"#1f4e9c",t:"#fff"},"VfL Gummersbach":{k:"VFL",c:"#0062ae",t:"#fff"},"Frisch Auf Göppingen":{k:"FAG",c:"#009b3a",t:"#fff"},"Füchse Berlin":{k:"FÜB",c:"#2c7a3f",t:"#fff"},
+"SC Magdeburg":{k:"SCM",c:"#1e7d32",t:"#e30613"},"THW Kiel":{k:"THW",c:"#111",t:"#fff"},"SG Flensburg-Handewitt":{k:"SGF",c:"#00519e",t:"#e30613"},"Rhein-Neckar Löwen":{k:"RNL",c:"#004b93",t:"#fff"},"MT Melsungen":{k:"MTM",c:"#c00",t:"#fff"}
+};
+// Kurzformen auf Einträge abbilden
+const ALIAS={"Gladbach":"Borussia Mönchengladbach","BVB":"Borussia Dortmund","Union Berlin":"1. FC Union Berlin","Leverkusen":"Bayer Leverkusen","Mainz":"1. FSV Mainz 05","Augsburg":"FC Augsburg","Bremen":"Werder Bremen","HSV":"Hamburger SV","Schalke":"FC Schalke 04","Stuttgart":"VfB Stuttgart","Frankfurt":"Eintracht Frankfurt","Hoffenheim":"TSG Hoffenheim","Freiburg":"SC Freiburg","Köln":"1. FC Köln","Bayern":"FC Bayern","FC Bayern München":"FC Bayern","Leipzig":"RB Leipzig","Paderborn":"SC Paderborn","Elversberg":"SV Elversberg",
+"Arsenal":"FC Arsenal","Liverpool":"FC Liverpool","Man City":"Manchester City","Man Utd":"Manchester United","Newcastle":"Newcastle United","Leeds":"Leeds United","Villa":"Aston Villa","Spurs":"Tottenham","Tottenham Hotspur":"Tottenham","Forest":"Nottingham Forest","Palace":"Crystal Palace","Coventry":"Coventry City","Hull":"Hull City","Ipswich Town":"Ipswich",
+"PSG":"Paris Saint-Germain","Inter":"Inter Mailand","Neapel":"SSC Neapel","Napoli":"SSC Neapel","Lille":"OSC Lille","Lens":"RC Lens","Barcelona":"FC Barcelona","Barça":"FC Barcelona","Atlético":"Atlético Madrid","Brügge":"Club Brügge","Schachtar":"Schachtar Donezk","Porto":"FC Porto","Betis":"Real Betis","Rom":"AS Rom","Roma":"AS Rom","Lemgo":"TBV Lemgo Lippe","Gummersbach":"VfL Gummersbach","Göppingen":"Frisch Auf Göppingen","Magdeburg":"SC Magdeburg","Kiel":"THW Kiel","Flensburg":"SG Flensburg-Handewitt"};
+
+function teamOf(name){const n=name.trim(); return TEAMS[n]||TEAMS[ALIAS[n]]||null;}
+function initials(name){const w=name.replace(/^(1\.|FC|SC|SV|VfB|VfL|TSG|RB|AS|OSC|RC|SSC|AC|TBV|SG|MT)\s+/,"").split(/[\s\-\/]+/).filter(Boolean);
+  return (w.length>1?w.slice(0,2).map(x=>x[0]).join(""):w[0].slice(0,3)).toUpperCase();}
+function badge(name,ov){
+  const t=ov||teamOf(name);
+  if(t&&t.f) return `<span class="flag" aria-hidden="true">${t.f}</span>`;
+  if(t&&t.k) return `<span class="crest" style="background:${t.c};color:${t.t};${t.b?`box-shadow:inset 0 -3px 0 ${t.b}`:""}" aria-hidden="true">${esc(t.k)}</span>`;
+  return `<span class="crest neutral" aria-hidden="true">${esc(initials(name))}</span>`;
+}
+function sides(e){const p=e.ti.split(" – "); return (p.length===2 && !e.ti.includes(",") && !/\(/.test(e.ti))?p:null;}
+function titleHtml(e,big){
+  const p=sides(e), star=e.hl?' <span class="hlstar">★</span>':"";
+  if(!p) return `<div class="${big?"t":"title"}">${esc(e.ti)}${star}</div>`;
+  const ov=[e.h,e.a];
+  return `<div class="mu${big?" big":""}">${p.map((x,i)=>`<div class="tm">${badge(x,ov[i])}<span>${esc(x)}${i===1?star:""}</span></div>`).join("")}</div>`;
+}
+
+const ICONS={
+  "Fußball":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.2" cy="3.6" r="2.1" fill="currentColor" stroke="none"/><path d="M12.7 6.6l-1.6 5.6"/><path d="M12.5 7.8l-4.2 2"/><path d="M12.6 7.8l3.4-.6 1.6 2"/><path d="M11.1 12.2l-1 4.6.5 4.4"/><path d="M11.1 12.2l3.6 2.4 2.8-1.2"/><circle cx="20" cy="15.4" r="2.2" fill="currentColor" stroke="none"/></svg>',
+  "Darts":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 21.4l3.8-3.8"/><path d="M6.6 17.4l4.6-4.6" stroke-width="3.6"/><path d="M11.2 12.8l4.6-4.6"/><path d="M15.8 8.2L14.4 2.6l3.4 2.4zM15.8 8.2l5.6 1.4-2.4-3.4z" fill="currentColor"/></svg>',
+  "Rugby":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="12" cy="12" rx="9.5" ry="5.6" transform="rotate(-35 12 12)"/><path d="M9 15l6-6M10.2 11.6l2.2 2.2M11.8 10l2.2 2.2"/></svg>',
+  "Handball":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="5.4" r="2.1" fill="currentColor" stroke="none"/><path d="M11 8.2l-1.2 5.6"/><path d="M11.4 9l3.2-2.4 1.4-3.2"/><path d="M11 9.2l-4 1.8"/><path d="M9.8 13.8l3.4 2.2-.6 4.2"/><path d="M9.8 13.8l-2.6 3.4-2.6-.6"/><circle cx="17.4" cy="2.6" r="2.2" fill="currentColor" stroke="none"/></svg>',
+  "Motorsport":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.2 15.4l3.4-1.6h5l1.5-2.4h2.6l1.2 2.2h5.4V10h2.6v5.4z" fill="currentColor" fill-opacity=".3"/><path d="M19.4 10h3.4"/><circle cx="12.3" cy="10.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="6.4" cy="16" r="2.5" fill="currentColor"/><circle cx="17.6" cy="16" r="2.5" fill="currentColor"/></svg>',
+  "Radsport":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.4" cy="16.4" r="3.8"/><circle cx="18.6" cy="16.4" r="3.8"/><path d="M5.4 16.4l3.8-7.4h6.6l2.8 7.4M9.2 9l3 7.4 3.6-7.4M7.6 7h3.2M15.8 9l-.8-2.6h2.4"/><circle cx="12.2" cy="16.4" r="1.1" fill="currentColor" stroke="none"/></svg>',
+  "_":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0z"/><path d="M7 6H4v1a3 3 0 003 3M17 6h3v1a3 3 0 01-3 3"/></svg>'
+};
+const COLOR={"Radsport":"--c-rad","Fußball":"--c-fussball","Darts":"--c-darts","Rugby":"--c-rugby","Handball":"--c-handball","Motorsport":"--c-motorsport"};
+const DUR={"Radsport":90,"Fußball":115,"Darts":210,"Rugby":110,"Handball":100,"Motorsport":120};
+const sc=s=>`var(${COLOR[s]||"--c-sonst"})`;
+const icon=(s,sm)=>`<span class="ico${sm?" sm":""}" style="--sc:${sc(s)}" title="${esc(s)}" aria-label="${esc(s)}">${ICONS[s]||ICONS._}</span>`;
+const WD=["So","Mo","Di","Mi","Do","Fr","Sa"], WDL=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+const MON=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+const esc=x=>String(x??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const P=d=>{const [y,m,dd]=d.split("-").map(Number);return new Date(Date.UTC(y,m-1,dd));};
+const mins=t=>{const [h,m]=t.split(":").map(Number);return h*60+m;};
+
+function nowB(){
+  const p=new Intl.DateTimeFormat("sv-SE",{timeZone:"Europe/Berlin",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date());
+  return {d:p.slice(0,10),m:mins(p.slice(11,16))};
+}
+const dayNum=d=>Math.round(P(d).getTime()/864e5);
+// Minuten bis Start (relativ zu jetzt, deutsche Zeit); null ohne Uhrzeit
+function delta(e,n){ if(!e.t) return null; return (dayNum(e.d)-dayNum(n.d))*1440 + mins(e.t) - n.m; }
+function state(e,n){
+  const dl=delta(e,n); if(dl===null) return "open";
+  if(dl>0) return "future";
+  if(-dl < (DUR[e.s]||120)) return "live";
+  return "past";
+}
+function countdown(dl){
+  if(dl<60) return `in ${dl} Min.`;
+  const h=Math.floor(dl/60), m=dl%60;
+  return m?`in ${h} Std. ${m} Min.`:`in ${h} Std.`;
+}
+const FREE=["ard","das erste","zdf","sport1","rtl","rtl+ free","nitro","prosieben","pro7","sat.1","sat1","kabel eins","welt","welt tv","joyn","eurosport 1","dmax","tele 5","sportschau","sportstudio","n-tv","ntv","servustv","sky sport news","dazn (free)","magentasport (free)","dyn (free)","mdr","ndr","wdr","br","hr","swr","rbb"];
+const isFree=e=>(e.tv||[]).some(x=>FREE.includes(String(x).toLowerCase().trim()));
+const FTV='<span class="ftv" title="Im Free-TV zu sehen"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3" width="13" height="9" rx="2"/><path d="M5.5 14.5h5"/></svg>Free-TV</span>';
+const tvText=e=>(e.tv&&e.tv.length)?e.tv.join(" · "):"Sender offen";
+
+const openRows=new Set();
+const rid=e=>e.d+"|"+e.t+"|"+e.ti;
+const CHEV='<svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
+function row(e,n){
+  const st=state(e,n), dl=delta(e,n);
+  const id=rid(e), open=openRows.has(id), tap=!!e.i;
+  let pill="";
+  if(st==="live") pill=`<span class="pill live"><span class="pulse"></span>Live</span>`;
+  else if(st==="future" && e.d===n.d) pill=`<span class="pill${dl<=120?" soon":""}">${countdown(dl)}</span>`;
+  return `<div class="row${e.hl?" is-hl":""}${st==="past"?" past":""}${tap?" tap":""}${open?" open":""}"${tap?` data-id="${esc(id)}" role="button" tabindex="0" aria-expanded="${open}"`:""}>
+    <div class="tcol"><div class="time${e.t?"":" open"}">${e.t||"offen"}</div>${e._par>1?`<span class="par" title="${e._par} Übertragungen gleichzeitig">${e._par} parallel</span>`:""}</div>
+    ${icon(e.s)}
+    <div class="body">${titleHtml(e)}
+      <div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b>${e.n?`<br>${esc(e.n)}`:""}</div></div>
+    <div class="side">${pill}${isFree(e)?FTV:""}${tap?CHEV:""}</div>
+    ${tap&&open?`<div class="info">${esc(e.i)}</div>`:""}
+  </div>`;
+}
+const byTime=(a,b)=>(a.t||"99:99").localeCompare(b.t||"99:99")||((b.hl?1:0)-(a.hl?1:0));
+
+const expanded=new Set();
+function listHtml(evs,key,n){
+  if(!evs.length) return `<div class="list"><div class="empty">Nichts Größeres eingetragen.</div></div>`;
+  evs=[...evs].sort(byTime);
+  const cnt={}; evs.forEach(e=>{if(e.t) cnt[e.t]=(cnt[e.t]||0)+(e.ti.split(",").length);});
+  evs=evs.map(e=>Object.assign({},e,{_par:e.t?cnt[e.t]:0}));
+  let main=evs.filter(e=>!e.x), extra=evs.filter(e=>e.x);
+  if(!main.length){main=extra;extra=[];}
+  const open=expanded.has(key);
+  const shown=open?evs:main;
+  const btn=extra.length?`<button class="more" data-k="${key}">${open?"Weniger anzeigen":`${extra.length} weitere ${extra.length===1?"Übertragung":"Übertragungen"} anzeigen`}</button>`:"";
+  return `<div class="list">${shown.map(e=>row(e,n)).join("")}${btn}</div>`;
+}
+
+function resRow(e){
+  const p=sides(e); let sc=String(e.r||"").split(/[:\-–]/).map(x=>x.trim());
+  const isScore=p&&sc.length===2&&sc.every(x=>/^\d+$/.test(x));
+  let mid, right;
+  if(isScore){
+    const a=+sc[0], b=+sc[1], ov=[e.h,e.a];
+    const cls=i=>a===b?"":((i===0?a>b:b>a)?"":" l");
+    mid=`<div class="mu">${p.map((x,i)=>`<div class="tm${cls(i)}">${badge(x,ov[i])}<span>${esc(x)}</span></div>`).join("")}</div>`;
+    right=`<div class="score"><span class="${cls(0)?"l":"w"}">${a}</span><span class="${cls(1)?"l":"w"}">${b}</span></div>`;
+  } else {
+    mid=titleHtml(Object.assign({},e,{hl:false}));
+    right=`<div class="rtext">${esc(e.r||"")}</div>`;
+  }
+  return `<div class="row"><div>${icon(e.s)}</div><div class="body">${mid}<div class="meta">${esc(e.c)}${e.n?` · ${esc(e.n)}`:""}</div></div><div class="side">${right}</div></div>`;
+}
+let sel=null;
+function render(){
+  const n=nowB();
+  const ev=DATA.events;
+  const t=P(n.d);
+  document.getElementById("sub").textContent=`${WDL[t.getUTCDay()]}, ${t.getUTCDate()}. ${MON[t.getUTCMonth()]}`;
+
+  // Live
+  const live=ev.filter(e=>state(e,n)==="live").sort(byTime);
+  const ls=document.getElementById("live-sec"); ls.hidden=!live.length;
+  document.getElementById("live").innerHTML=live.map(e=>`<div class="live-card" style="--sc:${sc(e.s)}">
+     <span class="live-badge"><span class="pulse"></span>Läuft seit ${e.t} Uhr</span>
+     <div class="live-row">${icon(e.s)}<div class="body">${titleHtml(e)}<div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b></div></div><div class="side">${isFree(e)?FTV:""}</div></div></div>`).join("");
+
+  // Heute
+  const today=ev.filter(e=>e.d===n.d);
+  document.getElementById("today-count").textContent=today.length?`${today.length} ${today.length===1?"Übertragung":"Übertragungen"}`:"";
+  let th=listHtml(today,"today",n);
+  if(!today.length){
+    const next=ev.filter(e=>e.hl&&state(e,n)==="future").sort((a,b)=>delta(a,n)-delta(b,n))[0];
+    th=`<div class="list"><div class="empty">Heute läuft nichts Größeres.${next?` Nächstes Highlight: <b style="color:var(--ink)">${esc(next.ti)}</b>, ${WD[P(next.d).getUTCDay()]} ${next.t} Uhr.`:""}</div></div>`;
+  }
+  document.getElementById("today").innerHTML=th;
+
+  // Gestern
+  const g=DATA.gestern||[];
+  document.getElementById("gestern-count").textContent=g.length?`${g.length} ${g.length===1?"Ergebnis":"Ergebnisse"}`:"";
+  if(!g.length){document.getElementById("gestern").innerHTML=`<div class="list"><div class="empty">Ergebnisse vom Vortag erscheinen hier nach der morgendlichen Aktualisierung.</div></div>`;}
+  else{
+    const gk="gestern", open=expanded.has(gk), top=g.filter(e=>!e.x), rest=g.filter(e=>e.x);
+    const shown=open?g:(top.length?top:g);
+    const more=(top.length&&rest.length)?`<button class="more" data-k="${gk}">${open?"Weniger anzeigen":`${rest.length} weitere ${rest.length===1?"Ergebnis":"Ergebnisse"} anzeigen`}</button>`:"";
+    document.getElementById("gestern").innerHTML=`<div class="list res">${shown.map(resRow).join("")}${more}</div>`;
+  }
+
+  // Highlights
+  let hls=ev.filter(e=>e.hl && state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b));
+  document.getElementById("hl-count").textContent=hls.length?`${hls.length}`:"";
+  document.getElementById("hls").innerHTML=hls.map(e=>{
+    const x=P(e.d), st=state(e,n);
+    const lab=st==="live"?`<span class="live-badge"><span class="pulse"></span>Live</span>`:(e.d===n.d?"Heute":WD[x.getUTCDay()]+" "+x.getUTCDate()+".");
+    return `<button class="hl" style="--sc:${sc(e.s)}" data-d="${e.d}">
+      <div class="top">${icon(e.s)}<div class="when">${lab}<strong>${e.t||"offen"}</strong></div></div>
+      <div>${titleHtml(e,true)}<div class="c">${esc(e.c)}</div></div>
+      <div class="foot"><div class="tv">${esc(tvText(e))}</div>${isFree(e)?FTV:""}</div></button>`;}).join("") || `<div class="sub">Keine weiteren Highlights in dieser Woche.</div>`;
+
+  // Woche
+  const days=[]; for(let d=P(DATA.von); d<=P(DATA.bis); d=new Date(d.getTime()+864e5)){const s=d.toISOString().slice(0,10); if(s>=n.d) days.push(s);}
+  if(!sel || !days.includes(sel)) sel=days.find(d=>d>n.d)||days[0];
+  document.getElementById("days").innerHTML=days.map(d=>{
+    const x=P(d), sports=[...new Set(ev.filter(e=>e.d===d).map(e=>e.s))];
+    return `<button class="day" aria-pressed="${d===sel}" data-d="${d}"><span class="wd">${d===n.d?"Heute":WD[x.getUTCDay()]}</span><span class="dn">${x.getUTCDate()}</span><span class="dots">${sports.map(s=>`<i style="--sc:${sc(s)}"></i>`).join("")}</span></button>`;}).join("");
+  const sx=P(sel);
+  document.getElementById("dayhead").innerHTML=`${WDL[sx.getUTCDay()]}, ${sx.getUTCDate()}. ${MON[sx.getUTCMonth()]} <span class="swipehint">· wischen für nächsten Tag</span>`;
+  document.getElementById("daylist").innerHTML=listHtml(ev.filter(e=>e.d===sel),"d-"+sel,n);
+
+  document.getElementById("outlook").innerHTML=(DATA.ausblick||[]).map(a=>{const i=a.indexOf(":");return i>0?`<div><b>${esc(a.slice(0,i))}</b>${esc(a.slice(i))}</div>`:`<div>${esc(a)}</div>`;}).join("");
+  const s=P(DATA.stand.slice(0,10));
+  document.getElementById("foot").textContent=`Stand: ${s.getUTCDate()}.${s.getUTCMonth()+1}.${s.getUTCFullYear()}, ${DATA.stand.slice(11,16)} Uhr. Alle Zeiten deutsche Zeit. Wird jeden Morgen automatisch aktualisiert, kurzfristige Änderungen der Sender sind möglich.`;
+}
+
+document.addEventListener("click",ev=>{
+  const r=ev.target.closest(".row.tap");
+  if(r){const id=r.dataset.id; openRows.has(id)?openRows.delete(id):openRows.add(id); render(); return;}
+  const more=ev.target.closest(".more");
+  if(more){const k=more.dataset.k; expanded.has(k)?expanded.delete(k):expanded.add(k); render(); return;}
+  const day=ev.target.closest(".day");
+  if(day){sel=day.dataset.d; render(); return;}
+  const hl=ev.target.closest(".hl");
+  if(hl){const n=nowB(); if(hl.dataset.d===n.d){document.getElementById("today").scrollIntoView({behavior:"smooth",block:"start"});} else {sel=hl.dataset.d; render(); document.getElementById("week-sec").scrollIntoView({behavior:"smooth",block:"start"});}}
+});
+(function(){
+  let x0=null,y0=null;
+  const el=document.getElementById("daylist");
+  el.addEventListener("touchstart",ev=>{const t=ev.touches[0];x0=t.clientX;y0=t.clientY;},{passive:true});
+  el.addEventListener("touchend",ev=>{
+    if(x0===null) return; const t=ev.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null;
+    if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5) return;
+    const btns=[...document.querySelectorAll("#days .day")].map(b=>b.dataset.d), i=btns.indexOf(sel);
+    const j=dx<0?i+1:i-1; if(j<0||j>=btns.length) return;
+    sel=btns[j]; render();
+    const b=document.querySelector(`#days .day[data-d="${sel}"]`); if(b) b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
+  },{passive:true});
+})();
+document.addEventListener("keydown",ev=>{const r=ev.target.closest&&ev.target.closest(".row.tap"); if(r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault(); r.click();}});
+render();
+setInterval(render,30000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden) render();});
+</script>
+</body>
+</html>
