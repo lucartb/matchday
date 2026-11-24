@@ -329,6 +329,77 @@ a.chip{text-decoration:none}
 .adr{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px}
 .adr span{color:var(--muted);font-size:12px}
 .xbtn.sm{width:28px;height:28px;font-size:16px;flex:0 0 auto}
+/* Kompakte Zeilen */
+.row.fav{box-shadow:none}
+.pair{display:flex;flex-wrap:wrap;align-items:center;column-gap:7px;row-gap:3px;font-weight:700;font-size:15px;line-height:1.25;margin-bottom:2px}
+.pair .pt{display:inline-flex;align-items:center;gap:6px}
+.pair .vs{color:var(--faint);font-weight:600}
+.pair .crest{min-width:26px;height:18px;font-size:8.5px}
+.pair .flag{width:18px;flex-basis:18px;font-size:15px}
+.chipl{margin-top:4px}
+.chipl .grp,.chipl .wch,.chipl .na-tag{margin-left:0}
+.row.konf{width:100%;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);font:inherit;color:inherit;cursor:pointer}
+.row.konf .title{font-size:14px;color:var(--ink)}
+.row.konf.open .chev{transform:rotate(180deg)}
+.konfl{background:color-mix(in srgb,var(--ink) 3%,var(--surface));border-top:1px solid var(--line)}
+.konfl .row{padding-left:22px}
+.row .info .it b{font-weight:700;color:var(--ink)}
+/* Jetzt-Karte */
+.hero{background:radial-gradient(130% 120% at 100% 0%,color-mix(in srgb,var(--sc,var(--c-handball)) 16%,transparent),transparent 62%),var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.hero.live{background:linear-gradient(135deg,color-mix(in srgb,var(--live) 16%,var(--surface)),var(--surface));border-color:color-mix(in srgb,var(--live) 32%,var(--line))}
+.hero .hh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hero .hlab{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.hero .hn{font-size:12px;color:var(--muted);font-weight:600}
+.hero .hbig{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.hero .hi{display:flex;gap:11px;align-items:flex-start}
+.hero .hb{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.hero .hb .pair{font-size:16.5px;font-weight:800}
+.hmore{align-self:flex-start;border:0;background:transparent;color:var(--ink);font:700 13.5px var(--font);padding:2px 0;cursor:pointer;opacity:.85}
+/* Abendplan */
+.evening{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.evh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.evh b{font-size:16px;font-weight:800}
+.evh span{font-size:12px;color:var(--faint)}
+.evl{display:flex;flex-direction:column;gap:0;position:relative}
+.evi{display:grid;grid-template-columns:62px 30px 1fr;gap:10px;align-items:center;padding:7px 0;border-top:1px dashed var(--line)}
+.evi:first-child{border-top:0}
+.evi .et{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
+.evi .eb{display:flex;flex-direction:column;min-width:0}
+.evi .eb b{font-size:14.5px;font-weight:800}
+.evi .eb span{font-size:12px;color:var(--muted)}
+.evn{font-size:12px;color:var(--faint)}
+/* Wischen */
+.row[data-id]{transition:transform .2s ease,background .15s}
+.row[data-sw="r"]{background:color-mix(in srgb,var(--c-fussball) 14%,var(--surface))}
+.row[data-sw="l"]{background:color-mix(in srgb,var(--c-handball) 14%,var(--surface))}
+.row[data-sw="r"].swok{background:color-mix(in srgb,var(--c-fussball) 30%,var(--surface))}
+.row[data-sw="l"].swok{background:color-mix(in srgb,var(--c-handball) 30%,var(--surface))}
+#recap{transition:transform .2s ease,opacity .2s}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;z-index:60;display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--bg);font:700 13.5px var(--font);padding:10px 14px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:all .2s;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{border:0;background:var(--bg);color:var(--ink);font:800 12.5px var(--font);padding:6px 10px;border-radius:9px;cursor:pointer}
+/* Watch-Party-Plan */
+.pchip.maybe{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.wlead{font-size:13px;font-weight:700;color:var(--ink)}
+.wrow{display:flex;flex-wrap:wrap;gap:6px}
+.wbtn.on.maybe{background:var(--surface-2);border-color:var(--ink);color:var(--ink)}
+.plc{font:700 12.5px var(--font);padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.plc i{font-style:normal;background:var(--surface-2);color:var(--ink);border-radius:999px;padding:0 6px;margin-left:2px}
+.plc.on{border-color:var(--ink);color:var(--ink)}
+/* Einstellungen in Gruppen */
+.sg{display:flex;flex-direction:column;gap:18px;padding:16px;border:1px solid var(--line);border-radius:18px;background:color-mix(in srgb,var(--ink) 2%,var(--bg))}
+.sgh{font-size:17px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+details.sg summary{cursor:pointer;list-style:none}
+details.sg summary::-webkit-details-marker{display:none}
+details.sg summary::after{content:" ›";color:var(--faint)}
+details.sg[open] summary{margin-bottom:12px}
+.switch small{display:block;font-size:12px;color:var(--faint);font-weight:500;margin-top:2px}
+/* Home-Hinweis kompakt */
+.homehint{padding:12px 14px;gap:8px}
+.homehint .hhtxt{font-size:14px;line-height:1.4}
+.homehint details summary{font-size:13px;font-weight:700;color:var(--gold-ink);cursor:pointer}
+.homehint ol{margin:6px 0 0;padding-left:20px;font-size:13.5px}
+.homehint label{padding:8px 10px;font-size:13.5px}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -341,28 +412,23 @@ a.chip{text-decoration:none}
   </header>
 
   <div class="homehint" id="homehint" hidden role="note">
-    <b class="t">⚠️ Wichtig: Auswahl dauerhaft speichern</b>
-    <ol>
+    <div class="hhtxt">📲 <b>Tipp:</b> Leg Matchday auf den Home-Bildschirm, dann bleibt alles gespeichert.</div>
+    <details><summary>So geht's</summary><ol>
       <li>Unten in Safari auf <b>Teilen</b> tippen (Quadrat mit Pfeil)</li>
       <li><b>„Zum Home-Bildschirm“</b> wählen und <b>Hinzufügen</b></li>
-      <li>Ab jetzt Matchday immer über das neue Icon öffnen</li>
-    </ol>
-    <span class="why">Nur so bleiben deine Sportarten, Teams und Dienste gespeichert.</span>
-    <label><input type="checkbox" id="homedone"> Erledigt – hab ich gemacht</label>
+      <li>Ab jetzt Matchday über das neue Icon öffnen</li>
+    </ol></details>
+    <label><input type="checkbox" id="homedone"> Erledigt</label>
   </div>
 
   <div class="tab" data-tab="heute">
   <div class="recap" id="recap" hidden></div>
-  <button type="button" class="nowbtn" id="nowbtn"><span class="pulse"></span>Was läuft jetzt?</button>
+  <div id="hero"></div>
+  <div id="evening"></div>
 
   <section class="sec" id="fav-sec" hidden>
     <div class="sec-h"><h2>Meine Teams</h2><span id="fav-count"></span></div>
     <div id="fav"></div>
-  </section>
-
-  <section class="sec" id="live-sec" hidden>
-    <div class="sec-h"><h2>Jetzt live</h2></div>
-    <div id="live"></div>
   </section>
 
   <section class="sec">
@@ -371,7 +437,7 @@ a.chip{text-decoration:none}
   </section>
 
   <section class="sec" id="cf-sec" hidden>
-    <div class="sec-h"><h2>Überschneidungen</h2><span>deine Teams & Highlights</span></div>
+    <div class="sec-h"><h2>Überschneidungen</h2><span>deine Teams & Pläne</span></div>
     <div class="cfl" id="cf"></div>
   </section>
   </div>
@@ -594,19 +660,21 @@ function shareOrCopy(text,btn,label){if(navigator.share){navigator.share({text})
 const rid=e=>e.d+"|"+e.t+"|"+e.ti;
 const CHEV='<svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
 function row(e,n){
-  const st=state(e,n), dl=delta(e,n);
-  const id=rid(e), open=openRows.has(id), tap=!e._notap; ROWS[id]=e; const fr=friendsOf(e);
+  const st=state(e,n), dl=delta(e,n), id=rid(e), open=openRows.has(id), tap=!e._notap; ROWS[id]=e;
   let pill="";
   if(st==="live") pill=`<span class="pill live"><span class="pulse"></span>Live</span>`;
   else if(st==="future" && e.d===n.d) pill=`<span class="pill${dl<=120?" soon":""}">${countdown(dl)}</span>`;
-  const x0=P(e.d);
-  return `<div class="row${e.hl?" is-hl":""}${e._fav?" fav":""}${e._na?" na":""}${st==="past"?" past":""}${tap?" tap":""}${open?" open":""}"${tap?` data-id="${esc(id)}" role="button" tabindex="0" aria-expanded="${open}"`:""}>
-    <div class="tcol">${e._showDate?`<span class="dd">${e.d===n.d?"Heute":WD[x0.getUTCDay()]+" "+x0.getUTCDate()+"."}</span>`:""}<div class="time${e.t?"":" open"}">${e.t||"offen"}</div>${e._par>1?`<span class="par" title="${e._par} Übertragungen gleichzeitig">${e._par} parallel</span>`:""}</div>
+  const x0=P(e.d), ws=watchersOf(id), fr=friendsOf(e), mp=myPlan(id);
+  let chip="";
+  if(ws.length) chip=`<span class="wch" title="Wollen schauen">${EYE}${esc(ws.map(w=>(w.m===RD.state.me?"Du":nameOf(w.m))+(w.s==="maybe"?"?":"")).join(", "))}</span>`;
+  else if(fr.length) chip=`<span class="grp" title="Fans in deiner Watch Party">${PPL}${esc(fr.join(", "))}</span>`;
+  else if(e._na) chip=`<span class="na-tag">nicht in deinen Diensten</span>`;
+  return `<div class="row${e._na?" na":""}${st==="past"?" past":""}${tap?" tap":""}${open?" open":""}"${tap?` data-id="${esc(id)}" role="button" tabindex="0" aria-expanded="${open}"`:""}>
+    <div class="tcol">${e._showDate?`<span class="dd">${e.d===n.d?"Heute":WD[x0.getUTCDay()]+" "+x0.getUTCDate()+"."}</span>`:""}<div class="time${e.t?"":" open"}">${e.t||"offen"}</div></div>
     ${icon(e.s)}
-    <div class="body">${titleHtml(e)}
-      <div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b>${e._na?'<span class="na-tag">nicht in deinen Diensten</span>':""}${fr.length?`<span class="grp" title="Fan in deiner Watch Party">${PPL}${esc(fr.join(", "))}</span>`:""}${(()=>{const w=watchersOf(id);return w.length?`<span class="wch" title="Wollen schauen">${EYE}${esc(w.map(m=>m===RD.state.me?"Du":nameOf(m)).join(", "))}</span>`:"";})()}${e.n?`<br>${esc(e.n)}`:""}</div></div>
+    <div class="body">${pairHtml(e)}<div class="meta">${esc(compOf(e))} · <b>${esc(tvText(e))}</b></div>${chip?`<div class="chipl">${chip}</div>`:""}</div>
     <div class="side">${pill}${isFree(e)?FTV:""}${tap?CHEV:""}</div>
-    ${tap&&open?`<div class="info">${e.i?`<div class="it">${esc(e.i)}</div>`:""}<div class="acts">${RD.state?`<button type="button" class="act${iWatch(id)?" on":""}" data-w="${esc(id)}">${iWatch(id)?"✓ Will ich schauen":"Will ich schauen"}</button>`:""}<button type="button" class="act" data-inv="${esc(id)}">Per Nachricht einladen</button></div></div>`:""}
+    ${tap&&open?`<div class="info"><div class="it"><b>${esc(e.ti)}</b> · ${esc(e.c)}</div>${e.i?`<div class="it">${esc(e.i)}</div>`:""}${e.n?`<div class="it">${esc(e.n)}</div>`:""}<div class="acts">${RD.state?`<button type="button" class="act${mp&&mp.s==="yes"?" on":""}" data-w="${esc(id)}">${mp&&mp.s==="yes"?"✓ Will ich schauen":"Will ich schauen"}</button>`:""}<button type="button" class="act" data-inv="${esc(id)}">Per Nachricht einladen</button></div></div>`:""}
   </div>`;
 }
 const byTime=(a,b)=>(a.t||"99:99").localeCompare(b.t||"99:99")||((b.hl?1:0)-(a.hl?1:0));
@@ -615,14 +683,26 @@ const expanded=new Set();
 function listHtml(evs,key,n){
   if(!evs.length) return `<div class="list"><div class="empty">Nichts Größeres eingetragen.</div></div>`;
   evs=[...evs].sort(byTime);
-  const cnt={}; evs.forEach(e=>{if(e.t) cnt[e.t]=(cnt[e.t]||0)+(e.ti.split(",").length);});
-  evs=evs.map(e=>Object.assign({},e,{_par:e.t?cnt[e.t]:0}));
-  let main=evs.filter(e=>!e.x), extra=evs.filter(e=>e.x);
-  if(!main.length){main=extra;extra=[];}
-  const open=expanded.has(key);
-  const shown=open?evs:main;
-  const btn=extra.length?`<button class="more" data-k="${key}">${open?"Weniger anzeigen":`${extra.length} weitere ${extra.length===1?"Übertragung":"Übertragungen"} anzeigen`}</button>`:"";
-  return `<div class="list">${shown.map(e=>row(e,n)).join("")}${btn}</div>`;
+  const keyOf=e=>e.t?e.t+"|"+compOf(e):null, groups={};
+  evs.forEach(e=>{const k=keyOf(e); if(k)(groups[k]=groups[k]||[]).push(e);});
+  const imp=e=>e._fav||e.hl||watchersOf(rid(e)).length;
+  const inKonf=e=>{const k=keyOf(e);return k&&groups[k].length>=3;};
+  const open=expanded.has(key), extras=evs.filter(e=>!inKonf(e)&&e.x&&!imp(e));
+  const out=[], done=new Set();
+  evs.forEach(e=>{
+    if(inKonf(e)){
+      const k=keyOf(e); if(done.has(k)) return; done.add(k);
+      const g=groups[k]; let top=g.filter(imp).slice(0,3); if(!top.length) top=g.filter(x=>!x.x).slice(0,1); if(!top.length) top=[g[0]];
+      top.forEach(x=>out.push({t:"row",e:x}));
+      const rest=g.filter(x=>!top.includes(x));
+      if(rest.length) out.push({t:"konf",k:key+"#"+k,c:compOf(e),time:e.t,rest});
+      return;
+    }
+    if(e.x&&!imp(e)&&!open&&evs.some(z=>!(z.x&&!imp(z)))) return;
+    out.push({t:"row",e});
+  });
+  const btn=extras.length&&evs.some(z=>!(z.x&&!imp(z)))?`<button class="more" data-k="${key}">${open?"Weniger anzeigen":`${extras.length} weitere ${extras.length===1?"Übertragung":"Übertragungen"} anzeigen`}</button>`:"";
+  return `<div class="list">${out.map(o=>o.t==="row"?row(o.e,n):konfHtml(o,n)).join("")}${btn}</div>`;
 }
 
 function resRow(e){
@@ -693,7 +773,7 @@ function timelineHtml(evs,n){
 }
 function conflicts(ev,n){
   const end=new Date(P(n.d).getTime()+7*864e5).toISOString().slice(0,10);
-  const rel=ev.filter(e=>(e._fav||e.hl)&&e.t&&e.d>=n.d&&e.d<end&&state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b));
+  const rel=ev.filter(e=>(e._fav||myPlan(rid(e)))&&e.t&&e.d>=n.d&&e.d<end&&state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b));
   const out=[];
   for(let i=0;i<rel.length;i++)for(let j=i+1;j<rel.length;j++){
     const a=rel[i], b=rel[j]; if(a.d!==b.d||a.c===b.c) continue;
@@ -719,9 +799,9 @@ function cfHtml(pairs,n){
 const addD=(d,k)=>new Date(P(d).getTime()+k*864e5).toISOString().slice(0,10);
 function recapInfo(n){
   const wd=P(n.d).getUTCDay();
-  const show=wd===1||wd===2||(wd===0&&n.m>=18*60);
-  const from=wd===0?addD(n.d,1):addD(n.d,-((wd+6)%7));
-  return {show,key:from,from:wd===0?addD(n.d,1):n.d,to:addD(from,7)};
+  const show=wd===1;
+  const from=addD(n.d,-((wd+6)%7));
+  return {show,key:from,from:n.d,to:addD(from,7)};
 }
 function recapHtml(ev,n){
   const ri=recapInfo(n); let dis=null; try{dis=localStorage.getItem("md-recap");}catch(e){}
@@ -834,15 +914,23 @@ async function rdDo(fn,args,after){
 function joinedState(j){RD.state=j; if(PREFS){PREFS.gc=j.code; savePrefs();} pendingCode=null; try{sessionStorage.removeItem("md-pc");}catch(e){}}
 const others=()=>RD.state?RD.state.members.filter(m=>m.id!==RD.state.me):[];
 const nameOf=id=>{const m=RD.state&&RD.state.members.find(x=>x.id===id);return m?m.name:"?";};
-function watchersOf(id){if(!RD.state) return []; return RD.state.watch.filter(w=>w.ev===id).map(w=>w.m);}
-const iWatch=id=>!!(RD.state&&RD.state.watch.some(w=>w.ev===id&&w.m===RD.state.me));
-function toggleWatch(id){
-  if(!RD.state) return;
-  const on=!iWatch(id);
-  if(on) RD.state.watch.push({m:RD.state.me,ev:id}); else RD.state.watch=RD.state.watch.filter(w=>!(w.ev===id&&w.m===RD.state.me));
+function watchersOf(id){if(!RD.state) return []; return RD.state.watch.filter(w=>w.ev===id);}
+const myPlan=id=>RD.state?RD.state.watch.find(w=>w.ev===id&&w.m===RD.state.me)||null:null;
+const iWatch=id=>!!myPlan(id);
+function setPlan(id,status){
+  if(!RD.state) return; const mp=myPlan(id);
+  if(status===null) RD.state.watch=RD.state.watch.filter(w=>!(w.ev===id&&w.m===RD.state.me));
+  else if(mp) mp.s=status; else RD.state.watch.push({m:RD.state.me,ev:id,s:status,p:null});
   render();
-  rpc("md_watch_set",{p_ev:id,p_on:on}).then(j=>{if(j){RD.state=j; render();}}).catch(()=>{RD.err="Konnte nicht speichern."; rdLoad();});
+  rpc("md_plan_set",{p_ev:id,p_status:status,p_place:null}).then(j=>{if(j){RD.state=j; render();}}).catch(()=>{RD.err="Konnte nicht speichern."; rdLoad();});
 }
+function setPlace(id,place){
+  if(!RD.state) return; let mp=myPlan(id);
+  if(!mp){mp={m:RD.state.me,ev:id,s:"yes",p:null}; RD.state.watch.push(mp);}
+  const np=mp.p===place?null:place; mp.p=np; render();
+  rpc("md_place_set",{p_ev:id,p_place:np}).then(j=>{if(j){RD.state=j; render();}}).catch(()=>{RD.err="Konnte nicht speichern."; rdLoad();});
+}
+function toggleWatch(id){const mp=myPlan(id); setPlan(id,mp&&mp.s==="yes"?null:"yes");}
 const EYE='<svg class="pp" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.3 8S3.8 3.3 8 3.3 14.7 8 14.7 8 12.2 12.7 8 12.7 1.3 8 1.3 8z"/><circle cx="8" cy="8" r="2"/></svg>';
 function inviteLink(){return SHARE_URL+"#g="+RD.state.code;}
 function rundeHtml(ev,n){
@@ -869,16 +957,24 @@ function rundeHtml(ev,n){
   const st=RD.state, byId={}; DATA.events.forEach(e=>{const k=rid(e); if(!byId[k]) byId[k]=e;});
   const evIds=[...new Set(st.watch.map(w=>w.ev))].filter(id=>byId[id]&&state(byId[id],n)!=="past");
   const wl=evIds.map(id=>byId[id]).sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b));
-  const card=e=>{const id=rid(e), ws=watchersOf(id), me=iWatch(id), x=P(e.d);
-    return `<div class="wcard" style="--sc:${sc(e.s)}"><div class="wtop">${icon(e.s,true)}<div class="wt"><span class="wd2">${e.d===n.d?"Heute":WD[x.getUTCDay()]+" "+x.getUTCDate()+"."} · ${e.t||"offen"}</span><b>${esc(e.ti)}</b><span class="wtv">${esc(tvText(e))}</span></div></div>
-      <div class="wppl">${ws.map(m=>`<span class="pchip${m===st.me?" me":""}">${esc(m===st.me?"Du":nameOf(m))}</span>`).join("")}</div>
-      <button type="button" class="wbtn${me?" on":""}" data-w="${esc(id)}">${me?"✓ Ich bin dabei":"Ich auch"}</button></div>`;};
+  const PL={home:"🏠 Bei mir",bar:"🍺 Kneipe",solo:"📺 Jeder für sich"};
+  const card=e=>{const id=rid(e), ws=watchersOf(id), mp=myPlan(id), x=P(e.d);
+    const nm=w=>w.m===st.me?"Du":nameOf(w.m), yes=ws.filter(w=>w.s==="yes"), maybe=ws.filter(w=>w.s==="maybe");
+    const cnt={home:0,bar:0,solo:0}; ws.forEach(w=>{if(w.p) cnt[w.p]++;});
+    const bestK=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
+    const hosts=ws.filter(w=>w.p==="home").map(w=>w.m===st.me?"dir":nameOf(w.m));
+    const lead=cnt[bestK]?(bestK==="home"?`Treffpunkt: bei ${hosts.join(" oder ")}`:bestK==="bar"?"Treffpunkt: Kneipe":"Jeder schaut für sich"):"";
+    return `<div class="wcard" style="--sc:${sc(e.s)}"><div class="wtop">${icon(e.s,true)}<div class="wt"><span class="wd2">${e.d===n.d?"Heute":WD[x.getUTCDay()]+" "+x.getUTCDate()+"."} · ${e.t||"offen"}</span><b>${esc(pairText(e))}</b><span class="wtv">${esc(compOf(e))} · ${esc(tvText(e))}</span></div></div>
+      <div class="wppl">${yes.map(w=>`<span class="pchip${w.m===st.me?" me":""}">✓ ${esc(nm(w))}</span>`).join("")}${maybe.map(w=>`<span class="pchip maybe">? ${esc(nm(w))}</span>`).join("")}</div>
+      ${lead?`<div class="wlead">${esc(lead)}</div>`:""}
+      <div class="wrow"><button type="button" class="wbtn${mp&&mp.s==="yes"?" on":""}" data-ps="${esc(id)}|yes">Ich komme</button><button type="button" class="wbtn${mp&&mp.s==="maybe"?" on maybe":""}" data-ps="${esc(id)}|maybe">Vielleicht</button></div>
+      <div class="wrow">${["home","bar","solo"].map(k=>`<button type="button" class="plc${mp&&mp.p===k?" on":""}" data-pp="${esc(id)}|${k}">${PL[k]}${cnt[k]?` <i>${cnt[k]}</i>`:""}</button>`).join("")}</div></div>`;};
   const tg=ev.filter(e=>e.d>=n.d&&state(e,n)!=="past"&&friendsOf(e).length&&!e._fav).sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b)).slice(0,6);
   return `${err}<div class="card rhead"><div class="rh2"><b>${esc(st.name)}</b><span>Code ${esc(st.code)}</span></div><p style="margin-top:-6px">Watch Party · mit Freunden zusammen schauen</p>
      <div class="wppl">${st.members.map(m=>`<span class="pchip${m.id===st.me?" me":""}">${esc(m.id===st.me?m.name+" (du)":m.name)}</span>`).join("")}</div>
      <div class="chips"><button type="button" class="chip" aria-pressed="true" id="rd-invite">Freunde einladen</button></div></div>
    <section class="sec"><div class="sec-h"><h2>Wer schaut was</h2><span>${wl.length||""}</span></div>
-     ${wl.length?`<div class="wlist">${wl.map(card).join("")}</div>`:`<div class="list"><div class="empty">Noch nichts geplant. Tippe bei einem Spiel auf <b style="color:var(--ink)">„Will ich schauen“</b>, dann sehen es alle in eurer Watch Party.</div></div>`}</section>
+     ${wl.length?`<div class="wlist">${wl.map(card).join("")}</div>`:`<div class="list"><div class="empty">Noch nichts geplant. Wisch ein Spiel nach rechts oder tippe es an und wähle <b style="color:var(--ink)">„Will ich schauen“</b>. Dann sehen es alle in eurer Watch Party.</div></div>`}</section>
    ${tg.length?`<section class="sec"><div class="sec-h"><h2>Teams eurer Gruppe</h2></div><div class="list">${tg.map(e=>row(Object.assign({},e,{_showDate:true}),n)).join("")}</div></section>`:""}
    <p class="rnote">Die Watch Party speichert Vornamen, gewählte Teams, Gerätetyp und „Will ich schauen“-Markierungen. <button type="button" class="linkbtn" id="rd-leave">Watch Party verlassen</button></p>`;
 }
@@ -887,6 +983,136 @@ function adminHtml(){
   if(!a) return `<input class="tsearch" id="ad-pin" type="password" placeholder="Admin-PIN" autocomplete="off"><div class="chips" style="margin-top:8px"><button type="button" class="chip" id="ad-go">Übersicht öffnen</button></div>${RD.adminErr?`<p class="hint" style="color:var(--soon-ink);margin-top:8px">${esc(RD.adminErr)}</p>`:""}`;
   const ago=t=>{const m=Math.round((Date.now()-new Date(t).getTime())/60000);return m<2?"gerade eben":m<60?`vor ${m} Min.`:m<1440?`vor ${Math.round(m/60)} Std.`:`vor ${Math.round(m/1440)} Tagen`;};
   return `<p class="hint">${a.members.length} Geräte in ${a.groups} ${a.groups===1?"Gruppe":"Gruppen"}</p><div class="adl">${a.members.map(m=>`<div class="adr"><div><b>${esc(m.name)}</b> <span>· ${esc(m.group)}</span><br><span>${esc(m.device||"?")}${m.standalone?" · Home-Bildschirm":""} · zuletzt ${ago(m.last_seen)} · ${m.watch} ${m.watch===1?"Spiel":"Spiele"} markiert</span></div><button type="button" class="xbtn sm" data-adrm="${esc(m.name)}" data-adcode="${esc(m.code)}" aria-label="Entfernen">×</button></div>`).join("")}</div><div class="chips" style="margin-top:8px"><button type="button" class="chip" id="ad-close">Schließen</button></div>`;
+}
+
+/* ---- Kompakte Darstellung ---- */
+function shortName(x){
+  const M={"Borussia Mönchengladbach":"Gladbach","Paris Saint-Germain":"Paris SG","Manchester City":"Man City","Manchester United":"Man United","Newcastle United":"Newcastle","Nottingham Forest":"Forest","Bayer Leverkusen":"Leverkusen","Eintracht Frankfurt":"Frankfurt","Borussia Dortmund":"Dortmund","Werder Bremen":"Bremen","Hamburger SV":"HSV","SG Flensburg-Handewitt":"Flensburg","Rhein-Neckar Löwen":"Löwen","Tottenham Hotspur":"Tottenham","Wolverhampton":"Wolves","Crystal Palace":"Palace","Schachtar Donezk":"Schachtar"};
+  if(M[x]) return M[x];
+  const y=x.replace(/^(1\. FC |1\. FSV |FC |SC |SV |VfL |VfB |TSG |RC |OSC |SSC |AS |AC |RB |TBV |THW |MT )/,"");
+  return y.length>=3?y:x;
+}
+const compOf=e=>String(e.c||"").split(" · ")[0];
+const pairText=e=>{const p=sides(e);return p?shortName(p[0])+" – "+shortName(p[1]):e.ti;};
+function pairHtml(e){
+  const p=sides(e), mine=x=>!!(PREFS&&PREFS.teams.some(t=>x.includes(t))), st='<span class="favstar">★</span>';
+  if(!p) return `<div class="title">${esc(e.ti)}${e._fav?st:""}</div>`;
+  const ov=[e.h,e.a];
+  return `<div class="pair" title="${esc(e.ti)}"><span class="pt">${badge(p[0],ov[0])}<span class="pn">${esc(shortName(p[0]))}${mine(p[0])?st:""}</span><span class="vs">–</span></span><span class="pt">${badge(p[1],ov[1])}<span class="pn">${esc(shortName(p[1]))}${mine(p[1])?st:""}</span></span></div>`;
+}
+function countdownBig(dl){if(dl<60) return `in ${dl} Min.`; const h=Math.floor(dl/60), m=dl%60; return `in ${h} Std.${m?` ${m} Min.`:""}`;}
+function heroHtml(ev,n){
+  const rank=e=>(e._fav||myPlan(rid(e))?0:e.hl?1:2);
+  const live=ev.filter(e=>state(e,n)==="live").sort((a,b)=>rank(a)-rank(b)||byTime(a,b));
+  if(live.length){
+    const top=live.slice(0,2);
+    return `<div class="hero live"><div class="hh"><span class="live-badge"><span class="pulse"></span>Jetzt live</span><span class="hn">${live.length} ${live.length===1?"Übertragung":"Übertragungen"}</span></div>
+      ${top.map(e=>`<div class="hi">${icon(e.s,true)}<div class="hb">${pairHtml(e)}<div class="meta">${esc(compOf(e))} · <b>${esc(tvText(e))}</b></div>${progHtml(e,n)}</div></div>`).join("")}
+      <button type="button" class="hmore" id="heromore">${live.length>2?`Alle ${live.length} anzeigen`:"Was läuft gleich?"} →</button></div>`;
+  }
+  const fut=ev.filter(e=>state(e,n)==="future").sort((a,b)=>delta(a,n)-delta(b,n));
+  const soon=fut.filter(e=>e.d===n.d);
+  const pick=soon.find(e=>rank(e)<2)||soon[0]||fut.find(e=>rank(e)<2)||fut[0];
+  if(!pick) return "";
+  const dl=delta(pick,n), x=P(pick.d);
+  const big=pick.d===n.d?countdownBig(dl):`${WDL[x.getUTCDay()]}${pick.t?", "+pick.t+" Uhr":""}`;
+  const lab=rank(pick)===0?"Als Nächstes für dich":pick.hl?"Nächstes Highlight":"Als Nächstes";
+  return `<div class="hero" style="--sc:${sc(pick.s)}"><div class="hh"><span class="hlab">${lab}</span>${isFree(pick)?FTV:""}</div><div class="hbig">${big}</div>
+    <div class="hi">${icon(pick.s,true)}<div class="hb">${pairHtml(pick)}<div class="meta">${pick.d===n.d&&pick.t?pick.t+" Uhr · ":""}${esc(compOf(pick))} · <b>${esc(tvText(pick))}</b></div></div></div>
+    <button type="button" class="hmore" id="heromore">Was läuft gleich? →</button></div>`;
+}
+function eveningHtml(ev,n){
+  if(n.m>=23*60) return "";
+  const from=Math.max(n.m-30,17*60);
+  const w=e=>{const mp=myPlan(rid(e)); return e._fav?10:mp&&mp.s==="yes"?9:mp?6:e.hl?5:e.x?0.5:2;};
+  const c=ev.filter(e=>e.d===n.d&&e.t&&mins(e.t)>=from&&state(e,n)!=="past"&&!e._na)
+    .map(e=>({e,s:mins(e.t),f:mins(e.t)+(DUR[e.s]||120)-10,w:w(e)})).sort((a,b)=>a.f-b.f||b.w-a.w);
+  if(c.length<2) return "";
+  const best=[0], pick=[[]];
+  for(let i=0;i<c.length;i++){
+    let j=i-1; while(j>=0&&c[j].f>c[i].s) j--;
+    const take=c[i].w+best[j+1], skip=best[i];
+    if(take>skip){best.push(take); pick.push(pick[j+1].concat([c[i]]));} else {best.push(skip); pick.push(pick[i]);}
+  }
+  const plan=pick[c.length].sort((a,b)=>a.s-b.s);
+  if(plan.length<2) return "";
+  const missed=c.filter(x=>x.w>=5&&!plan.includes(x)).slice(0,2);
+  return `<div class="evening"><div class="evh"><b>Heute Abend für dich</b><span>ohne Überschneidungen</span></div>
+    <div class="evl">${plan.map((x,i)=>`<div class="evi" style="--sc:${sc(x.e.s)}"><span class="et">${i?"dann ":""}${x.e.t}</span>${icon(x.e.s,true)}<div class="eb"><b>${esc(pairText(x.e))}</b><span>${esc(compOf(x.e))} · ${esc(tvText(x.e))}</span></div></div>`).join("")}</div>
+    ${missed.length?`<div class="evn">Dafür nicht dabei: ${missed.map(x=>esc(pairText(x.e))+" ("+x.e.t+")").join(", ")} – überschneidet sich.</div>`:""}</div>`;
+}
+function konfHtml(o,n){
+  const op=expanded.has(o.k), games=o.rest.reduce((a,e)=>a+e.ti.split(",").length,0);
+  const tvs=[...new Set(o.rest.flatMap(e=>e.tv||[]))].join(" · ");
+  const live=state(o.rest[0],n)==="live";
+  return `<button type="button" class="row konf${op?" open":""}" data-konf="${esc(o.k)}"><div class="tcol"><div class="time">${o.time}</div></div>${icon(o.rest[0].s)}<div class="body"><div class="title">${games} weitere ${games===1?"Spiel":"Spiele"} parallel</div><div class="meta">${esc(o.c)} · <b>${esc(tvs||"Sender offen")}</b></div></div><div class="side">${live?`<span class="pill live"><span class="pulse"></span>Live</span>`:""}${CHEV}</div></button>${op?`<div class="konfl">${o.rest.map(e=>row(e,n)).join("")}</div>`:""}`;
+}
+/* ---- Hinweis-Toast ---- */
+let toastT=null;
+function toast(msg,act){
+  let t=document.getElementById("toast"); if(!t){t=document.createElement("div");t.id="toast";t.className="toast";document.body.appendChild(t);}
+  t.innerHTML=`<span>${esc(msg)}</span>${act?`<button type="button" id="toastact">${esc(act.label)}</button>`:""}`;
+  t.hidden=false; t.classList.add("show"); toastT&&clearTimeout(toastT);
+  toastT=setTimeout(()=>{t.classList.remove("show");},2600);
+  const b=document.getElementById("toastact"); if(b) b.onclick=()=>{t.classList.remove("show"); act.fn();};
+}
+function quickWatch(id){
+  if(!rdOn()) return;
+  if(!RD.state){toast("Starte zuerst eine Watch Party",{label:"Los",fn:()=>setTab("runde")}); return;}
+  const mp=myPlan(id), on=!(mp&&mp.s==="yes");
+  setPlan(id,on?"yes":null);
+  toast(on?"✓ Will ich schauen – deine Freunde sehen es":"Nicht mehr markiert");
+}
+/* ---- Wischen ---- */
+let SW=null, SWIPED=false;
+document.addEventListener("touchstart",ev=>{
+  const r=ev.target.closest(".row[data-id], #recap"); if(!r||ev.target.closest(".info")) {SW=null;return;}
+  const t=ev.touches[0]; SW={r,x:t.clientX,y:t.clientY,dx:0,lock:null};
+},{passive:true});
+document.addEventListener("touchmove",ev=>{
+  if(!SW) return; const t=ev.touches[0], dx=t.clientX-SW.x, dy=t.clientY-SW.y;
+  if(SW.lock===null&&(Math.abs(dx)>10||Math.abs(dy)>10)) SW.lock=Math.abs(dx)>Math.abs(dy)*1.3?"x":"y";
+  if(SW.lock!=="x") return;
+  ev.preventDefault(); SW.dx=dx;
+  const isRecap=SW.r.id==="recap";
+  const lim=isRecap?dx:Math.max(-140,Math.min(140,dx));
+  SW.r.style.transform=`translateX(${lim}px)`; SW.r.style.transition="none";
+  if(!isRecap){SW.r.dataset.sw=dx>0?"r":"l"; SW.r.classList.toggle("swok",Math.abs(dx)>80);}
+  else SW.r.style.opacity=String(Math.max(.2,1-Math.abs(dx)/300));
+},{passive:false});
+document.addEventListener("touchend",()=>{
+  if(!SW) return; const {r,dx,lock}=SW; SW=null;
+  r.style.transition=""; r.style.transform=""; r.style.opacity=""; r.classList.remove("swok"); delete r.dataset.sw;
+  if(lock!=="x"||Math.abs(dx)<80) return;
+  SWIPED=true; setTimeout(()=>SWIPED=false,450);
+  if(r.id==="recap"){const b=document.getElementById("recaphide"); try{localStorage.setItem("md-recap",b?b.dataset.k:"x");}catch(x){} render(); return;}
+  const id=r.dataset.id, e=ROWS[id]; if(!e) return;
+  if(dx>0) quickWatch(id); else shareOrCopy(inviteText(e),null,"");
+});
+/* ---- Erinnerungen (Web-Push) ---- */
+const VAPID_PUB="BDj4URodTLFl7GmUys4T3jgeNlPPCbf_rGqEBvV4LYrxPjVxYe9EYQCS00HpR04voPOUh4ZAKaxokYdvPnzkdpI";
+const isIOS=()=>/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+const pushSupported=()=>("serviceWorker" in navigator)&&("PushManager" in window)&&("Notification" in window);
+function u8(b64){const p="=".repeat((4-b64.length%4)%4), s=atob((b64+p).replace(/-/g,"+").replace(/_/g,"/")); return Uint8Array.from([...s].map(c=>c.charCodeAt(0)));}
+function pushHtml(){
+  if(!rdOn()) return "";
+  if(!RD.state) return `<p class="hint">Tritt einer Watch Party bei, dann erinnert dich Matchday 15 Minuten vor Anpfiff an Spiele, die du schauen willst.</p>`;
+  if(!pushSupported()) return `<p class="hint">${isIOS()&&!isStandalone()?"Auf dem iPhone geht das nur, wenn du Matchday über das Home-Bildschirm-Icon öffnest (ab iOS 16.4).":"Dieser Browser unterstützt keine Erinnerungen."}</p>`;
+  if(Notification.permission==="denied") return `<p class="hint">Mitteilungen sind für Matchday blockiert. Erlaube sie in den iPhone-Einstellungen unter Mitteilungen → Matchday.</p>`;
+  return `<label class="switch"><span>Erinnerung 15 Min. vor Anpfiff<small>für Spiele, bei denen du „Will ich schauen“ oder „Vielleicht“ markiert hast</small></span><input type="checkbox" id="pushsw" ${RD.state.push?"checked":""}></label>`;
+}
+async function enablePush(){
+  const perm=await Notification.requestPermission();
+  if(perm!=="granted") throw new Error("perm");
+  const reg=await navigator.serviceWorker.ready;
+  let sub=await reg.pushManager.getSubscription();
+  if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VAPID_PUB)});
+  await rpc("md_push_save",{p_sub:sub.toJSON()});
+  RD.state.push=true;
+}
+async function disablePush(){
+  try{const reg=await navigator.serviceWorker.ready; const sub=await reg.pushManager.getSubscription(); if(sub) await sub.unsubscribe();}catch(e){}
+  await rpc("md_push_delete",{}); RD.state.push=false;
 }
 
 let sel=null;
@@ -919,12 +1145,9 @@ function render(){
   document.getElementById("rdot").hidden=!(pendingCode&&!RD.state&&rdOn());
   document.getElementById("foot").hidden=TAB==="runde";
 
-  // Live
-  const live=ev.filter(e=>state(e,n)==="live").sort(byTime);
-  const ls=document.getElementById("live-sec"); ls.hidden=!live.length;
-  document.getElementById("live").innerHTML=live.map(e=>`<div class="live-card" style="--sc:${sc(e.s)}">
-     <span class="live-badge"><span class="pulse"></span>Läuft seit ${e.t} Uhr</span>
-     <div class="live-row">${icon(e.s)}<div class="body">${titleHtml(e)}<div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b></div></div><div class="side">${isFree(e)?FTV:""}</div></div>${progHtml(e,n)}</div>`).join("");
+  // Jetzt-Karte + Abendplan
+  document.getElementById("hero").innerHTML=heroHtml(ev,n);
+  document.getElementById("evening").innerHTML=eveningHtml(ev,n);
 
   // Heute
   const today=ev.filter(e=>e.d===n.d);
@@ -964,7 +1187,7 @@ function render(){
     const x=P(d), sports=[...new Set(ev.filter(e=>e.d===d).map(e=>e.s))], it=score(d)/mx;
     return `<button class="day${[0,6].includes(x.getUTCDay())?" we":""}" style="--ip:${(it*11).toFixed(1)}%;--wp:${(9+it*14).toFixed(1)}%" aria-pressed="${d===sel}" data-d="${d}"><span class="wd">${d===n.d?"Heute":d===yday?"Gestern":WD[x.getUTCDay()]}</span><span class="dn">${x.getUTCDate()}</span><span class="dots">${sports.map(s=>`<i style="--sc:${sc(s)}"></i>`).join("")}</span></button>`;}).join("");
   const sx=P(sel);
-  document.getElementById("dayhead").innerHTML=`${WDL[sx.getUTCDay()]}, ${sx.getUTCDate()}. ${MON[sx.getUTCMonth()]} <span class="swipehint">· wischen für nächsten Tag</span>`;
+  document.getElementById("dayhead").innerHTML=`${WDL[sx.getUTCDay()]}, ${sx.getUTCDate()}. ${MON[sx.getUTCMonth()]} `;
   document.getElementById("daylist").innerHTML=sel===yday?yHtml(yday):listHtml(ev.filter(e=>e.d===sel),"d-"+sel,n);
 
   document.getElementById("outlook").innerHTML=(DATA.ausblick||[]).map(a=>{const i=a.indexOf(":");return i>0?`<div><b>${esc(a.slice(0,i))}</b>${esc(a.slice(i))}</div>`:`<div>${esc(a)}</div>`;}).join("");
@@ -983,39 +1206,52 @@ function drawSettings(q){
   q=q||"";
   const kt=knownTeams().filter(t=>!draft.teams.includes(t)&&q.length>=2&&t.toLowerCase().includes(q.toLowerCase())).slice(0,8);
   const chip=(on,attr,label)=>`<button type="button" class="chip" aria-pressed="${on}" ${attr}>${label}</button>`;
+  const first=draft._first;
   document.getElementById("panel").innerHTML=`
-   <h2 id="st-title">${draft._first?"Willkommen bei Matchday":"Einstellungen"}</h2>
-   ${draft._first?'<p class="hint" style="margin-top:-12px">Wähle kurz aus, was dich interessiert. Das gilt nur auf diesem Gerät und lässt sich unten über „Einstellungen“ jederzeit ändern.</p>':""}
-   <div><h3>Darstellung</h3><div class="chips">${[["dark","Dunkel"],["light","Hell"],["auto","Wie iPhone"]].map(([k,l])=>chip((draft.theme||"dark")===k,`data-theme-opt="${k}"`,l)).join("")}</div></div>
+   <div class="ph"><h2 id="st-title">${first?"Willkommen bei Matchday":"Einstellungen"}</h2>${first?"":`<button type="button" class="xbtn" id="closeset" aria-label="Schließen">×</button>`}</div>
+   ${first?'<p class="hint" style="margin-top:-12px">Wähle kurz aus, was dich interessiert. Das lässt sich unten über „Einstellungen“ jederzeit ändern.</p>':""}
+   <section class="sg"><div class="sgh">Mein Sport</div>
    <div><h3>Sportarten</h3><div class="chips">${sportsInData().map(sp=>chip(draft.sports.includes(sp),`data-sport="${esc(sp)}"`,`${icon(sp,true)}${esc(sp)}`)).join("")}</div>
      ${Object.keys(SUBS).filter(k=>draft.sports.includes(k)&&SUBS[k].length>1).map(k=>`<div style="margin-top:14px"><p class="hint" style="margin:0 0 8px">${esc(k)}: Disziplinen</p><div class="chips">${SUBS[k].map(u=>chip(draft.disc.includes(u),`data-disc="${esc(u)}"`,esc(u))).join("")}</div></div>`).join("")}</div>
-   <div><h3>Meine Teams & Spieler</h3><p class="hint">Diese Spiele stehen oben unter „Meine Teams“ und werden nie eingeklappt.</p>
+   <div><h3>Meine Teams & Spieler</h3><p class="hint">Diese Spiele stehen ganz oben und bekommen einen ★.</p>
      <div class="chips" style="margin-bottom:10px">${draft.teams.map(t=>`<button type="button" class="chip" aria-pressed="true" data-rmteam="${esc(t)}">${badge(t)}${esc(t)}<span class="x" aria-hidden="true">×</span></button>`).join("")||'<span class="hint" style="margin:0">Noch keine ausgewählt.</span>'}</div>
      <input class="tsearch" id="tsearch" type="search" placeholder="Team oder Spieler suchen, z. B. Dortmund" value="${esc(q)}" autocomplete="off">
      <div class="sugg">${kt.map(t=>`<button type="button" data-addteam="${esc(t)}">+ ${esc(t)}</button>`).join("")}${q.length>=2&&!kt.length?`<button type="button" data-addteam="${esc(q)}">+ „${esc(q)}“ übernehmen</button>`:""}</div></div>
-   <div><h3>Ergebnisse</h3><label class="switch"><span>Spoiler-frei: Ergebnisse erst nach Antippen zeigen</span><input type="checkbox" id="spoiler" ${draft.spoiler?"checked":""}></label></div>
-   <div><h3>Kalender-Abo</h3><p class="hint">Die Spiele landen automatisch in deinem iPhone-Kalender und bleiben aktuell. Antippen und „Abonnieren“ wählen.</p>
-     <div class="calrow">${draft.teams.map(t=>`<a class="chip" href="${CAL_BASE}${slug(calName(t))}.ics">${badge(calName(t))}${esc(t)}</a>`).join("")}<a class="chip" href="${CAL_BASE}highlights.ics">★ Alle Highlights</a></div></div>
    <div><h3>Meine Dienste</h3><p class="hint">Was du schauen kannst. Spiele auf anderen Diensten werden markiert.</p>
      <div class="chips">${SERVICES.map(sv=>chip(draft.services.includes(sv.k),`data-svc="${sv.k}"`,esc(sv.l))).join("")}</div>
      <label class="switch" style="margin-top:12px"><span>Spiele auf anderen Diensten ganz ausblenden</span><input type="checkbox" id="hideother" ${draft.hideOther?"checked":""}></label></div>
-   ${PREFS&&!draft._first?`<div><h3>Mein persönlicher Link</h3><p class="hint">Dieser Link enthält deine Auswahl. Lege genau diesen Link auf den Home-Bildschirm, dann bleiben deine Einstellungen immer erhalten.</p>
-     <div class="switch" style="cursor:default;word-break:break-all;font-size:12px;color:var(--muted)">${esc(prefsLink())}</div>
-     <button type="button" class="chip" id="copylink" style="margin-top:10px">Link kopieren</button></div>`:""}
-   <div><h3>Mit Freunden teilen</h3><p class="hint">Dieser Link ist ohne deine Einstellungen. Jeder wählt beim ersten Öffnen selbst aus.</p>
-     <div class="switch" style="cursor:default;word-break:break-all;font-size:13px">${SHARE_URL}</div>
-     <div class="chips" style="margin-top:10px">${navigator.share?'<button type="button" class="chip" id="sharelink" aria-pressed="true">Link senden …</button>':""}<button type="button" class="chip" id="copyshare">Link kopieren</button></div></div>
-   ${rdOn()?`<div><h3>Admin</h3><div id="adminbox">${adminHtml()}</div></div>`:""}
+   </section>
+   ${first?"":`<section class="sg"><div class="sgh">Erinnerungen & Kalender</div>
+   <div id="pushbox">${pushHtml()}</div>
+   <div><h3>Kalender-Abo</h3><p class="hint">Die Spiele landen automatisch in deinem iPhone-Kalender und bleiben aktuell. Antippen und „Abonnieren“ wählen.</p>
+     <div class="calrow">${draft.teams.map(t=>`<a class="chip" href="${CAL_BASE}${slug(calName(t))}.ics">${badge(calName(t))}${esc(t)}</a>`).join("")}<a class="chip" href="${CAL_BASE}highlights.ics">★ Alle Highlights</a></div></div>
+   </section>`}
+   <section class="sg"><div class="sgh">Darstellung</div>
+   <div class="chips">${[["dark","Dunkel"],["light","Hell"],["auto","Wie iPhone"]].map(([k,l])=>chip((draft.theme||"dark")===k,`data-theme-opt="${k}"`,l)).join("")}</div>
+   <label class="switch"><span>Spoiler-frei<small>Ergebnisse erst nach Antippen zeigen</small></span><input type="checkbox" id="spoiler" ${draft.spoiler?"checked":""}></label>
+   </section>
+   ${first?"":`<section class="sg"><div class="sgh">Teilen & Sichern</div>
+   <div><h3>Matchday weiterempfehlen</h3><p class="hint">Freunde bekommen die App ohne deine Einstellungen und wählen selbst aus.</p>
+     <div class="chips">${navigator.share?'<button type="button" class="chip" id="sharelink" aria-pressed="true">Link senden …</button>':""}<button type="button" class="chip" id="copyshare">Link kopieren</button></div></div>
+   <div><h3>Sicherungslink</h3><p class="hint">Falls deine Auswahl mal weg ist: Mit diesem Link stellst du alles wieder her. Am besten in deinen Notizen speichern.</p>
+     <div class="chips"><button type="button" class="chip" id="copylink">Sicherungslink kopieren</button></div></div>
+   </section>`}
+   ${rdOn()&&!first?`<details class="sg adm"${RD.admin?" open":""}><summary class="sgh">Admin</summary><div id="adminbox">${adminHtml()}</div></details>`:""}
    <button type="button" class="save" id="savesettings">Speichern</button>`;
   const inp=document.getElementById("tsearch");
   inp.addEventListener("input",()=>{const v=inp.value; drawSettings(v); const i2=document.getElementById("tsearch"); i2.focus(); i2.setSelectionRange(v.length,v.length);});
   document.getElementById("hideother").addEventListener("change",e=>{draft.hideOther=e.target.checked;});
   document.getElementById("spoiler").addEventListener("change",e=>{draft.spoiler=e.target.checked;});
-
+  const psw=document.getElementById("pushsw");
+  if(psw) psw.addEventListener("change",async e=>{const on=e.target.checked; e.target.disabled=true;
+    try{ if(on) await enablePush(); else await disablePush(); toast(on?"Erinnerungen sind an":"Erinnerungen sind aus"); }
+    catch(x){ e.target.checked=!on; toast(x&&x.message==="perm"?"Mitteilungen wurden nicht erlaubt":"Hat nicht geklappt – bitte nochmal versuchen"); }
+    e.target.disabled=false; const pb=document.getElementById("pushbox"); if(pb) pb.innerHTML=pushHtml(); drawSettings((document.getElementById("tsearch")||{}).value||"");});
 }
 document.getElementById("sheet").addEventListener("click",ev=>{
   if(ev.target.id==="sheet"&&!draft){document.getElementById("sheet").hidden=true;return;}
   const t=ev.target.closest("button"); if(t&&t.id==="closenow"){document.getElementById("sheet").hidden=true;return;}
+  if(t&&t.id==="closeset"){document.getElementById("sheet").hidden=true; draft=null; applyTheme(); return;}
   if(!t||!draft) return;
   const tog=(arr,v)=>{const i=arr.indexOf(v); i>=0?arr.splice(i,1):arr.push(v);};
   const q=(document.getElementById("tsearch")||{}).value||"";
@@ -1040,7 +1276,7 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   else if(t.dataset.adrm){if(!confirm(t.dataset.adrm+" aus der Watch Party entfernen?")) return; rpc("md_admin_remove",{p_pin:ADPIN,p_name:t.dataset.adrm,p_code:t.dataset.adcode}).then(j=>{if(j&&!j.error){RD.admin=j;} document.getElementById("adminbox").innerHTML=adminHtml(); rdLoad();});}
   else if(t.id==="sharelink"){navigator.share({title:"Matchday",text:SHARE_TEXT,url:SHARE_URL}).catch(()=>{});}
   else if(t.id==="copyshare"){navigator.clipboard.writeText(SHARE_TEXT+" "+SHARE_URL).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren";});}
-  else if(t.id==="copylink"){navigator.clipboard.writeText(prefsLink()).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren und kopieren";});}
+  else if(t.id==="copylink"){navigator.clipboard.writeText(prefsLink()).then(()=>{t.textContent="Kopiert ✓";},()=>{shareOrCopy(prefsLink(),t,"Sicherungslink kopieren");});}
   else if(t.id==="savesettings"){
     if(!draft.sports.length){alertBox("Bitte mindestens eine Sportart wählen."); return;}
     delete draft._first; PREFS=draft; draft=null; savePrefs(); applyTheme();
@@ -1049,12 +1285,17 @@ document.getElementById("sheet").addEventListener("click",ev=>{
 });
 function isStandalone(){try{return window.navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;}catch(e){return false;}}
 function homeDone(){try{return localStorage.getItem("md-homedone")==="1";}catch(e){return false;}}
-function updateHomeHint(){document.getElementById("homehint").hidden=!PREFS||isStandalone()||homeDone();}
+function updateHomeHint(){document.getElementById("homehint").hidden=!PREFS||isStandalone()||homeDone()||!isIOS();}
 function showLinkHint(){updateHomeHint(); window.scrollTo({top:0,behavior:"smooth"});}
 document.getElementById("homedone").addEventListener("change",e=>{if(e.target.checked){try{localStorage.setItem("md-homedone","1");}catch(x){} setTimeout(()=>{document.getElementById("homehint").hidden=true;},400);}});
 function alertBox(msg){const b=document.getElementById("savesettings"); b.textContent=msg; setTimeout(()=>{if(b.isConnected) b.textContent="Speichern";},2200);}
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&PREFS&&!document.getElementById("sheet").hidden){document.getElementById("sheet").hidden=true; draft=null; applyTheme();}});
 document.addEventListener("click",ev=>{
+  if(SWIPED){ev.preventDefault(); ev.stopPropagation(); return;}
+  if(ev.target.closest("#heromore")){openNow();return;}
+  const kf=ev.target.closest("[data-konf]"); if(kf){const k=kf.dataset.konf; expanded.has(k)?expanded.delete(k):expanded.add(k); render(); return;}
+  const ps=ev.target.closest("[data-ps]"); if(ps){const v=ps.dataset.ps, i=v.lastIndexOf("|"), id=v.slice(0,i), st=v.slice(i+1), mp=myPlan(id); setPlan(id,mp&&mp.s===st?null:st); return;}
+  const pp=ev.target.closest("[data-pp]"); if(pp){const v=pp.dataset.pp, i=v.lastIndexOf("|"); setPlace(v.slice(0,i),v.slice(i+1)); return;}
   
   if(ev.target.closest("#sync")){location.reload();return;}
   if(ev.target.closest("#nowbtn")){openNow();return;}
@@ -1085,19 +1326,6 @@ document.addEventListener("click",ev=>{
   const hl=ev.target.closest(".hl");
   if(hl){const n=nowB(); if(hl.dataset.d===n.d){TAB="heute"; try{localStorage.setItem("md-tab",TAB);}catch(x){} render(); document.getElementById("today").scrollIntoView({behavior:"smooth",block:"start"});} else {sel=hl.dataset.d; render(); document.getElementById("week-sec").scrollIntoView({behavior:"smooth",block:"start"});}}
 });
-(function(){
-  let x0=null,y0=null;
-  const el=document.getElementById("daylist");
-  el.addEventListener("touchstart",ev=>{const t=ev.touches[0];x0=t.clientX;y0=t.clientY;},{passive:true});
-  el.addEventListener("touchend",ev=>{
-    if(x0===null) return; const t=ev.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null;
-    if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5) return;
-    const btns=[...document.querySelectorAll("#days .day")].map(b=>b.dataset.d), i=btns.indexOf(sel);
-    const j=dx<0?i+1:i-1; if(j<0||j>=btns.length) return;
-    sel=btns[j]; render();
-    const b=document.querySelector(`#days .day[data-d="${sel}"]`); if(b) b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
-  },{passive:true});
-})();
 document.addEventListener("keydown",ev=>{const r=ev.target.closest&&ev.target.closest(".row.tap"); if(r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault(); r.click();}});
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}
 window.addEventListener("online",()=>render()); window.addEventListener("offline",()=>render());
