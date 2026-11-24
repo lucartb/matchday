@@ -219,6 +219,74 @@ header{display:flex;flex-direction:column;gap:4px}
 .outlook div{font-size:14px;color:var(--muted);padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
 .outlook div b{color:var(--ink);font-weight:700}
 footer{font-size:12px;color:var(--faint);line-height:1.5}
+
+/* Was läuft jetzt */
+.nowbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;font:800 15px var(--font);padding:13px;border-radius:14px;border:1px solid color-mix(in srgb,var(--live) 30%,var(--line));background:color-mix(in srgb,var(--live) 9%,var(--surface));color:var(--ink);cursor:pointer}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.xbtn{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
+/* Umschalter Liste/Zeitstrahl */
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px}
+.seg button{border:0;background:transparent;font:700 12px var(--font);color:var(--muted);padding:4px 10px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.sec-h .seg{margin-left:auto}
+/* Zeitstrahl */
+.tl{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tl .hr{position:absolute;left:0;right:0;border-top:1px dashed var(--line)}
+.tl .hr span{position:absolute;left:10px;top:-8px;font-size:10.5px;font-weight:700;color:var(--faint);background:var(--surface);padding-right:4px;font-variant-numeric:tabular-nums}
+.tl .blk{position:absolute;border-radius:10px;padding:5px 7px;background:color-mix(in srgb,var(--sc) 15%,var(--surface));border:0;border-left:3px solid var(--sc);overflow:hidden;font-size:11.5px;line-height:1.25;display:flex;flex-direction:column;gap:1px;cursor:pointer;text-align:left;color:var(--ink)}
+.tl .blk .bt{font-weight:800;color:var(--sc);font-variant-numeric:tabular-nums}
+.tl .blk b{font-weight:800;font-size:12.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tl .blk .bv{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl .blk.past{opacity:.4}
+.tl .blk.hlb{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 55%,transparent)}
+.tl .blk.favb{box-shadow:inset 0 0 0 1.5px var(--gold)}
+.tl .blk{z-index:1}
+.tl .nowl{position:absolute;left:44px;right:0;border-top:2px solid var(--live);z-index:0;pointer-events:none}
+.tl .nowl::before{content:"";position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:var(--live)}
+.tl-open{font-size:12.5px;color:var(--muted);padding:10px 2px 0}
+/* Live-Fortschritt */
+.live-foot{display:flex;align-items:center;gap:10px}
+.prog{flex:1;height:4px;border-radius:4px;background:color-mix(in srgb,var(--live) 14%,var(--surface-2));overflow:hidden}
+.prog i{display:block;height:100%;background:var(--live);border-radius:4px}
+.progl{font-size:11.5px;color:var(--muted);font-weight:700;white-space:nowrap}
+/* Intensität Tagesleiste */
+.day{background:color-mix(in srgb,var(--ink) var(--ip,0%),var(--surface))}
+.day.we{background:color-mix(in srgb,var(--gold) var(--wp,12%),var(--surface))}
+.day[aria-pressed="true"]{background:var(--ink)}
+/* Überschneidungen */
+.cfl{display:flex;flex-direction:column;gap:10px}
+.cf{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:7px}
+.cfh{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--soon-ink)}
+.cfr{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700}
+.cfr span.tv{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600;text-align:right}
+.cfn{font-size:12.5px;color:var(--muted)}
+/* Aktionen in aufgeklappter Zeile */
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.act{font:700 12.5px var(--font);padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.info .it{margin-bottom:2px}
+.grp{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--info-ink);background:var(--surface-2);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.grp svg,.chip svg.pp{width:12px;height:12px}
+/* Spoiler */
+.reveal{font:700 12px var(--font);padding:5px 10px;border-radius:999px;border:1px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap}
+/* Wochenkarte */
+.recap{background:radial-gradient(120% 100% at 100% 0%,color-mix(in srgb,var(--c-handball) 16%,transparent),transparent 60%),var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.recap .rh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.recap .rh b{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.recap .rh span{font-size:12px;color:var(--faint)}
+.recap .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.recap .stats div{background:var(--surface-2);border-radius:12px;padding:10px 6px;text-align:center}
+.recap .stats strong{display:block;font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.recap .stats small{font-size:11px;color:var(--muted);font-weight:600}
+.recap .ln{font-size:13.5px;color:var(--muted)}
+.recap .ln b{color:var(--ink)}
+.recap .rres{display:flex;flex-direction:column;gap:6px}
+.recap .rres div{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px;font-weight:700}
+.recap .rres div span{color:var(--muted);font-weight:600}
+/* Freund-Hinweis */
+.friendbar{background:var(--surface);border:1px solid color-mix(in srgb,var(--c-handball) 45%,var(--line));border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.friendbar[hidden],.recap[hidden]{display:none}
+.calrow{display:flex;flex-wrap:wrap;gap:8px}
+a.chip{text-decoration:none}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -241,9 +309,18 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
     <label><input type="checkbox" id="homedone"> Erledigt – hab ich gemacht</label>
   </div>
 
+  <div class="friendbar" id="friendbar" hidden></div>
+  <div class="recap" id="recap" hidden></div>
+  <button type="button" class="nowbtn" id="nowbtn"><span class="pulse"></span>Was läuft jetzt?</button>
+
   <section class="sec" id="fav-sec" hidden>
     <div class="sec-h"><h2>Meine Teams</h2><span id="fav-count"></span></div>
     <div id="fav"></div>
+  </section>
+
+  <section class="sec" id="grp-sec" hidden>
+    <div class="sec-h"><h2>Eure Runde</h2><span id="grp-count"></span></div>
+    <div id="grp"></div>
   </section>
 
   <section class="sec" id="live-sec" hidden>
@@ -252,10 +329,15 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
   </section>
 
   <section class="sec">
-    <div class="sec-h"><h2>Heute</h2><span id="today-count"></span></div>
+    <div class="sec-h"><h2>Heute</h2><span id="today-count"></span><div class="seg" role="group" aria-label="Ansicht"><button type="button" data-view="list">Liste</button><button type="button" data-view="tl">Zeitstrahl</button></div></div>
     <div id="today"></div>
   </section>
 
+
+  <section class="sec" id="cf-sec" hidden>
+    <div class="sec-h"><h2>Überschneidungen</h2><span>deine Teams & Highlights</span></div>
+    <div class="cfl" id="cf"></div>
+  </section>
 
   <section class="sec">
     <div class="sec-h"><h2>Highlights der Woche</h2><span id="hl-count"></span></div>
@@ -360,10 +442,17 @@ const SERVICES=[
  {k:"euro",l:"Eurosport / HBO Max",m:x=>/eurosport|hbo/i.test(x)&&!FREE.includes(x.toLowerCase())}
 ];
 let PREFS=null;
-function encPrefs(p){const o={s:p.sports,d:p.disc,t:p.teams,v:p.services,h:p.hideOther?1:0,m:p.theme||"dark"};return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
-function decPrefs(str){try{const o=JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));return {sports:o.s||[],disc:o.d||null,teams:o.t||[],services:o.v||[],hideOther:!!o.h,theme:o.m||"dark",v:2};}catch(e){return null;}}
+function encPrefs(p){const o={s:p.sports,d:p.disc,t:p.teams,v:p.services,h:p.hideOther?1:0,m:p.theme||"dark"};if(p.name)o.n=p.name;if(p.group&&p.group.length)o.g=p.group.map(f=>[f.n,f.t]);if(p.spoiler)o.x=1;return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+function decPrefs(str){try{const o=JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));return {sports:o.s||[],disc:o.d||null,teams:o.t||[],services:o.v||[],hideOther:!!o.h,theme:o.m||"dark",name:o.n||"",group:(o.g||[]).map(x=>({n:x[0],t:x[1]||[]})),spoiler:!!o.x,v:2};}catch(e){return null;}}
 const SHARE_URL="https://lucartb.github.io/matchday";
 const SHARE_TEXT="Schau mal: Matchday zeigt, welcher Sport heute und diese Woche im TV läuft. Link in Safari öffnen, Sportarten auswählen, speichern und dann über Teilen → „Zum Home-Bildschirm“ hinzufügen.";
+const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const b64d=str=>{try{return JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));}catch(e){return null;}};
+function friendLink(name,teams){return SHARE_URL+"#f="+b64e({n:name,t:teams});}
+function parseFriend(txt){const m=String(txt||"").match(/#f=([A-Za-z0-9_\-]+)/)||String(txt||"").trim().match(/^([A-Za-z0-9_\-]{8,})$/);if(!m)return null;const o=b64d(m[1]);return o&&o.n&&Array.isArray(o.t)?{n:String(o.n).slice(0,30),t:o.t.map(String).slice(0,30)}:null;}
+let pendingFriend=null;
+if(location.hash.startsWith("#f=")){pendingFriend=parseFriend(location.hash);try{if(pendingFriend)sessionStorage.setItem("md-pf",JSON.stringify(pendingFriend));}catch(e){}try{history.replaceState(null,"",location.pathname);}catch(e){}}
+if(!pendingFriend){try{pendingFriend=JSON.parse(sessionStorage.getItem("md-pf")||"null");}catch(e){}}
 function prefsLink(){return location.origin+location.pathname+"#p="+encPrefs(PREFS);}
 // 1. Einstellungen aus dem Link (robust, überlebt gelöschten Browserspeicher)
 if(location.hash.startsWith("#p=")) PREFS=decPrefs(location.hash.slice(3));
@@ -374,6 +463,7 @@ if(PREFS&&PREFS.v!==2){
   ["Wintersport","American Football","Leichtathletik","Schwimmen","Beachvolleyball"].forEach(x=>{if(!PREFS.sports.includes(x)) PREFS.sports.push(x);});
   PREFS.disc=ALL_SUBS(); PREFS.v=2; try{localStorage.setItem("md-prefs",JSON.stringify(PREFS));}catch(e){}
 }
+if(PREFS){PREFS.group=PREFS.group||[];PREFS.name=PREFS.name||"";PREFS.spoiler=!!PREFS.spoiler;}
 function applyTheme(){
   const t=(PREFS&&PREFS.theme)||"dark"; document.documentElement.setAttribute("data-theme",t);
   const light=t==="light"||(t==="auto"&&matchMedia("(prefers-color-scheme: light)").matches);
@@ -392,6 +482,11 @@ function prep(list){
     return Object.assign({},e,{_na:a===false,_fav:f},f?{x:false}:{});
   }).filter(e=>!(PREFS&&PREFS.hideOther&&e._na&&!e._fav));
 }
+function friendsOf(e){return (PREFS&&PREFS.group||[]).filter(f=>f.t.some(t=>e.ti.includes(t))).map(f=>f.n);}
+const PPL='<svg class="pp" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="5.5" r="2.5"/><path d="M1.5 14c.5-2.6 2.2-4 4.5-4s4 1.4 4.5 4"/><circle cx="11.5" cy="5" r="2"/><path d="M12 9.6c1.6.3 2.6 1.6 2.9 3.6"/></svg>';
+function slug(x){return String(x).toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");}
+function calName(t){if(TEAMS[t])return t;if(ALIAS[t])return ALIAS[t];const k=knownTeams().find(x=>x.toLowerCase().includes(t.toLowerCase()));return k||t;}
+const CAL_BASE="webcal://lucartb.github.io/matchday/cal/";
 function knownTeams(){
   const set=new Set(Object.keys(TEAMS));
   DATA.events.forEach(e=>{const p=sides(e); if(p) p.forEach(x=>set.add(x.trim()));});
@@ -445,12 +540,14 @@ const isFree=e=>(e.tv||[]).some(x=>FREE.includes(String(x).toLowerCase().trim())
 const FTV='<span class="ftv" title="Im Free-TV zu sehen"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3" width="13" height="9" rx="2"/><path d="M5.5 14.5h5"/></svg>Free-TV</span>';
 const tvText=e=>(e.tv&&e.tv.length)?e.tv.join(" · "):"Sender offen";
 
-const openRows=new Set();
+const openRows=new Set(), ROWS={}, revealed=new Set();
+function inviteText(e){const x=P(e.d), n=nowB();const when=e.d===n.d?"heute":WDL[x.getUTCDay()]+", "+x.getUTCDate()+"."; return `Schauen wir ${e.ti} zusammen? ${when}${e.t?" um "+e.t+" Uhr":""}${e.tv&&e.tv.length?" auf "+e.tv.join(" / "):""}. (via Matchday ${SHARE_URL})`;}
+function shareOrCopy(text,btn,label){if(navigator.share){navigator.share({text}).catch(()=>{});}else if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent="Kopiert ✓";setTimeout(()=>{if(btn.isConnected)btn.textContent=label;},1800);}});}}
 const rid=e=>e.d+"|"+e.t+"|"+e.ti;
 const CHEV='<svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
 function row(e,n){
   const st=state(e,n), dl=delta(e,n);
-  const id=rid(e), open=openRows.has(id), tap=!!e.i;
+  const id=rid(e), open=openRows.has(id), tap=!e._notap; ROWS[id]=e; const fr=friendsOf(e);
   let pill="";
   if(st==="live") pill=`<span class="pill live"><span class="pulse"></span>Live</span>`;
   else if(st==="future" && e.d===n.d) pill=`<span class="pill${dl<=120?" soon":""}">${countdown(dl)}</span>`;
@@ -459,9 +556,9 @@ function row(e,n){
     <div class="tcol">${e._showDate?`<span class="dd">${e.d===n.d?"Heute":WD[x0.getUTCDay()]+" "+x0.getUTCDate()+"."}</span>`:""}<div class="time${e.t?"":" open"}">${e.t||"offen"}</div>${e._par>1?`<span class="par" title="${e._par} Übertragungen gleichzeitig">${e._par} parallel</span>`:""}</div>
     ${icon(e.s)}
     <div class="body">${titleHtml(e)}
-      <div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b>${e._na?'<span class="na-tag">nicht in deinen Diensten</span>':""}${e.n?`<br>${esc(e.n)}`:""}</div></div>
+      <div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b>${e._na?'<span class="na-tag">nicht in deinen Diensten</span>':""}${fr.length?`<span class="grp" title="Interessiert auch">${PPL}${esc(fr.join(", "))}</span>`:""}${e.n?`<br>${esc(e.n)}`:""}</div></div>
     <div class="side">${pill}${isFree(e)?FTV:""}${tap?CHEV:""}</div>
-    ${tap&&open?`<div class="info">${esc(e.i)}</div>`:""}
+    ${tap&&open?`<div class="info">${e.i?`<div class="it">${esc(e.i)}</div>`:""}<div class="acts"><button type="button" class="act" data-inv="${esc(id)}">Zum Schauen einladen</button></div></div>`:""}
   </div>`;
 }
 const byTime=(a,b)=>(a.t||"99:99").localeCompare(b.t||"99:99")||((b.hl?1:0)-(a.hl?1:0));
@@ -481,6 +578,10 @@ function listHtml(evs,key,n){
 }
 
 function resRow(e){
+  const rk="r|"+e.ti;
+  if(PREFS&&PREFS.spoiler&&e._real&&!revealed.has(rk)){
+    return `<div class="row"><div>${icon(e.s)}</div><div class="body">${titleHtml(Object.assign({},e,{hl:false}))}<div class="meta">${esc(e.c)}</div></div><div class="side"><button type="button" class="reveal" data-rv="${esc(rk)}">Ergebnis zeigen</button></div></div>`;
+  }
   const p=sides(e); let sc=String(e.r||"").split(/[:\-–]/).map(x=>x.trim());
   const isScore=p&&sc.length===2&&sc.every(x=>/^\d+$/.test(x));
   let mid, right;
@@ -497,8 +598,8 @@ function resRow(e){
 }
 function yHtml(yday){
   const ev=prep(DATA.events), res=DATA.gestern||[];
-  const yev=ev.filter(e=>e.d===yday).map(e=>{const r=res.find(x=>x.ti===e.ti); return Object.assign({},e,r?{r:r.r}:{});});
-  res.forEach(r=>{if(!yev.some(e=>e.ti===r.ti)) yev.push(r);});
+  const yev=ev.filter(e=>e.d===yday).map(e=>{const r=res.find(x=>x.ti===e.ti); return Object.assign({},e,r?{r:r.r,_real:true}:{});});
+  res.forEach(r=>{if(!yev.some(e=>e.ti===r.ti)) yev.push(Object.assign({},r,{_real:true}));});
   yev.sort(byTime);
   if(!yev.length) return `<div class="list"><div class="empty">Gestern lief nichts Größeres.</div></div>`;
   const gk="gestern", open=expanded.has(gk), top=yev.filter(e=>!e.x), rest=yev.filter(e=>e.x);
@@ -506,6 +607,125 @@ function yHtml(yday){
   const more=(top.length&&rest.length)?`<button class="more" data-k="${gk}">${open?"Weniger anzeigen":`${rest.length} weitere anzeigen`}</button>`:"";
   return `<div class="list res">${shown.map(e=>resRow(e.r?e:Object.assign({},e,{r:(e.t?e.t+" Uhr":"")}))).join("")}${more}</div>`;
 }
+function progHtml(e,n){
+  const el=-delta(e,n), D=DUR[e.s]||120, pct=Math.max(3,Math.min(100,el/D*100));
+  let lab;
+  if(e.s==="Fußball") lab=el<=47?`ca. ${Math.max(1,el)}. Minute`:el<=62?"Halbzeitpause":`ca. ${Math.min(90,el-15)}. Minute`;
+  else if(e.s==="Handball") lab=el<=32?`ca. ${Math.max(1,el)}. Minute`:el<=47?"Halbzeitpause":`ca. ${Math.min(60,el-15)}. Minute`;
+  else lab=`noch ca. ${Math.max(5,Math.round((D-el)/5)*5)} Min.`;
+  return `<div class="live-foot"><div class="prog"><i style="width:${pct.toFixed(0)}%"></i></div><span class="progl">${lab} · geschätzt</span></div>`;
+}
+const hm=m=>{m=((m%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");};
+function shortTi(e){const p=sides(e); if(!p) return e.ti; return p.map(x=>{const k=TEAMS[x]||TEAMS[ALIAS[x]]; return k&&k.k?k.k:(k&&k.f?k.f+" "+x.split(" ").pop():x.split(" ").pop());}).join(" – ");}
+let VIEW=(()=>{try{return localStorage.getItem("md-view")||"list";}catch(e){return "list";}})();
+function timelineHtml(evs,n){
+  let tim=evs.filter(e=>e.t).sort(byTime); const un=evs.filter(e=>!e.t);
+  const main=tim.filter(e=>!e.x||e._fav||e.hl); if(main.length) tim=main;
+  if(!tim.length) return listHtml(evs,"today",n);
+  const PX=1.05, st=e=>mins(e.t), en=e=>mins(e.t)+(DUR[e.s]||120);
+  const t0=Math.floor(Math.min(...tim.map(st))/60)*60, t1=Math.ceil(Math.max(...tim.map(en))/60)*60;
+  const top=14, H=(t1-t0)*PX+top+10;
+  const placed=[]; let cl=[], clEnd=-1;
+  const flush=()=>{const L=Math.max(...cl.map(c=>c.lane))+1; cl.forEach(c=>{c.L=L;placed.push(c);}); cl=[];};
+  tim.forEach(e=>{const s0=st(e); if(cl.length&&s0>=clEnd){flush();clEnd=-1;}
+    const used=cl.filter(c=>en(c.e)>s0).map(c=>c.lane); let lane=0; while(used.includes(lane)) lane++;
+    cl.push({e,lane}); clEnd=Math.max(clEnd,en(e));});
+  if(cl.length) flush();
+  let h="";
+  for(let m=t0;m<=t1;m+=60) h+=`<div class="hr" style="top:${(m-t0)*PX+top}px"><span>${hm(m)}</span></div>`;
+  placed.forEach(({e,lane,L})=>{
+    const s0=st(e), y=(s0-t0)*PX+top, hgt=Math.max(34,(en(e)-s0)*PX-4), stt=state(e,n);
+    const label=L>=3?shortTi(e):e.ti;
+    h+=`<button type="button" class="blk${stt==="past"?" past":""}${e.hl?" hlb":""}${e._fav?" favb":""}" data-tl="${esc(rid(e))}" style="--sc:${sc(e.s)};top:${y}px;height:${hgt}px;left:calc(48px + (100% - 56px) * ${lane} / ${L});width:calc((100% - 56px) / ${L} - 4px)" title="${esc(e.ti)} · ${esc(tvText(e))}"><span class="bt">${e.t}${stt==="live"?" · Live":""}</span><b>${esc(label)}</b>${hgt>70?`<span class="bv">${esc(tvText(e))}</span>`:""}</button>`;
+  });
+  if(n.m>=t0&&n.m<=t1&&evs.some(e=>e.d===n.d)) h+=`<div class="nowl" style="top:${(n.m-t0)*PX+top}px"></div>`;
+  return `<div class="tl" style="height:${H}px">${h}</div>${un.length?`<div class="tl-open">Ohne feste Zeit: ${un.map(e=>esc(e.ti)).join(" · ")}</div>`:""}`;
+}
+function conflicts(ev,n){
+  const end=new Date(P(n.d).getTime()+7*864e5).toISOString().slice(0,10);
+  const rel=ev.filter(e=>(e._fav||e.hl)&&e.t&&e.d>=n.d&&e.d<end&&state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b));
+  const out=[];
+  for(let i=0;i<rel.length;i++)for(let j=i+1;j<rel.length;j++){
+    const a=rel[i], b=rel[j]; if(a.d!==b.d||a.c===b.c) continue;
+    if(mins(b.t)>=mins(a.t)+(DUR[a.s]||120)) continue;
+    out.push([a,b]);
+  }
+  const fv=p=>(p[0]._fav||p[1]._fav)?1:0;
+  return out.sort((x,y)=>fv(y)-fv(x)||x[0].d.localeCompare(y[0].d)).slice(0,4).sort((x,y)=>x[0].d.localeCompare(y[0].d)||byTime(x[0],y[0]));
+}
+function cfHtml(pairs,n){
+  return pairs.map(([a,b])=>{
+    const x=P(a.d), day=a.d===n.d?"Heute":WD[x.getUTCDay()]+" "+x.getUTCDate()+".";
+    const ea=mins(a.t)+(DUR[a.s]||120), eb=mins(b.t)+(DUR[b.s]||120);
+    const nm=e=>sides(e)?shortTi(e):e.ti.split(":")[0];
+    let note=a.t===b.t?`Beide starten um ${a.t}. ${nm(a)} läuft bis ca. ${hm(ea)}, ${nm(b)} bis ca. ${hm(eb)}.`
+      :`${nm(b)} beginnt um ${b.t}, ${nm(a)} läuft da noch bis ca. ${hm(ea)}.`;
+    const fa=isFree(a), fb=isFree(b);
+    if(fa!==fb) note+=` ${fa?nm(a):nm(b)} läuft im Free-TV.`;
+    const r=e=>`<div class="cfr">${icon(e.s,true)}<span>${esc(e.ti)}${e._fav?'<span class="favstar">★</span>':""}</span><span class="tv">${e.t} · ${esc(tvText(e))}</span></div>`;
+    return `<div class="cf"><div class="cfh">${day} · ${a.t}–${hm(Math.max(ea,eb))}</div>${r(a)}${r(b)}<div class="cfn">${note}</div></div>`;
+  }).join("");
+}
+const addD=(d,k)=>new Date(P(d).getTime()+k*864e5).toISOString().slice(0,10);
+function recapInfo(n){
+  const wd=P(n.d).getUTCDay();
+  const show=wd===1||wd===2||(wd===0&&n.m>=18*60);
+  const from=wd===0?addD(n.d,1):addD(n.d,-((wd+6)%7));
+  return {show,key:from,from:wd===0?addD(n.d,1):n.d,to:addD(from,7)};
+}
+function recapHtml(ev,n){
+  const ri=recapInfo(n); let dis=null; try{dis=localStorage.getItem("md-recap");}catch(e){}
+  if(!ri.show||dis===ri.key||!PREFS) return "";
+  const wk=ev.filter(e=>e.d>=ri.from&&e.d<ri.to);
+  const fav=wk.filter(e=>e._fav), free=wk.filter(e=>isFree(e));
+  const per={}; wk.forEach(e=>{per[e.d]=(per[e.d]||0)+(e.hl?3:1);});
+  const best=Object.keys(per).sort((a,b)=>per[b]-per[a])[0];
+  const bestN=best?wk.filter(e=>e.d===best).length:0;
+  const nxt=wk.filter(e=>e.hl&&state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b))[0];
+  const past=(DATA.res||[]).concat((DATA.gestern||[]).map(r=>Object.assign({d:addD(n.d,-1)},r)));
+  const seen=new Set();
+  const pr=past.filter(r=>{const k=r.d+r.ti; if(seen.has(k)) return false; seen.add(k); return PREFS.teams.some(t=>r.ti.includes(t));}).slice(-4);
+  const rr=pr.map(r=>{const rk="r|"+r.ti, hide=PREFS.spoiler&&!revealed.has(rk); return `<div><span>${esc(r.ti)}</span>${hide?`<button type="button" class="reveal" data-rv="${esc(rk)}">zeigen</button>`:esc(r.r||"")}</div>`;}).join("");
+  const lines=[];
+  if(best) lines.push(`Stärkster Tag: <b>${WDL[P(best).getUTCDay()]}</b> mit ${bestN} Übertragungen`);
+  if(nxt) lines.push(`Größtes Highlight: <b>${esc(nxt.ti)}</b>, ${WD[P(nxt.d).getUTCDay()]} ${nxt.t||""}`);
+  const f=P(ri.from), l=P(addD(ri.to,-1));
+  return `<div class="rh"><b>Deine Woche</b><span>${f.getUTCDate()}.${f.getUTCMonth()+1}. – ${l.getUTCDate()}.${l.getUTCMonth()+1}.</span></div>
+   <div class="stats"><div><strong>${wk.length}</strong><small>Übertragungen</small></div><div><strong>${fav.length}</strong><small>deine Teams</small></div><div><strong>${free.length}</strong><small>im Free-TV</small></div></div>
+   ${pr.length?`<div class="ln">Letzte Ergebnisse deiner Teams</div><div class="rres">${rr}</div>`:""}
+   ${lines.map(x=>`<div class="ln">${x}</div>`).join("")}
+   <div class="chips"><button type="button" class="chip" aria-pressed="true" id="recapshare">Teilen</button><button type="button" class="chip" id="recaphide" data-k="${ri.key}">Ausblenden</button></div>`;
+}
+function recapText(ev,n){
+  const ri=recapInfo(n), wk=ev.filter(e=>e.d>=ri.from&&e.d<ri.to);
+  const top=wk.filter(e=>e.hl).sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b)).slice(0,5).map(e=>`• ${WD[P(e.d).getUTCDay()]} ${e.t||""} ${e.ti} (${tvText(e)})`).join("\n");
+  return `Meine Sportwoche: ${wk.length} Übertragungen, davon ${wk.filter(e=>e._fav).length} mit meinen Teams.\n${top}\n\nAlles in Matchday: ${SHARE_URL}`;
+}
+function groupGames(ev,n){
+  if(!PREFS||!PREFS.group||!PREFS.group.length) return [];
+  return ev.filter(e=>e.d>=n.d&&state(e,n)!=="past").map(e=>Object.assign({},e,{_fr:friendsOf(e)}))
+    .filter(e=>e._fr.length&&!e._fav).sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b)).slice(0,4);
+}
+function friendBar(){
+  const fb=document.getElementById("friendbar");
+  if(!pendingFriend||!PREFS){fb.hidden=true;return;}
+  fb.hidden=false;
+  fb.innerHTML=`<div><b>${esc(pendingFriend.n)}</b> möchte in deine Runde. Teams: ${esc(pendingFriend.t.join(", ")||"–")}</div><div class="chips"><button type="button" class="chip" aria-pressed="true" id="pfadd">Hinzufügen</button><button type="button" class="chip" id="pfno">Nein danke</button></div>`;
+}
+function openNow(){
+  const n=nowB(), ev=prep(DATA.events);
+  const live=ev.filter(e=>state(e,n)==="live"), soon=ev.filter(e=>state(e,n)==="future"&&delta(e,n)<=60);
+  const rank=e=>(e._fav?0:e.hl?1:2), srt=(a,b)=>rank(a)-rank(b)||byTime(a,b);
+  const list=live.sort(srt).concat(soon.sort(srt)).map(e=>Object.assign({},e,{_notap:true}));
+  let body;
+  if(list.length) body=`<div class="list">${list.map(e=>row(e,n)).join("")}</div>`;
+  else{const nx=ev.filter(e=>state(e,n)==="future").sort((a,b)=>delta(a,n)-delta(b,n))[0];
+    body=`<div class="list"><div class="empty">Gerade läuft nichts, und in der nächsten Stunde beginnt auch nichts.${nx?` Als Nächstes: <b style="color:var(--ink)">${esc(nx.ti)}</b>, ${nx.d===n.d?"heute":WD[P(nx.d).getUTCDay()]} um ${nx.t} Uhr.`:""}</div></div>`;}
+  draft=null;
+  document.getElementById("panel").innerHTML=`<div class="ph"><h2>Was läuft jetzt?</h2><button type="button" class="xbtn" id="closenow" aria-label="Schließen">×</button></div><p class="hint" style="margin:-12px 0 0">Live und in der nächsten Stunde · deine Teams und Highlights zuerst</p>${body}`;
+  document.getElementById("sheet").hidden=false;
+}
+
 let sel=null;
 function render(){
   const n=nowB();
@@ -525,22 +745,37 @@ function render(){
   document.getElementById("fav-count").textContent=fv.length?`nächste ${fv.length}`:"";
   document.getElementById("fav").innerHTML=fv.length?`<div class="list">${fv.map(e=>row(Object.assign({},e,{_showDate:true}),n)).join("")}</div>`:"";
 
+  // Eure Runde
+  const gg=groupGames(ev,n);
+  document.getElementById("grp-sec").hidden=!gg.length;
+  document.getElementById("grp-count").textContent=gg.length?`${PREFS.group.length} ${PREFS.group.length===1?"Freund":"Freunde"}`:"";
+  document.getElementById("grp").innerHTML=gg.length?`<div class="list">${gg.map(e=>row(Object.assign({},e,{_showDate:true}),n)).join("")}</div>`:"";
+  // Wochenkarte
+  const rc=document.getElementById("recap"), rh=recapHtml(ev,n); rc.hidden=!rh; rc.innerHTML=rh;
+  friendBar();
+
   // Live
   const live=ev.filter(e=>state(e,n)==="live").sort(byTime);
   const ls=document.getElementById("live-sec"); ls.hidden=!live.length;
   document.getElementById("live").innerHTML=live.map(e=>`<div class="live-card" style="--sc:${sc(e.s)}">
      <span class="live-badge"><span class="pulse"></span>Läuft seit ${e.t} Uhr</span>
-     <div class="live-row">${icon(e.s)}<div class="body">${titleHtml(e)}<div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b></div></div><div class="side">${isFree(e)?FTV:""}</div></div></div>`).join("");
+     <div class="live-row">${icon(e.s)}<div class="body">${titleHtml(e)}<div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b></div></div><div class="side">${isFree(e)?FTV:""}</div></div>${progHtml(e,n)}</div>`).join("");
 
   // Heute
   const today=ev.filter(e=>e.d===n.d);
   document.getElementById("today-count").textContent=today.length?`${today.length} ${today.length===1?"Übertragung":"Übertragungen"}`:"";
-  let th=listHtml(today,"today",n);
+  document.querySelectorAll(".seg [data-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===VIEW)));
+  let th=VIEW==="tl"?timelineHtml(today,n):listHtml(today,"today",n);
   if(!today.length){
     const next=ev.filter(e=>e.hl&&state(e,n)==="future").sort((a,b)=>delta(a,n)-delta(b,n))[0];
     th=`<div class="list"><div class="empty">Heute läuft nichts Größeres.${next?` Nächstes Highlight: <b style="color:var(--ink)">${esc(next.ti)}</b>, ${WD[P(next.d).getUTCDay()]} ${next.t} Uhr.`:""}</div></div>`;
   }
   document.getElementById("today").innerHTML=th;
+
+  // Überschneidungen
+  const cfs=conflicts(ev,n);
+  document.getElementById("cf-sec").hidden=!cfs.length;
+  document.getElementById("cf").innerHTML=cfHtml(cfs,n);
 
   // Highlights
   let hls=ev.filter(e=>e.hl && e.d>=n.d && state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b));
@@ -556,21 +791,23 @@ function render(){
   // Woche
   const days=[]; for(let d=P(DATA.von); d<=P(DATA.bis); d=new Date(d.getTime()+864e5)){const s=d.toISOString().slice(0,10); if(s>=yday) days.push(s);}
   if(!sel || !days.includes(sel)) sel=days.find(d=>d>n.d)||days[days.length-1];
+  const score=d=>ev.filter(e=>e.d===d).reduce((a,e)=>a+(e.hl?3:e.x?0.4:1),0), mx=Math.max(1,...days.map(score));
   document.getElementById("days").innerHTML=days.map(d=>{
-    const x=P(d), sports=[...new Set(ev.filter(e=>e.d===d).map(e=>e.s))];
-    return `<button class="day${[0,6].includes(x.getUTCDay())?" we":""}" aria-pressed="${d===sel}" data-d="${d}"><span class="wd">${d===n.d?"Heute":d===yday?"Gestern":WD[x.getUTCDay()]}</span><span class="dn">${x.getUTCDate()}</span><span class="dots">${sports.map(s=>`<i style="--sc:${sc(s)}"></i>`).join("")}</span></button>`;}).join("");
+    const x=P(d), sports=[...new Set(ev.filter(e=>e.d===d).map(e=>e.s))], it=score(d)/mx;
+    return `<button class="day${[0,6].includes(x.getUTCDay())?" we":""}" style="--ip:${(it*11).toFixed(1)}%;--wp:${(9+it*14).toFixed(1)}%" aria-pressed="${d===sel}" data-d="${d}"><span class="wd">${d===n.d?"Heute":d===yday?"Gestern":WD[x.getUTCDay()]}</span><span class="dn">${x.getUTCDate()}</span><span class="dots">${sports.map(s=>`<i style="--sc:${sc(s)}"></i>`).join("")}</span></button>`;}).join("");
   const sx=P(sel);
   document.getElementById("dayhead").innerHTML=`${WDL[sx.getUTCDay()]}, ${sx.getUTCDate()}. ${MON[sx.getUTCMonth()]} <span class="swipehint">· wischen für nächsten Tag</span>`;
   document.getElementById("daylist").innerHTML=sel===yday?yHtml(yday):listHtml(ev.filter(e=>e.d===sel),"d-"+sel,n);
 
   document.getElementById("outlook").innerHTML=(DATA.ausblick||[]).map(a=>{const i=a.indexOf(":");return i>0?`<div><b>${esc(a.slice(0,i))}</b>${esc(a.slice(i))}</div>`:`<div>${esc(a)}</div>`;}).join("");
   const s=P(DATA.stand.slice(0,10));
-  document.getElementById("foot").textContent=`Stand: ${s.getUTCDate()}.${s.getUTCMonth()+1}.${s.getUTCFullYear()}, ${DATA.stand.slice(11,16)} Uhr. Alle Zeiten deutsche Zeit. Wird jeden Morgen automatisch aktualisiert, kurzfristige Änderungen der Sender sind möglich.`;
+  document.getElementById("foot").textContent=`Stand: ${s.getUTCDate()}.${s.getUTCMonth()+1}.${s.getUTCFullYear()}, ${DATA.stand.slice(11,16)} Uhr. Alle Zeiten deutsche Zeit. Wird bei Bedarf aktualisiert, kurzfristige Änderungen der Sender sind möglich.${navigator.onLine===false?" Gerade offline – du siehst den zuletzt geladenen Stand.":""}`;
 }
 
 let draft=null;
 function openSettings(first){
-  draft=PREFS?JSON.parse(JSON.stringify(PREFS)):{sports:sportsInData(),disc:ALL_SUBS(),teams:[],services:SERVICES.map(s=>s.k),hideOther:false,v:2};
+  draft=PREFS?JSON.parse(JSON.stringify(PREFS)):{sports:sportsInData(),disc:ALL_SUBS(),teams:[],services:SERVICES.map(s=>s.k),hideOther:false,name:"",group:[],spoiler:false,v:2};
+  draft.group=draft.group||[];
   if(!draft.disc) draft.disc=ALL_SUBS();
   draft._first=!!first; drawSettings(); document.getElementById("sheet").hidden=false;
 }
@@ -588,6 +825,15 @@ function drawSettings(q){
      <div class="chips" style="margin-bottom:10px">${draft.teams.map(t=>`<button type="button" class="chip" aria-pressed="true" data-rmteam="${esc(t)}">${badge(t)}${esc(t)}<span class="x" aria-hidden="true">×</span></button>`).join("")||'<span class="hint" style="margin:0">Noch keine ausgewählt.</span>'}</div>
      <input class="tsearch" id="tsearch" type="search" placeholder="Team oder Spieler suchen, z. B. Dortmund" value="${esc(q)}" autocomplete="off">
      <div class="sugg">${kt.map(t=>`<button type="button" data-addteam="${esc(t)}">+ ${esc(t)}</button>`).join("")}${q.length>=2&&!kt.length?`<button type="button" data-addteam="${esc(q)}">+ „${esc(q)}“ übernehmen</button>`:""}</div></div>
+   <div><h3>Ergebnisse</h3><label class="switch"><span>Spoiler-frei: Ergebnisse erst nach Antippen zeigen</span><input type="checkbox" id="spoiler" ${draft.spoiler?"checked":""}></label></div>
+   <div><h3>Meine Runde</h3><p class="hint">Sieh, welche Spiele deine Freunde interessieren. Schick ihnen deine Teams und füge ihre Links hier ein.</p>
+     <input class="tsearch" id="myname" type="text" placeholder="Dein Vorname" value="${esc(draft.name||"")}" autocomplete="given-name" maxlength="30">
+     <div class="chips" style="margin-top:10px"><button type="button" class="chip" aria-pressed="true" id="shareteams">Meine Teams an Freunde schicken</button></div>
+     <div class="chips" style="margin-top:12px">${(draft.group||[]).map(f=>`<button type="button" class="chip" aria-pressed="true" data-rmfriend="${esc(f.n)}">${PPL}${esc(f.n)}<span class="x" aria-hidden="true">×</span></button>`).join("")||'<span class="hint" style="margin:0">Noch keine Freunde in deiner Runde.</span>'}</div>
+     <input class="tsearch" id="friendcode" type="text" placeholder="Link eines Freundes hier einfügen" style="margin-top:10px" autocomplete="off">
+     <div class="chips" style="margin-top:8px"><button type="button" class="chip" id="addfriend">Freund hinzufügen</button></div></div>
+   <div><h3>Kalender-Abo</h3><p class="hint">Die Spiele landen automatisch in deinem iPhone-Kalender und bleiben aktuell. Antippen und „Abonnieren“ wählen.</p>
+     <div class="calrow">${draft.teams.map(t=>`<a class="chip" href="${CAL_BASE}${slug(calName(t))}.ics">${badge(calName(t))}${esc(t)}</a>`).join("")}<a class="chip" href="${CAL_BASE}highlights.ics">★ Alle Highlights</a></div></div>
    <div><h3>Meine Dienste</h3><p class="hint">Was du schauen kannst. Spiele auf anderen Diensten werden markiert.</p>
      <div class="chips">${SERVICES.map(sv=>chip(draft.services.includes(sv.k),`data-svc="${sv.k}"`,esc(sv.l))).join("")}</div>
      <label class="switch" style="margin-top:12px"><span>Spiele auf anderen Diensten ganz ausblenden</span><input type="checkbox" id="hideother" ${draft.hideOther?"checked":""}></label></div>
@@ -601,9 +847,13 @@ function drawSettings(q){
   const inp=document.getElementById("tsearch");
   inp.addEventListener("input",()=>{const v=inp.value; drawSettings(v); const i2=document.getElementById("tsearch"); i2.focus(); i2.setSelectionRange(v.length,v.length);});
   document.getElementById("hideother").addEventListener("change",e=>{draft.hideOther=e.target.checked;});
+  document.getElementById("spoiler").addEventListener("change",e=>{draft.spoiler=e.target.checked;});
+  document.getElementById("myname").addEventListener("input",e=>{draft.name=e.target.value.trim();});
 }
 document.getElementById("sheet").addEventListener("click",ev=>{
-  const t=ev.target.closest("button"); if(!t||!draft) return;
+  if(ev.target.id==="sheet"&&!draft){document.getElementById("sheet").hidden=true;return;}
+  const t=ev.target.closest("button"); if(t&&t.id==="closenow"){document.getElementById("sheet").hidden=true;return;}
+  if(!t||!draft) return;
   const tog=(arr,v)=>{const i=arr.indexOf(v); i>=0?arr.splice(i,1):arr.push(v);};
   const q=(document.getElementById("tsearch")||{}).value||"";
   if(t.dataset.sport){tog(draft.sports,t.dataset.sport); drawSettings(q);}
@@ -612,6 +862,16 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   else if(t.dataset.svc){tog(draft.services,t.dataset.svc); drawSettings(q);}
   else if(t.dataset.addteam){draft.teams.push(t.dataset.addteam.trim()); drawSettings("");}
   else if(t.dataset.rmteam){draft.teams=draft.teams.filter(x=>x!==t.dataset.rmteam); drawSettings(q);}
+  else if(t.id==="shareteams"){
+    const L="Meine Teams an Freunde schicken";
+    if(!draft.name){t.textContent="Bitte erst deinen Namen eintragen"; setTimeout(()=>{if(t.isConnected)t.textContent=L;},2200); return;}
+    if(!draft.teams.length){t.textContent="Bitte erst Teams auswählen"; setTimeout(()=>{if(t.isConnected)t.textContent=L;},2200); return;}
+    shareOrCopy(`${draft.name} ist bei Matchday und folgt: ${draft.teams.join(", ")}. Link öffnen, um ${draft.name} in deine Runde aufzunehmen: ${friendLink(draft.name,draft.teams)}`,t,L);}
+  else if(t.id==="addfriend"){
+    const f=parseFriend(document.getElementById("friendcode").value);
+    if(!f){t.textContent="Link nicht erkannt"; setTimeout(()=>{if(t.isConnected)t.textContent="Freund hinzufügen";},2000); return;}
+    draft.group=draft.group.filter(x=>x.n!==f.n).concat([f]); drawSettings(q);}
+  else if(t.dataset.rmfriend){draft.group=draft.group.filter(x=>x.n!==t.dataset.rmfriend); drawSettings(q);}
   else if(t.id==="sharelink"){navigator.share({title:"Matchday",text:SHARE_TEXT,url:SHARE_URL}).catch(()=>{});}
   else if(t.id==="copyshare"){navigator.clipboard.writeText(SHARE_TEXT+" "+SHARE_URL).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren";});}
   else if(t.id==="copylink"){navigator.clipboard.writeText(prefsLink()).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren und kopieren";});}
@@ -631,6 +891,16 @@ document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&PREFS&&!document.
 document.addEventListener("click",ev=>{
   if(ev.target.closest("#gear")){openSettings(false);return;}
   if(ev.target.closest("#sync")){location.reload();return;}
+  if(ev.target.closest("#nowbtn")){openNow();return;}
+  if(ev.target.closest("#sheet")) return;
+  const inv=ev.target.closest("[data-inv]"); if(inv){const e=ROWS[inv.dataset.inv]; if(e) shareOrCopy(inviteText(e),inv,"Zum Schauen einladen"); return;}
+  const rv=ev.target.closest("[data-rv]"); if(rv){revealed.add(rv.dataset.rv); render(); return;}
+  const vw=ev.target.closest("[data-view]"); if(vw){VIEW=vw.dataset.view; try{localStorage.setItem("md-view",VIEW);}catch(x){} render(); return;}
+  const tb=ev.target.closest("[data-tl]"); if(tb){VIEW="list"; try{localStorage.setItem("md-view",VIEW);}catch(x){} openRows.add(tb.dataset.tl); render(); const r2=[...document.querySelectorAll("#today .row[data-id]")].find(r=>r.dataset.id===tb.dataset.tl); if(r2) r2.scrollIntoView({behavior:"smooth",block:"center"}); return;}
+  const rh=ev.target.closest("#recaphide"); if(rh){try{localStorage.setItem("md-recap",rh.dataset.k);}catch(x){} render(); return;}
+  const rs=ev.target.closest("#recapshare"); if(rs){shareOrCopy(recapText(prep(DATA.events),nowB()),rs,"Teilen"); return;}
+  if(ev.target.closest("#pfadd")&&pendingFriend){PREFS.group=(PREFS.group||[]).filter(x=>x.n!==pendingFriend.n).concat([pendingFriend]); savePrefs(); pendingFriend=null; try{sessionStorage.removeItem("md-pf");}catch(x){} render(); return;}
+  if(ev.target.closest("#pfno")){pendingFriend=null; try{sessionStorage.removeItem("md-pf");}catch(x){} render(); return;}
   const r=ev.target.closest(".row.tap");
   if(r){const id=r.dataset.id; openRows.has(id)?openRows.delete(id):openRows.add(id); render(); return;}
   const more=ev.target.closest(".more");
@@ -654,6 +924,8 @@ document.addEventListener("click",ev=>{
   },{passive:true});
 })();
 document.addEventListener("keydown",ev=>{const r=ev.target.closest&&ev.target.closest(".row.tap"); if(r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault(); r.click();}});
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}
+window.addEventListener("online",()=>render()); window.addEventListener("offline",()=>render());
 applyTheme();
 render();
 updateHomeHint();
