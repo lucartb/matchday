@@ -304,12 +304,19 @@ const SERVICES=[
  {k:"euro",l:"Eurosport / HBO Max",m:x=>/eurosport|hbo/i.test(x)&&!FREE.includes(x.toLowerCase())}
 ];
 let PREFS=null;
-try{PREFS=JSON.parse(localStorage.getItem("md-prefs")||"null");}catch(e){}
+function encPrefs(p){const o={s:p.sports,d:p.disc,t:p.teams,v:p.services,h:p.hideOther?1:0};return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+function decPrefs(str){try{const o=JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));return {sports:o.s||[],disc:o.d||null,teams:o.t||[],services:o.v||[],hideOther:!!o.h,v:2};}catch(e){return null;}}
+function prefsLink(){return location.origin+location.pathname+"#p="+encPrefs(PREFS);}
+// 1. Einstellungen aus dem Link (robust, überlebt gelöschten Browserspeicher)
+if(location.hash.startsWith("#p=")) PREFS=decPrefs(location.hash.slice(3));
+// 2. sonst aus dem Browserspeicher
+if(!PREFS){try{PREFS=JSON.parse(localStorage.getItem("md-prefs")||"null");}catch(e){}}
+if(PREFS&&!location.hash.startsWith("#p=")){try{history.replaceState(null,"","#p="+encPrefs(PREFS));}catch(e){}}
 if(PREFS&&PREFS.v!==2){
   ["Wintersport","American Football","Leichtathletik","Schwimmen","Beachvolleyball"].forEach(x=>{if(!PREFS.sports.includes(x)) PREFS.sports.push(x);});
   PREFS.disc=ALL_SUBS(); PREFS.v=2; try{localStorage.setItem("md-prefs",JSON.stringify(PREFS));}catch(e){}
 }
-function savePrefs(){try{localStorage.setItem("md-prefs",JSON.stringify(PREFS));}catch(e){}}
+function savePrefs(){try{localStorage.setItem("md-prefs",JSON.stringify(PREFS));}catch(e){} try{history.replaceState(null,"","#p="+encPrefs(PREFS));}catch(e){}}
 function sportsInData(){return [...new Set(ALL_SPORTS.concat(DATA.events.map(e=>e.s)))];}
 function availOf(e){
   if(!PREFS||!e.tv||!e.tv.length) return null;
@@ -520,6 +527,9 @@ function drawSettings(q){
    <div><h3>Meine Dienste</h3><p class="hint">Was du schauen kannst. Spiele auf anderen Diensten werden markiert.</p>
      <div class="chips">${SERVICES.map(sv=>chip(draft.services.includes(sv.k),`data-svc="${sv.k}"`,esc(sv.l))).join("")}</div>
      <label class="switch" style="margin-top:12px"><span>Spiele auf anderen Diensten ganz ausblenden</span><input type="checkbox" id="hideother" ${draft.hideOther?"checked":""}></label></div>
+   ${PREFS&&!draft._first?`<div><h3>Mein persönlicher Link</h3><p class="hint">Dieser Link enthält deine Auswahl. Lege genau diesen Link auf den Home-Bildschirm, dann bleiben deine Einstellungen immer erhalten.</p>
+     <div class="switch" style="cursor:default;word-break:break-all;font-size:12px;color:var(--muted)">${esc(prefsLink())}</div>
+     <button type="button" class="chip" id="copylink" style="margin-top:10px">Link kopieren</button></div>`:""}
    <button type="button" class="save" id="savesettings">Speichern</button>`;
   const inp=document.getElementById("tsearch");
   inp.addEventListener("input",()=>{const v=inp.value; drawSettings(v); const i2=document.getElementById("tsearch"); i2.focus(); i2.setSelectionRange(v.length,v.length);});
@@ -534,12 +544,20 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   else if(t.dataset.svc){tog(draft.services,t.dataset.svc); drawSettings(q);}
   else if(t.dataset.addteam){draft.teams.push(t.dataset.addteam.trim()); drawSettings("");}
   else if(t.dataset.rmteam){draft.teams=draft.teams.filter(x=>x!==t.dataset.rmteam); drawSettings(q);}
+  else if(t.id==="copylink"){navigator.clipboard.writeText(prefsLink()).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren und kopieren";});}
   else if(t.id==="savesettings"){
     if(!draft.sports.length){alertBox("Bitte mindestens eine Sportart wählen."); return;}
     delete draft._first; PREFS=draft; draft=null; savePrefs();
-    document.getElementById("sheet").hidden=true; sel=null; render();
+    document.getElementById("sheet").hidden=true; sel=null; render(); showLinkHint();
   }
 });
+function showLinkHint(){
+  try{if(localStorage.getItem("md-hint")) return; localStorage.setItem("md-hint","1");}catch(e){}
+  const d=document.createElement("div");
+  d.style.cssText="position:fixed;left:12px;right:12px;bottom:16px;z-index:60;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.45;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.5)";
+  d.innerHTML='Gespeichert. Damit deine Auswahl sicher erhalten bleibt: jetzt in Safari <b>Teilen → Zum Home-Bildschirm</b> wählen. Der Link enthält deine Einstellungen. <button type="button" style="margin-left:6px;font:700 13px var(--font);background:none;border:0;color:var(--muted);cursor:pointer">OK</button>';
+  d.querySelector("button").onclick=()=>d.remove(); document.body.appendChild(d); setTimeout(()=>d.remove(),12000);
+}
 function alertBox(msg){const b=document.getElementById("savesettings"); b.textContent=msg; setTimeout(()=>{if(b.isConnected) b.textContent="Speichern";},2200);}
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&PREFS&&!document.getElementById("sheet").hidden){document.getElementById("sheet").hidden=true; draft=null;}});
 document.addEventListener("click",ev=>{
