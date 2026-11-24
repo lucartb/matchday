@@ -40,6 +40,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* Kopf */
 header{display:flex;flex-direction:column;gap:4px}
 .brand{display:flex;align-items:center;gap:10px}
+.sync{margin-left:auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.sync svg{width:18px;height:18px}
+.sync.ok{color:#7fb39a;border-color:color-mix(in srgb,#7fb39a 40%,var(--line))}
 .brand h1{margin:0;font-size:30px;font-weight:800;letter-spacing:-.02em}
 .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--live)}
 .sub{color:var(--muted);font-size:14px;font-weight:500}
@@ -148,7 +151,7 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1></div>
+    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1><button id="sync" class="sync" type="button"></button></div>
     <div class="sub" id="sub"></div>
   </header>
 
@@ -162,10 +165,6 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
     <div id="today"></div>
   </section>
 
-  <section class="sec" id="gestern-sec">
-    <div class="sec-h"><h2>Gestern</h2><span id="gestern-count"></span></div>
-    <div id="gestern"></div>
-  </section>
 
   <section class="sec">
     <div class="sec-h"><h2>Highlights der Woche</h2><span id="hl-count"></span></div>
@@ -187,7 +186,7 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
   <footer id="foot"></footer>
 </div>
 
-<script src="data.js"></script>
+<script>document.write('<script src="data.js?v='+Date.now()+'"><\/script>');</script>
 <script>
 if(typeof DATA==='undefined'){document.body.innerHTML='<p style="padding:20px;color:#8a90a3;font-family:sans-serif">Daten konnten nicht geladen werden. Bitte Seite neu laden.</p>';throw new Error('no data');}
 
@@ -345,12 +344,28 @@ function resRow(e){
   }
   return `<div class="row"><div>${icon(e.s)}</div><div class="body">${mid}<div class="meta">${esc(e.c)}${e.n?` · ${esc(e.n)}`:""}</div></div><div class="side">${right}</div></div>`;
 }
+function yHtml(yday){
+  const ev=DATA.events, res=DATA.gestern||[];
+  const yev=ev.filter(e=>e.d===yday).map(e=>{const r=res.find(x=>x.ti===e.ti); return Object.assign({},e,r?{r:r.r}:{});});
+  res.forEach(r=>{if(!yev.some(e=>e.ti===r.ti)) yev.push(r);});
+  yev.sort(byTime);
+  if(!yev.length) return `<div class="list"><div class="empty">Gestern lief nichts Größeres.</div></div>`;
+  const gk="gestern", open=expanded.has(gk), top=yev.filter(e=>!e.x), rest=yev.filter(e=>e.x);
+  const shown=open?yev:(top.length?top:yev);
+  const more=(top.length&&rest.length)?`<button class="more" data-k="${gk}">${open?"Weniger anzeigen":`${rest.length} weitere anzeigen`}</button>`:"";
+  return `<div class="list res">${shown.map(e=>resRow(e.r?e:Object.assign({},e,{r:(e.t?e.t+" Uhr":"")}))).join("")}${more}</div>`;
+}
 let sel=null;
 function render(){
   const n=nowB();
   const yday=new Date(P(n.d).getTime()-864e5).toISOString().slice(0,10);
   const ev=DATA.events;
   const t=P(n.d);
+  const ok=DATA.stand.slice(0,10)===n.d, sb=document.getElementById("sync");
+  sb.className="sync"+(ok?" ok":"");
+  sb.title=ok?"Heute aktualisiert":"Nicht von heute – tippen zum Neuladen";
+  sb.setAttribute("aria-label",sb.title);
+  sb.innerHTML=ok?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>';
   document.getElementById("sub").textContent=`${WDL[t.getUTCDay()]}, ${t.getUTCDate()}. ${MON[t.getUTCMonth()]}`;
 
   // Live
@@ -370,23 +385,8 @@ function render(){
   }
   document.getElementById("today").innerHTML=th;
 
-  // Gestern: Programm vom Vortag, Ergebnisse wo vorhanden
-  const res=DATA.gestern||[];
-  const yev=ev.filter(e=>e.d===yday).map(e=>{const r=res.find(x=>x.ti===e.ti); return Object.assign({},e,r?{r:r.r}:{});});
-  res.forEach(r=>{if(!yev.some(e=>e.ti===r.ti)) yev.push(r);});
-  yev.sort(byTime);
-  const nres=yev.filter(e=>e.r).length;
-  document.getElementById("gestern-count").textContent=yev.length?(nres?`${nres} ${nres===1?"Ergebnis":"Ergebnisse"}`:`${yev.length} ${yev.length===1?"Übertragung":"Übertragungen"}`):"";
-  if(!yev.length){document.getElementById("gestern").innerHTML=`<div class="list"><div class="empty">Gestern lief nichts Größeres.</div></div>`;}
-  else{
-    const gk="gestern", open=expanded.has(gk), top=yev.filter(e=>!e.x), rest=yev.filter(e=>e.x);
-    const shown=open?yev:(top.length?top:yev);
-    const more=(top.length&&rest.length)?`<button class="more" data-k="${gk}">${open?"Weniger anzeigen":`${rest.length} weitere anzeigen`}</button>`:"";
-    document.getElementById("gestern").innerHTML=`<div class="list res">${shown.map(e=>e.r?resRow(e):resRow(Object.assign({},e,{r:(e.t?e.t+" Uhr":"")}))).join("")}${more}</div>`;
-  }
-
   // Highlights
-  let hls=ev.filter(e=>e.hl && state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b));
+  let hls=ev.filter(e=>e.hl && e.d>=n.d && state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b));
   document.getElementById("hl-count").textContent=hls.length?`${hls.length}`:"";
   document.getElementById("hls").innerHTML=hls.map(e=>{
     const x=P(e.d), st=state(e,n);
@@ -404,7 +404,7 @@ function render(){
     return `<button class="day" aria-pressed="${d===sel}" data-d="${d}"><span class="wd">${d===n.d?"Heute":d===yday?"Gestern":WD[x.getUTCDay()]}</span><span class="dn">${x.getUTCDate()}</span><span class="dots">${sports.map(s=>`<i style="--sc:${sc(s)}"></i>`).join("")}</span></button>`;}).join("");
   const sx=P(sel);
   document.getElementById("dayhead").innerHTML=`${WDL[sx.getUTCDay()]}, ${sx.getUTCDate()}. ${MON[sx.getUTCMonth()]} <span class="swipehint">· wischen für nächsten Tag</span>`;
-  document.getElementById("daylist").innerHTML=listHtml(ev.filter(e=>e.d===sel),"d-"+sel,n);
+  document.getElementById("daylist").innerHTML=sel===yday?yHtml(yday):listHtml(ev.filter(e=>e.d===sel),"d-"+sel,n);
 
   document.getElementById("outlook").innerHTML=(DATA.ausblick||[]).map(a=>{const i=a.indexOf(":");return i>0?`<div><b>${esc(a.slice(0,i))}</b>${esc(a.slice(i))}</div>`:`<div>${esc(a)}</div>`;}).join("");
   const s=P(DATA.stand.slice(0,10));
@@ -412,6 +412,7 @@ function render(){
 }
 
 document.addEventListener("click",ev=>{
+  if(ev.target.closest("#sync")){location.reload();return;}
   const r=ev.target.closest(".row.tap");
   if(r){const id=r.dataset.id; openRows.has(id)?openRows.delete(id):openRows.add(id); render(); return;}
   const more=ev.target.closest(".more");
