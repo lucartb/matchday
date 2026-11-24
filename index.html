@@ -231,10 +231,18 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .sec-h .seg{margin-left:auto}
 /* Zeitstrahl */
-.tlw{max-height:340px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--surface);border:1px solid var(--line);border-radius:18px}
-.tl{position:relative}
+.tlbar{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+.tlbar .tlh{flex:1;font-size:12px;color:var(--faint)}
+.tlbar button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;height:32px;min-width:32px;padding:0 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.tlbar button.now{color:var(--live);border-color:color-mix(in srgb,var(--live) 40%,var(--line))}
+.tlbar button:disabled{opacity:.35}
+.tlw{height:min(64vh,var(--tlh,64vh));min-height:220px;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y;background:var(--surface);border:1px solid var(--line);border-radius:18px;position:relative}
+.tlsel{margin-top:10px}
+.tl{position:relative;min-width:100%}
+.tl .hr.half{border-top:1px dotted color-mix(in srgb,var(--line) 60%,transparent)}
+.tl .hr.half span{display:none}
 .tl .hr{position:absolute;left:0;right:0;border-top:1px dashed var(--line)}
-.tl .hr span{position:absolute;left:10px;top:-8px;font-size:10.5px;font-weight:700;color:var(--faint);background:var(--surface);padding-right:4px;font-variant-numeric:tabular-nums}
+.tl .hr span{position:sticky;left:0;display:inline-block;transform:translateY(-8px);margin-left:6px;padding-left:4px;z-index:2;font-size:10.5px;font-weight:700;color:var(--faint);background:var(--surface);padding-right:4px;font-variant-numeric:tabular-nums}
 .tl .blk{position:absolute;border-radius:10px;padding:5px 7px;background:color-mix(in srgb,var(--sc) 15%,var(--surface));border:0;border-left:3px solid var(--sc);overflow:hidden;font-size:11.5px;line-height:1.25;display:flex;flex-direction:column;gap:1px;cursor:pointer;text-align:left;color:var(--ink)}
 .tl .blk .bt{font-weight:800;color:var(--sc);font-variant-numeric:tabular-nums}
 .tl .blk b{font-weight:800;font-size:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
@@ -242,6 +250,7 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 .tl .blk.past{opacity:.4}
 .tl .blk.hlb{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 55%,transparent)}
 .tl .blk.favb{box-shadow:inset 0 0 0 1.5px var(--gold)}
+.tl .blk.sel{outline:2px solid var(--sc);outline-offset:1px;z-index:3}
 .tl .blk{z-index:1}
 .tl .nowl{position:absolute;left:44px;right:0;border-top:2px solid var(--live);z-index:0;pointer-events:none}
 .tl .nowl::before{content:"";position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:var(--live)}
@@ -831,11 +840,14 @@ function shortTi(e){const p=sides(e); if(!p) return e.ti; return p.map(x=>{const
 let TAB=(()=>{try{return localStorage.getItem("md-tab")||"heute";}catch(e){return "heute";}})();
 function setTab(t){TAB=t;try{localStorage.setItem("md-tab",t);}catch(e){} render(); window.scrollTo({top:0});}
 let VIEW=(()=>{try{return localStorage.getItem("md-view")||"list";}catch(e){return "list";}})();
+const TLZ=[0.75,1.1,1.6,2.4];
+let TLZI=(()=>{try{const v=+localStorage.getItem("md-tlz");return v>=0&&v<4&&localStorage.getItem("md-tlz")!==null?v:1;}catch(e){return 1;}})(), TLSEL=null, TLBUSY=0;
+function tlScrollNow(w){const nl=w.querySelector(".nowl"); w.scrollTo({top:nl?Math.max(0,nl.offsetTop-w.clientHeight*0.3):0,behavior:"smooth"});}
 function timelineHtml(evs,n){
   let tim=evs.filter(e=>e.t).sort(byTime); const un=evs.filter(e=>!e.t);
   const main=tim.filter(e=>!e.x||e._fav||e.hl); if(main.length) tim=main;
   if(!tim.length) return listHtml(evs,"today",n);
-  const PX=0.75, st=e=>mins(e.t), en=e=>mins(e.t)+(DUR[e.s]||120);
+  const PX=TLZ[TLZI], st=e=>mins(e.t), en=e=>mins(e.t)+(DUR[e.s]||120);
   const t0=Math.floor(Math.min(...tim.map(st))/60)*60, t1=Math.ceil(Math.max(...tim.map(en))/60)*60;
   const top=14, H=(t1-t0)*PX+top+10;
   const placed=[]; let cl=[], clEnd=-1;
@@ -845,14 +857,18 @@ function timelineHtml(evs,n){
     cl.push({e,lane}); clEnd=Math.max(clEnd,en(e));});
   if(cl.length) flush();
   let h="";
-  for(let m=t0;m<=t1;m+=60) h+=`<div class="hr" style="top:${(m-t0)*PX+top}px"><span>${hm(m)}</span></div>`;
+  for(let m=t0;m<=t1;m+=30) h+=`<div class="hr${m%60?" half":""}" style="top:${(m-t0)*PX+top}px"><span>${hm(m)}</span></div>`;
+  const maxL=Math.max(...placed.map(c=>c.L)), minW=48+maxL*124+8;
   placed.forEach(({e,lane,L})=>{
     const s0=st(e), y=(s0-t0)*PX+top, hgt=Math.max(34,(en(e)-s0)*PX-4), stt=state(e,n);
     const label=L>=3?shortTi(e):e.ti;
-    h+=`<button type="button" class="blk${stt==="past"?" past":""}${e.hl?" hlb":""}${e._fav?" favb":""}" data-tl="${esc(rid(e))}" style="--sc:${sc(e.s)};top:${y}px;height:${hgt}px;left:calc(48px + (100% - 56px) * ${lane} / ${L});width:calc((100% - 56px) / ${L} - 4px)" title="${esc(e.ti)} · ${esc(tvText(e))}"><span class="bt">${e.t}${stt==="live"?" · Live":""}</span><b>${esc(label)}</b>${hgt>60?`<span class="bv">${esc(tvText(e))}</span>`:""}</button>`;
+    h+=`<button type="button" class="blk${stt==="past"?" past":""}${TLSEL===rid(e)?" sel":""}${e.hl?" hlb":""}${e._fav?" favb":""}" data-tl="${esc(rid(e))}" style="--sc:${sc(e.s)};top:${y}px;height:${hgt}px;left:calc(48px + (100% - 56px) * ${lane} / ${L});width:calc((100% - 56px) / ${L} - 4px)" title="${esc(e.ti)} · ${esc(tvText(e))}"><span class="bt">${e.t}${stt==="live"?" · Live":""}</span><b>${esc(label)}</b>${hgt>60?`<span class="bv">${esc(tvText(e))}</span>`:""}</button>`;
   });
   if(n.m>=t0&&n.m<=t1&&evs.some(e=>e.d===n.d)) h+=`<div class="nowl" style="top:${(n.m-t0)*PX+top}px"></div>`;
-  return `<div class="tlw" id="tlw"><div class="tl" style="height:${H}px">${h}</div></div>${un.length?`<div class="tl-open">Ohne feste Zeit: ${un.map(e=>esc(e.ti)).join(" · ")}</div>`:""}`;
+  const isToday=evs.some(e=>e.d===n.d)&&n.m>=t0&&n.m<=t1;
+  const sel=TLSEL&&evs.find(e=>rid(e)===TLSEL);
+  if(sel) openRows.add(TLSEL);
+  return `<div class="tlbar"><span class="tlh">Wischen zum Bewegen · Antippen für Details</span>${isToday?`<button type="button" class="now" data-tlnow>Jetzt</button>`:""}<button type="button" data-tlz="-1" aria-label="Herauszoomen"${TLZI?"":" disabled"}>−</button><button type="button" data-tlz="1" aria-label="Hineinzoomen"${TLZI<TLZ.length-1?"":" disabled"}>+</button></div><div class="tlw" id="tlw" style="--tlh:${H+2}px"><div class="tl" style="height:${H}px;width:max(100%,${minW}px)">${h}</div></div>${sel?`<div class="list tlsel">${row(sel,n)}</div>`:""}${un.length?`<div class="tl-open">Ohne feste Zeit: ${un.map(e=>esc(e.ti)).join(" · ")}</div>`:""}`;
 }
 function conflicts(ev,n){
   const end=new Date(P(n.d).getTime()+7*864e5).toISOString().slice(0,10);
@@ -1378,6 +1394,7 @@ async function softRefresh(){
 })();
 let sel=null;
 function render(){
+  if(VIEW==="tl"&&Date.now()-TLBUSY<1500&&document.getElementById("tlw")){clearTimeout(render._t);render._t=setTimeout(render,1600);return;}
   const n=nowB();
   const ev=prep(DATA.events);
   const yday=new Date(P(n.d).getTime()-864e5).toISOString().slice(0,10);
@@ -1420,10 +1437,10 @@ function render(){
     const next=ev.filter(e=>e.hl&&state(e,n)==="future").sort((a,b)=>delta(a,n)-delta(b,n))[0];
     th=`<div class="list"><div class="empty">Heute läuft nichts Größeres.${next?` Nächstes Highlight: <b style="color:var(--ink)">${esc(next.ti)}</b>, ${WD[P(next.d).getUTCDay()]} ${next.t} Uhr.`:""}</div></div>`;
   }
-  const ow=document.getElementById("tlw"), keep=ow?ow.scrollTop:null;
+  const ow=document.getElementById("tlw"), keep=ow?ow.scrollTop:null, keepL=ow?ow.scrollLeft:0, keepR=ow?ow.scrollTop/(ow.scrollHeight||1):null;
   document.getElementById("today").innerHTML=th;
   const nw=document.getElementById("tlw");
-  if(nw){ if(keep!==null) nw.scrollTop=keep; else { const nl=nw.querySelector(".nowl"); nw.scrollTop=nl?Math.max(0,nl.offsetTop-90):0; } }
+  if(nw){ nw.addEventListener("scroll",()=>{TLBUSY=Date.now();},{passive:true}); nw.addEventListener("touchstart",()=>{TLBUSY=Date.now();},{passive:true}); nw.addEventListener("touchmove",()=>{TLBUSY=Date.now();},{passive:true}); nw.scrollLeft=keepL; if(keep!==null) nw.scrollTop=render._zoom?keepR*nw.scrollHeight:keep; else { const nl=nw.querySelector(".nowl"); nw.scrollTop=nl?Math.max(0,nl.offsetTop-nw.clientHeight*0.3):0; } render._zoom=false; }
 
   // Überschneidungen
   const cfs=conflicts(ev,n);
@@ -1604,7 +1621,9 @@ document.addEventListener("click",ev=>{
   const inv=ev.target.closest("[data-inv]"); if(inv){const e=ROWS[inv.dataset.inv]; if(e) shareOrCopy(inviteText(e),inv,"Zum Schauen einladen"); return;}
   const rv=ev.target.closest("[data-rv]"); if(rv){revealed.add(rv.dataset.rv); render(); return;}
   const vw=ev.target.closest("[data-view]"); if(vw){VIEW=vw.dataset.view; try{localStorage.setItem("md-view",VIEW);}catch(x){} render(); return;}
-  const tb=ev.target.closest("[data-tl]"); if(tb){VIEW="list"; try{localStorage.setItem("md-view",VIEW);}catch(x){} openRows.add(tb.dataset.tl); render(); const r2=[...document.querySelectorAll("#today .row[data-id]")].find(r=>r.dataset.id===tb.dataset.tl); if(r2) r2.scrollIntoView({behavior:"smooth",block:"center"}); return;}
+  const tz=ev.target.closest("[data-tlz]"); if(tz){TLZI=Math.max(0,Math.min(TLZ.length-1,TLZI+(+tz.dataset.tlz))); try{localStorage.setItem("md-tlz",String(TLZI));}catch(x){} TLBUSY=0; render._zoom=true; render(); return;}
+  if(ev.target.closest("[data-tlnow]")){const w=document.getElementById("tlw"); if(w) tlScrollNow(w); return;}
+  const tb=ev.target.closest("[data-tl]"); if(tb){TLSEL=TLSEL===tb.dataset.tl?null:tb.dataset.tl; TLBUSY=0; render(); const d=document.querySelector(".tlsel"); if(d) d.scrollIntoView({behavior:"smooth",block:"nearest"}); return;}
   const rh=ev.target.closest("#recaphide"); if(rh){try{localStorage.setItem("md-recap",rh.dataset.k);}catch(x){} render(); return;}
   const rs=ev.target.closest("#recapshare"); if(rs){shareOrCopy(recapText(prep(DATA.events),nowB()),rs,"Teilen"); return;}
   if(ev.target.closest("#pfadd")&&pendingFriend){PREFS.group=(PREFS.group||[]).filter(x=>x.n!==pendingFriend.n).concat([pendingFriend]); savePrefs(); pendingFriend=null; try{sessionStorage.removeItem("md-pf");}catch(x){} render(); return;}
