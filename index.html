@@ -451,6 +451,21 @@ details.sg[open] summary{margin-bottom:12px}
 .pinfo span{font-size:13.5px;color:var(--muted)}
 .pinfo small{font-size:12px;color:var(--faint)}
 .pbtns{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+/* Lade-Platzhalter */
+.sk{background:linear-gradient(90deg,var(--surface-2) 25%,color-mix(in srgb,var(--ink) 9%,var(--surface-2)) 50%,var(--surface-2) 75%);background-size:200% 100%;animation:skm 1.3s ease-in-out infinite;border-radius:8px}
+@keyframes skm{from{background-position:200% 0}to{background-position:-200% 0}}
+.skc{gap:12px}
+.skr{display:flex;gap:12px;align-items:center;padding:6px 0}
+/* Ziehen zum Aktualisieren */
+.ptr{position:fixed;left:50%;top:calc(-44px + env(safe-area-inset-top));width:40px;height:40px;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--muted);display:grid;place-items:center;z-index:70;opacity:0;transform:translate(-50%,0);box-shadow:0 6px 18px rgba(0,0,0,.3);transition:opacity .15s;pointer-events:none}
+.ptr svg{width:20px;height:20px}
+.ptr.ready{color:var(--ink)}
+.ptr.spin svg{animation:ptrs .7s linear infinite}
+@keyframes ptrs{to{transform:rotate(360deg)}}
+.sync.spinning svg{animation:ptrs .7s linear infinite}
+/* sanfte Übergänge */
+.tab:not([hidden]){animation:tabin .22s ease}
+@keyframes tabin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -978,7 +993,7 @@ async function rdLoad(force){
     else if(PREFS&&RD.social&&RD.social.me&&!PREFS.k){PREFS.k=newKey(); PREFS.name=PREFS.name||RD.social.me.name; savePrefs(); rpc("md_profile_create",{p_name:RD.social.me.name,p_key:PREFS.k,p_device:devName(),p_standalone:isStandalone()}).catch(()=>{});}
     if(pendingCode&&!st) await rdPeek();
   }catch(e){RD.err="Die Watch Party ist gerade nicht erreichbar.";}
-  RD.loading=false; render();
+  RD.loading=false; RD.loaded=true; render();
 }
 function openNamePrompt(){
   if(!document.getElementById("sheet").hidden) return;
@@ -1018,6 +1033,9 @@ async function openAdmin(pin){
   }catch(e){RD.adminErr="Nicht erreichbar."; const b=document.getElementById("adminbox"); if(b) b.innerHTML=adminHtml();}
 }
 
+const skLine=(w,h)=>`<div class="sk" style="width:${w};height:${h||12}px"></div>`;
+const skCard=n=>`<div class="card skc">${skLine("45%",18)}${Array.from({length:n||2},(_,i)=>skLine(i%2?"70%":"90%")).join("")}${skLine("40%",34)}</div>`;
+const skRows=n=>`<div class="card skc">${Array.from({length:n||3},()=>`<div class="skr"><div class="sk" style="width:38px;height:38px;border-radius:50%"></div><div style="flex:1;display:flex;flex-direction:column;gap:7px">${skLine("55%",14)}${skLine("35%",10)}</div></div>`).join("")}</div>`;
 async function rdPeek(){try{RD.peek=await rpc("md_peek",{p_code:pendingCode});}catch(e){RD.peek=null;} render();}
 async function rdDo(fn,args,after){
   RD.loading=true; render();
@@ -1052,7 +1070,7 @@ function rundeMain(ev,n){
   if(!rdOn()) return `<div class="card"><b>Watch Party kommt gleich</b><p>Hier siehst du bald mit deinen Freunden, wer welches Spiel schauen will. Die Funktion wird gerade eingerichtet.</p></div>`;
   const err=RD.err?`<div class="rerr">${esc(RD.err)}</div>`:"";
   if(!RD.state){
-    if(RD.loading) return `<div class="card"><p>Lädt …</p></div>`;
+    if(RD.loading||(!RD.loaded&&rdOn())) return skCard(2)+skCard(2);
     const nm=esc((PREFS&&PREFS.name)||"");
     if(pendingCode){
       const pk=RD.peek;
@@ -1108,6 +1126,7 @@ function fresHtml(){
 function friendsHtml(){
   if(!rdOn()) return "";
   const so=RD.social, me=so&&so.me;
+  if(!me&&!RD.loaded) return `<section class="sec"><div class="sec-h"><h2>Freunde</h2></div>${skRows(3)}</section>`;
   if(!me) return `<section class="sec"><div class="sec-h"><h2>Freunde</h2></div><div class="card"><b>Freunde finden</b><p>Leg ein Profil an. Dann können dich Freunde in Matchday finden, und du holst sie direkt in deine Watch Party, ganz ohne Link.</p>
     <input class="tsearch" id="pf-name" placeholder="Dein Vorname" value="${esc((PREFS&&PREFS.name)||"")}" maxlength="30" autocomplete="given-name">
     <button type="button" class="save" id="pf-create">Profil anlegen</button></div></section>`;
@@ -1274,6 +1293,39 @@ async function disablePush(){
   await rpc("md_push_delete",{}); RD.state.push=false;
 }
 
+async function softRefresh(){
+  try{
+    const r=await fetch("data.js?v="+Date.now(),{cache:"no-store"}); const t=await r.text();
+    const nd=(new Function(t.replace(/^\s*const\s+DATA\s*=\s*/,"return ")))();
+    if(nd&&nd.events){Object.keys(DATA).forEach(k=>delete DATA[k]); Object.assign(DATA,nd);}
+  }catch(e){}
+  render(); await rdLoad();
+}
+(function(){
+  const ind=document.createElement("div"); ind.className="ptr"; ind.setAttribute("aria-hidden","true");
+  ind.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>';
+  document.body.appendChild(ind);
+  let y0=null, busy=false;
+  const reset=()=>{ind.classList.remove("ready","spin"); ind.style.transform=""; ind.style.opacity="";};
+  document.addEventListener("touchstart",e=>{
+    if(busy||window.scrollY>2||!document.getElementById("sheet").hidden||e.touches.length>1||e.target.closest(".tlw")){y0=null;return;}
+    y0=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener("touchmove",e=>{
+    if(y0===null) return; const dist=e.touches[0].clientY-y0;
+    if(dist<=0||window.scrollY>2){reset(); return;}
+    const d=Math.min(110,dist*.5);
+    ind.style.transform=`translate(-50%,${d}px) rotate(${d*3}deg)`; ind.style.opacity=String(Math.min(1,d/55));
+    ind.classList.toggle("ready",d>=65);
+  },{passive:true});
+  document.addEventListener("touchend",async()=>{
+    if(y0===null) return; y0=null;
+    if(!ind.classList.contains("ready")){reset(); return;}
+    busy=true; ind.classList.add("spin"); ind.style.transform="translate(-50%,70px)"; ind.style.opacity="1";
+    if(navigator.vibrate) try{navigator.vibrate(10);}catch(x){}
+    await softRefresh(); reset(); busy=false; toast("Aktualisiert");
+  });
+})();
 let sel=null;
 function render(){
   const n=nowB();
@@ -1364,7 +1416,7 @@ function openSettings(first){
 }
 function profCard(){
   const me=RD.social&&RD.social.me;
-  if(!me) return `<div class="prof"><div class="pav">?</div><div class="pinfo"><b>Profil wird geladen …</b><small>Deine Matchday-ID erscheint gleich hier.</small></div></div>`;
+  if(!me) return `<div class="prof"><div class="sk" style="width:54px;height:54px;border-radius:50%"></div><div class="pinfo" style="flex:1;gap:8px">${skLine("40%",18)}${skLine("60%",12)}</div></div>`;
   if(RD.editName) return `<div class="prof"><div class="pav">${esc(me.name.charAt(0).toUpperCase())}</div><div class="pinfo" style="flex:1"><input class="tsearch" id="pn-in" value="${esc(me.name)}" maxlength="30" autocomplete="given-name"><div class="chips" style="margin-top:8px"><button type="button" class="chip" aria-pressed="true" id="pn-save">Speichern</button><button type="button" class="chip" id="pn-cancel">Abbrechen</button></div></div></div>`;
   return `<div class="prof"><div class="pav">${esc(me.name.charAt(0).toUpperCase())}</div><div class="pinfo"><b>${esc(me.name)}</b><span>Matchday-ID ${tagHtml(me.tag)}</span><small>${me.disc?"Freunde können dich finden":"Für andere nicht auffindbar"}</small></div>
     <div class="pbtns"><button type="button" class="chip" aria-pressed="true" id="pid-share">ID teilen</button><button type="button" class="chip" id="pn-edit">Name ändern</button></div></div>`;
@@ -1478,7 +1530,7 @@ document.addEventListener("click",ev=>{
   const ps=ev.target.closest("[data-ps]"); if(ps){const v=ps.dataset.ps, i=v.lastIndexOf("|"), id=v.slice(0,i), st=v.slice(i+1), mp=myPlan(id); setPlan(id,mp&&mp.s===st?null:st); return;}
   const pp=ev.target.closest("[data-pp]"); if(pp){const v=pp.dataset.pp, i=v.lastIndexOf("|"); setPlace(v.slice(0,i),v.slice(i+1)); return;}
   
-  if(ev.target.closest("#sync")){location.reload();return;}
+  if(ev.target.closest("#sync")){const b=ev.target.closest("#sync"); b.classList.add("spinning"); softRefresh().then(()=>{b.classList.remove("spinning"); toast("Aktualisiert");}); return;}
   if(ev.target.closest("#nowbtn")){openNow();return;}
   const tbb=ev.target.closest("[data-tabbtn]"); if(tbb){setTab(tbb.dataset.tabbtn); if(tbb.dataset.tabbtn==="runde") rdLoad(); return;}
   if(ev.target.closest("#tabset")||ev.target.closest("#meav")){openSettings(false);return;}
