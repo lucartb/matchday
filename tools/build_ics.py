@@ -9,7 +9,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BER = ZoneInfo("Europe/Berlin")
 DUR = {"Wintersport": 90, "American Football": 200, "Leichtathletik": 180, "Schwimmen": 150,
        "Beachvolleyball": 60, "Radsport": 90, "Fußball": 115, "Darts": 210, "Rugby": 110,
-       "Handball": 100, "Motorsport": 120}
+       "Handball": 100, "Motorsport": 120, "Golf": 300}
 
 def slug(x):
     x = x.lower().replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace("ß", "ss")

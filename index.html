@@ -41,6 +41,7 @@
   --c-la:#c8b27a;
   --c-swim:#7fb3c4;
   --c-beach:#d6a06a;
+  --c-golf:#9bbd63;
   --c-sonst:#9aa0b3;
   --gold:#d4b46a;
   --gold-ink:#f3e2b3;
@@ -54,7 +55,7 @@
   --bg:#f4f5f8;--surface:#ffffff;--surface-2:#eceef3;--line:#dfe2ea;--ink:#13151c;--muted:#5d6475;--faint:#8b91a2;
   --accent:#c4593c;--live:#e0283b;
   --c-fussball:#3f8a66;--c-darts:#b35a5a;--c-rugby:#98723f;--c-handball:#4a71a3;--c-motorsport:#6d60a6;--c-rad:#985b83;
-  --c-winter:#4f7fb0;--c-af:#a1633b;--c-la:#937a2f;--c-swim:#2f849c;--c-beach:#ae6d35;--c-sonst:#6b7183;
+  --c-winter:#4f7fb0;--c-af:#a1633b;--c-la:#937a2f;--c-swim:#2f849c;--c-beach:#ae6d35;--c-golf:#5f8a2c;--c-sonst:#6b7183;
   --gold:#b08a2e;--gold-ink:#7a5a12;--soon-ink:#a4472c;--live-ink:#c41d30;--info-ink:#3b4150;--shade:rgba(0,0,0,.05);
   color-scheme:light;
 }
@@ -63,7 +64,7 @@
     --bg:#f4f5f8;--surface:#ffffff;--surface-2:#eceef3;--line:#dfe2ea;--ink:#13151c;--muted:#5d6475;--faint:#8b91a2;
     --accent:#c4593c;--live:#e0283b;
     --c-fussball:#3f8a66;--c-darts:#b35a5a;--c-rugby:#98723f;--c-handball:#4a71a3;--c-motorsport:#6d60a6;--c-rad:#985b83;
-    --c-winter:#4f7fb0;--c-af:#a1633b;--c-la:#937a2f;--c-swim:#2f849c;--c-beach:#ae6d35;--c-sonst:#6b7183;
+    --c-winter:#4f7fb0;--c-af:#a1633b;--c-la:#937a2f;--c-swim:#2f849c;--c-beach:#ae6d35;--c-golf:#5f8a2c;--c-sonst:#6b7183;
     --gold:#b08a2e;--gold-ink:#7a5a12;--soon-ink:#a4472c;--live-ink:#c41d30;--info-ink:#3b4150;--shade:rgba(0,0,0,.05);
     color-scheme:light;
   }
@@ -612,7 +613,7 @@ function titleHtml(e,big){
 }
 
 /* ---- Personalisierung (pro Gerät gespeichert) ---- */
-const ALL_SPORTS=["Fußball","Darts","Handball","Rugby","Radsport","Motorsport","Wintersport","American Football","Leichtathletik","Schwimmen","Beachvolleyball"];
+const ALL_SPORTS=["Fußball","Darts","Handball","Rugby","Radsport","Motorsport","Wintersport","American Football","Leichtathletik","Schwimmen","Beachvolleyball","Golf"];
 const SUBS={"Wintersport":["Biathlon","Ski alpin","Skispringen","Langlauf","Nordische Kombination","Rodeln & Bob","Eisschnelllauf","Snowboard"],"American Football":["NFL"]};
 const ALL_SUBS=()=>Object.values(SUBS).flat();
 const SERVICES=[
@@ -689,13 +690,14 @@ const ICI={
 "American Football":`<circle cx="11.6" cy="4.6" r="2.5" fill="currentColor"/><path ${T_} d="M13.4 5.4l1.6.6"/><path ${S_} d="M11.2 7.6l-.6 5.6M11 8.6l-3.4-1.4-1.8-2.6M11.2 8.6l3.8 1.6M10.6 13.2l3.6 2.8-.6 5M10.6 13.2l-3.4 2.8-.8 4"/><ellipse cx="4.6" cy="3.2" rx="2.5" ry="1.4" transform="rotate(35 4.6 3.2)" fill="currentColor"/>`,
 "Leichtathletik":`<circle cx="15.4" cy="3.4" r="2.2" fill="currentColor"/><path ${S_} d="M14.6 6.6l-2.8 6M14.2 7.4l-4.4.6-2 3.2M14.2 7.4l2.6 3.4 3.6.4M11.8 12.6l4.2 2.6-.6 5.6M11.8 12.6l-2.6 4.6-5 .8"/><path ${T_} d="M1.8 21.4h20.4" opacity=".55"/>`,
 "Schwimmen":`<circle cx="17.2" cy="7.6" r="2.2" fill="currentColor"/><path ${S_} d="M3.4 13c2.4-.6 4.4-2.6 5.6-5.2l3.4 3.2 3.4-1.6"/><path ${T_} d="M2.4 16.4c1.6 0 1.6-1.2 3.2-1.2s1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2M2.4 20.4c1.6 0 1.6-1.2 3.2-1.2s1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2"/>`,
+"Golf":`<path ${T_} d="M19.5 21.5V3.5l-4 1.8 4 1.8"/><circle cx="9" cy="3.6" r="2.2" fill="currentColor"/><path ${S_} d="M8.6 6.8l.4 6.6M8.8 8l3.2-1.6 2.4-2.6M8.8 8.6L6 10.4M9 13.4l2.6 3.2-.4 4.6M9 13.4l-2.4 3.4-.8 4"/><path ${S_} d="M14.4 3.8l-3 -1.6"/><circle cx="16.6" cy="20.6" r=".9" fill="currentColor"/><path ${T_} d="M2.5 21.5h19" opacity=".55"/>`,
 "Beachvolleyball":`<path ${T_} d="M3 21.5V5M3 5.4h5.4v4.8H3M5.7 5.4v4.8M3 7.8h5.4"/><circle cx="20.2" cy="3.2" r="2.2" fill="currentColor"/><circle cx="13.6" cy="6.6" r="2.1" fill="currentColor"/><path ${S_} d="M14 9.6l-.4 5.4M14.2 10.4l2.8-2.6 1.8-2.6M14 10.6l-3.4 1.6M13.6 15l3 2.6-.6 3.6M13.6 15l-2.6 3 .4 2.8"/><path ${T_} d="M8.5 21.5h13" opacity=".55"/>`
 };
 const ICONS=Object.fromEntries(Object.entries(ICI).map(([k,v])=>[k,`<svg viewBox="0 0 24 24" fill="none">${v}</svg>`]));
 ICONS._='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0z"/><path d="M7 6H4v1a3 3 0 003 3M17 6h3v1a3 3 0 01-3 3"/></svg>';
 const glyph=s=>`<span class="mi">${ICONS[s]||ICONS._}</span>`;
-const COLOR={"Wintersport":"--c-winter","American Football":"--c-af","Leichtathletik":"--c-la","Schwimmen":"--c-swim","Beachvolleyball":"--c-beach","Radsport":"--c-rad","Fußball":"--c-fussball","Darts":"--c-darts","Rugby":"--c-rugby","Handball":"--c-handball","Motorsport":"--c-motorsport"};
-const DUR={"Wintersport":90,"American Football":200,"Leichtathletik":180,"Schwimmen":150,"Beachvolleyball":60,"Radsport":90,"Fußball":115,"Darts":210,"Rugby":110,"Handball":100,"Motorsport":120};
+const COLOR={"Wintersport":"--c-winter","American Football":"--c-af","Leichtathletik":"--c-la","Schwimmen":"--c-swim","Beachvolleyball":"--c-beach","Golf":"--c-golf","Radsport":"--c-rad","Fußball":"--c-fussball","Darts":"--c-darts","Rugby":"--c-rugby","Handball":"--c-handball","Motorsport":"--c-motorsport"};
+const DUR={"Wintersport":90,"American Football":200,"Leichtathletik":180,"Schwimmen":150,"Beachvolleyball":60,"Golf":300,"Radsport":90,"Fußball":115,"Darts":210,"Rugby":110,"Handball":100,"Motorsport":120};
 const sc=s=>`var(${COLOR[s]||"--c-sonst"})`;
 const icon=(s,sm)=>`<span class="ico${sm?" sm":""}" style="--sc:${sc(s)}" title="${esc(s)}" aria-label="${esc(s)}">${ICONS[s]||ICONS._}</span>`;
 const WD=["So","Mo","Di","Mi","Do","Fr","Sa"], WDL=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
