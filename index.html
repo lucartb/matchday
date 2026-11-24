@@ -43,6 +43,31 @@ header{display:flex;flex-direction:column;gap:4px}
 .sync{margin-left:auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
 .sync svg{width:18px;height:18px}
 .sync.ok{color:#7fb39a;border-color:color-mix(in srgb,#7fb39a 40%,var(--line))}
+.gear{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.gear svg{width:18px;height:18px}
+.brand .sync{margin-left:auto}
+.row.fav{box-shadow:inset 3px 0 0 #d4b46a}
+.heart{color:#d4b46a;font-size:12px;margin-left:5px}
+.na-tag{display:inline-block;font-size:10.5px;font-weight:700;color:var(--faint);border:1px dashed var(--line);border-radius:5px;padding:0 5px;margin-left:6px}
+.row.na .body,.row.na .ico{opacity:.55}
+.tcol .dd{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+/* Einstellungen */
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(5,6,10,.72);display:flex;justify-content:center;align-items:flex-end;backdrop-filter:blur(6px)}
+.sheet[hidden],.sec[hidden]{display:none}
+.panel{background:var(--bg);border:1px solid var(--line);border-radius:22px 22px 0 0;width:100%;max-width:620px;max-height:92vh;overflow:auto;padding:20px 16px 28px;display:flex;flex-direction:column;gap:22px}
+.panel h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.01em}
+.panel h3{margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.panel .hint{font-size:13px;color:var(--faint);margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:7px;font:600 14px var(--font);padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .x{font-size:15px;line-height:1;opacity:.7}
+.tsearch{width:100%;font:500 15px var(--font);padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sugg button{font:600 13px var(--font);padding:6px 10px;border-radius:999px;border:1px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:#7fb39a}
+.save{font:800 16px var(--font);padding:14px;border-radius:14px;border:0;background:var(--ink);color:var(--bg);cursor:pointer}
 .brand h1{margin:0;font-size:30px;font-weight:800;letter-spacing:-.02em}
 .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--live)}
 .sub{color:var(--muted);font-size:14px;font-weight:500}
@@ -151,9 +176,14 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1><button id="sync" class="sync" type="button"></button></div>
+    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1><button id="sync" class="sync" type="button"></button><button id="gear" class="gear" type="button" aria-label="Einstellungen" title="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
     <div class="sub" id="sub"></div>
   </header>
+
+  <section class="sec" id="fav-sec" hidden>
+    <div class="sec-h"><h2>Meine Teams</h2><span id="fav-count"></span></div>
+    <div id="fav"></div>
+  </section>
 
   <section class="sec" id="live-sec" hidden>
     <div class="sec-h"><h2>Jetzt live</h2></div>
@@ -185,6 +215,7 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 
   <footer id="foot"></footer>
 </div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="st-title"><div class="panel" id="panel"></div></div>
 
 <script>document.write('<script src="data.js?v='+Date.now()+'"><\/script>');</script>
 <script>
@@ -248,9 +279,42 @@ function badge(name,ov){
 function sides(e){const p=e.ti.split(" – "); return (p.length===2 && !e.ti.includes(",") && !/\(/.test(e.ti))?p:null;}
 function titleHtml(e,big){
   const p=sides(e), star=e.hl?' <span class="hlstar">★</span>':"";
-  if(!p) return `<div class="${big?"t":"title"}">${esc(e.ti)}${star}</div>`;
+  const heart=e._fav?'<span class="heart" title="Mein Team">♥</span>':"";
+  if(!p) return `<div class="${big?"t":"title"}">${esc(e.ti)}${star}${heart}</div>`;
   const ov=[e.h,e.a];
-  return `<div class="mu${big?" big":""}">${p.map((x,i)=>`<div class="tm">${badge(x,ov[i])}<span>${esc(x)}${i===1?star:""}</span></div>`).join("")}</div>`;
+  return `<div class="mu${big?" big":""}">${p.map((x,i)=>`<div class="tm">${badge(x,ov[i])}<span>${esc(x)}${i===1?star+heart:""}</span></div>`).join("")}</div>`;
+}
+
+/* ---- Personalisierung (pro Gerät gespeichert) ---- */
+const ALL_SPORTS=["Fußball","Darts","Handball","Rugby","Radsport","Motorsport"];
+const SERVICES=[
+ {k:"free",l:"Free-TV",m:x=>FREE.includes(x.toLowerCase())},
+ {k:"dazn",l:"DAZN",m:x=>/dazn/i.test(x)},
+ {k:"sky",l:"Sky / WOW",m:x=>/^(sky|wow)/i.test(x)},
+ {k:"prime",l:"Prime Video",m:x=>/prime/i.test(x)},
+ {k:"dyn",l:"Dyn",m:x=>/^dyn/i.test(x)},
+ {k:"magenta",l:"MagentaSport",m:x=>/magenta/i.test(x)},
+ {k:"euro",l:"Eurosport / HBO Max",m:x=>/eurosport|hbo/i.test(x)&&!FREE.includes(x.toLowerCase())}
+];
+let PREFS=null;
+try{PREFS=JSON.parse(localStorage.getItem("md-prefs")||"null");}catch(e){}
+function savePrefs(){try{localStorage.setItem("md-prefs",JSON.stringify(PREFS));}catch(e){}}
+function sportsInData(){return [...new Set(ALL_SPORTS.concat(DATA.events.map(e=>e.s)))];}
+function availOf(e){
+  if(!PREFS||!e.tv||!e.tv.length) return null;
+  return e.tv.some(x=>SERVICES.some(sv=>PREFS.services.includes(sv.k)&&sv.m(x)));
+}
+function favOf(e){return !!(PREFS&&PREFS.teams.some(t=>e.ti.includes(t)));}
+function prep(list){
+  return list.filter(e=>!PREFS||PREFS.sports.includes(e.s)).map(e=>{
+    const a=availOf(e), f=favOf(e);
+    return Object.assign({},e,{_na:a===false,_fav:f},f?{x:false}:{});
+  }).filter(e=>!(PREFS&&PREFS.hideOther&&e._na&&!e._fav));
+}
+function knownTeams(){
+  const set=new Set(Object.keys(TEAMS));
+  DATA.events.forEach(e=>{const p=sides(e); if(p) p.forEach(x=>set.add(x.trim()));});
+  return [...set].sort((a,b)=>a.localeCompare(b,"de"));
 }
 
 const ICONS={
@@ -304,11 +368,12 @@ function row(e,n){
   let pill="";
   if(st==="live") pill=`<span class="pill live"><span class="pulse"></span>Live</span>`;
   else if(st==="future" && e.d===n.d) pill=`<span class="pill${dl<=120?" soon":""}">${countdown(dl)}</span>`;
-  return `<div class="row${e.hl?" is-hl":""}${st==="past"?" past":""}${tap?" tap":""}${open?" open":""}"${tap?` data-id="${esc(id)}" role="button" tabindex="0" aria-expanded="${open}"`:""}>
-    <div class="tcol"><div class="time${e.t?"":" open"}">${e.t||"offen"}</div>${e._par>1?`<span class="par" title="${e._par} Übertragungen gleichzeitig">${e._par} parallel</span>`:""}</div>
+  const x0=P(e.d);
+  return `<div class="row${e.hl?" is-hl":""}${e._fav?" fav":""}${e._na?" na":""}${st==="past"?" past":""}${tap?" tap":""}${open?" open":""}"${tap?` data-id="${esc(id)}" role="button" tabindex="0" aria-expanded="${open}"`:""}>
+    <div class="tcol">${e._showDate?`<span class="dd">${e.d===n.d?"Heute":WD[x0.getUTCDay()]+" "+x0.getUTCDate()+"."}</span>`:""}<div class="time${e.t?"":" open"}">${e.t||"offen"}</div>${e._par>1?`<span class="par" title="${e._par} Übertragungen gleichzeitig">${e._par} parallel</span>`:""}</div>
     ${icon(e.s)}
     <div class="body">${titleHtml(e)}
-      <div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b>${e.n?`<br>${esc(e.n)}`:""}</div></div>
+      <div class="meta">${esc(e.c)} · <b>${esc(tvText(e))}</b>${e._na?'<span class="na-tag">nicht in deinen Diensten</span>':""}${e.n?`<br>${esc(e.n)}`:""}</div></div>
     <div class="side">${pill}${isFree(e)?FTV:""}${tap?CHEV:""}</div>
     ${tap&&open?`<div class="info">${esc(e.i)}</div>`:""}
   </div>`;
@@ -345,7 +410,7 @@ function resRow(e){
   return `<div class="row"><div>${icon(e.s)}</div><div class="body">${mid}<div class="meta">${esc(e.c)}${e.n?` · ${esc(e.n)}`:""}</div></div><div class="side">${right}</div></div>`;
 }
 function yHtml(yday){
-  const ev=DATA.events, res=DATA.gestern||[];
+  const ev=prep(DATA.events), res=DATA.gestern||[];
   const yev=ev.filter(e=>e.d===yday).map(e=>{const r=res.find(x=>x.ti===e.ti); return Object.assign({},e,r?{r:r.r}:{});});
   res.forEach(r=>{if(!yev.some(e=>e.ti===r.ti)) yev.push(r);});
   yev.sort(byTime);
@@ -358,8 +423,8 @@ function yHtml(yday){
 let sel=null;
 function render(){
   const n=nowB();
+  const ev=prep(DATA.events);
   const yday=new Date(P(n.d).getTime()-864e5).toISOString().slice(0,10);
-  const ev=DATA.events;
   const t=P(n.d);
   const ok=DATA.stand.slice(0,10)===n.d, sb=document.getElementById("sync");
   sb.className="sync"+(ok?" ok":"");
@@ -367,6 +432,12 @@ function render(){
   sb.setAttribute("aria-label",sb.title);
   sb.innerHTML=ok?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>';
   document.getElementById("sub").textContent=`${WDL[t.getUTCDay()]}, ${t.getUTCDate()}. ${MON[t.getUTCMonth()]}`;
+
+  // Meine Teams
+  const fv=ev.filter(e=>e._fav && e.d>=n.d && state(e,n)!=="past").sort((a,b)=>a.d.localeCompare(b.d)||byTime(a,b)).slice(0,5);
+  document.getElementById("fav-sec").hidden=!fv.length;
+  document.getElementById("fav-count").textContent=fv.length?`nächste ${fv.length}`:"";
+  document.getElementById("fav").innerHTML=fv.length?`<div class="list">${fv.map(e=>row(Object.assign({},e,{_showDate:true}),n)).join("")}</div>`:"";
 
   // Live
   const live=ev.filter(e=>state(e,n)==="live").sort(byTime);
@@ -411,7 +482,49 @@ function render(){
   document.getElementById("foot").textContent=`Stand: ${s.getUTCDate()}.${s.getUTCMonth()+1}.${s.getUTCFullYear()}, ${DATA.stand.slice(11,16)} Uhr. Alle Zeiten deutsche Zeit. Wird jeden Morgen automatisch aktualisiert, kurzfristige Änderungen der Sender sind möglich.`;
 }
 
+let draft=null;
+function openSettings(first){
+  draft=PREFS?JSON.parse(JSON.stringify(PREFS)):{sports:sportsInData(),teams:[],services:SERVICES.map(s=>s.k),hideOther:false};
+  draft._first=!!first; drawSettings(); document.getElementById("sheet").hidden=false;
+}
+function drawSettings(q){
+  q=q||"";
+  const kt=knownTeams().filter(t=>!draft.teams.includes(t)&&q.length>=2&&t.toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  const chip=(on,attr,label)=>`<button type="button" class="chip" aria-pressed="${on}" ${attr}>${label}</button>`;
+  document.getElementById("panel").innerHTML=`
+   <h2 id="st-title">${draft._first?"Willkommen bei Matchday":"Einstellungen"}</h2>
+   ${draft._first?'<p class="hint" style="margin-top:-12px">Wähle kurz aus, was dich interessiert. Das gilt nur auf diesem Gerät und lässt sich oben über das Zahnrad jederzeit ändern.</p>':""}
+   <div><h3>Sportarten</h3><div class="chips">${sportsInData().map(sp=>chip(draft.sports.includes(sp),`data-sport="${esc(sp)}"`,`${icon(sp,true)}${esc(sp)}`)).join("")}</div></div>
+   <div><h3>Meine Teams & Spieler</h3><p class="hint">Diese Spiele stehen oben unter „Meine Teams“ und werden nie eingeklappt.</p>
+     <div class="chips" style="margin-bottom:10px">${draft.teams.map(t=>`<button type="button" class="chip" aria-pressed="true" data-rmteam="${esc(t)}">${badge(t)}${esc(t)}<span class="x" aria-hidden="true">×</span></button>`).join("")||'<span class="hint" style="margin:0">Noch keine ausgewählt.</span>'}</div>
+     <input class="tsearch" id="tsearch" type="search" placeholder="Team oder Spieler suchen, z. B. Dortmund" value="${esc(q)}" autocomplete="off">
+     <div class="sugg">${kt.map(t=>`<button type="button" data-addteam="${esc(t)}">+ ${esc(t)}</button>`).join("")}${q.length>=2&&!kt.length?`<button type="button" data-addteam="${esc(q)}">+ „${esc(q)}“ übernehmen</button>`:""}</div></div>
+   <div><h3>Meine Dienste</h3><p class="hint">Was du schauen kannst. Spiele auf anderen Diensten werden markiert.</p>
+     <div class="chips">${SERVICES.map(sv=>chip(draft.services.includes(sv.k),`data-svc="${sv.k}"`,esc(sv.l))).join("")}</div>
+     <label class="switch" style="margin-top:12px"><span>Spiele auf anderen Diensten ganz ausblenden</span><input type="checkbox" id="hideother" ${draft.hideOther?"checked":""}></label></div>
+   <button type="button" class="save" id="savesettings">Speichern</button>`;
+  const inp=document.getElementById("tsearch");
+  inp.addEventListener("input",()=>{const v=inp.value; drawSettings(v); const i2=document.getElementById("tsearch"); i2.focus(); i2.setSelectionRange(v.length,v.length);});
+  document.getElementById("hideother").addEventListener("change",e=>{draft.hideOther=e.target.checked;});
+}
+document.getElementById("sheet").addEventListener("click",ev=>{
+  const t=ev.target.closest("button"); if(!t||!draft) return;
+  const tog=(arr,v)=>{const i=arr.indexOf(v); i>=0?arr.splice(i,1):arr.push(v);};
+  const q=(document.getElementById("tsearch")||{}).value||"";
+  if(t.dataset.sport){tog(draft.sports,t.dataset.sport); drawSettings(q);}
+  else if(t.dataset.svc){tog(draft.services,t.dataset.svc); drawSettings(q);}
+  else if(t.dataset.addteam){draft.teams.push(t.dataset.addteam.trim()); drawSettings("");}
+  else if(t.dataset.rmteam){draft.teams=draft.teams.filter(x=>x!==t.dataset.rmteam); drawSettings(q);}
+  else if(t.id==="savesettings"){
+    if(!draft.sports.length){alertBox("Bitte mindestens eine Sportart wählen."); return;}
+    delete draft._first; PREFS=draft; draft=null; savePrefs();
+    document.getElementById("sheet").hidden=true; sel=null; render();
+  }
+});
+function alertBox(msg){const b=document.getElementById("savesettings"); b.textContent=msg; setTimeout(()=>{if(b.isConnected) b.textContent="Speichern";},2200);}
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&PREFS&&!document.getElementById("sheet").hidden){document.getElementById("sheet").hidden=true; draft=null;}});
 document.addEventListener("click",ev=>{
+  if(ev.target.closest("#gear")){openSettings(false);return;}
   if(ev.target.closest("#sync")){location.reload();return;}
   const r=ev.target.closest(".row.tap");
   if(r){const id=r.dataset.id; openRows.has(id)?openRows.delete(id):openRows.add(id); render(); return;}
@@ -437,7 +550,8 @@ document.addEventListener("click",ev=>{
 })();
 document.addEventListener("keydown",ev=>{const r=ev.target.closest&&ev.target.closest(".row.tap"); if(r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault(); r.click();}});
 render();
-setInterval(render,30000);
+if(!PREFS) openSettings(true);
+setInterval(()=>{if(document.getElementById("sheet").hidden) render();},30000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden) render();});
 </script>
 </body>
