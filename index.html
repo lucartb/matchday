@@ -442,6 +442,15 @@ details.sg[open] summary{margin-bottom:12px}
 .adg{display:flex;flex-wrap:wrap;gap:6px}
 .adg span{font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:7px;padding:3px 7px}
 .adw{font-size:12.5px;font-weight:700;color:var(--soon-ink)}
+.meav{width:36px;height:36px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--c-fussball),var(--c-handball));color:#0b1410;font:800 15px var(--font);cursor:pointer;flex:0 0 auto}
+.meav[hidden]{display:none}
+.prof{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.pav{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--c-fussball),var(--c-handball));color:#0b1410;font:800 22px var(--font);flex:0 0 auto}
+.pinfo{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pinfo b{font-size:19px;font-weight:800}
+.pinfo span{font-size:13.5px;color:var(--muted)}
+.pinfo small{font-size:12px;color:var(--faint)}
+.pbtns{display:flex;gap:6px;flex-wrap:wrap;width:100%}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -449,7 +458,7 @@ details.sg[open] summary{margin-bottom:12px}
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1><button id="sync" class="sync" type="button"></button><button id="sharetop" class="gear" type="button" aria-label="Mit Freunden teilen" title="Mit Freunden teilen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button></div>
+    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1><button id="sync" class="sync" type="button"></button><button id="sharetop" class="gear" type="button" aria-label="Mit Freunden teilen" title="Mit Freunden teilen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button id="meav" class="meav" type="button" aria-label="Mein Profil" title="Mein Profil" hidden></button></div>
     <div class="sub" id="sub"></div>
   </header>
 
@@ -1276,6 +1285,7 @@ function render(){
   sb.title=ok?"Heute aktualisiert":"Nicht von heute – tippen zum Neuladen";
   sb.setAttribute("aria-label",sb.title);
   sb.innerHTML=ok?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>';
+  const mav=document.getElementById("meav"), mme=RD.social&&RD.social.me; mav.hidden=!mme; if(mme){mav.textContent=mme.name.charAt(0).toUpperCase(); mav.title=`${mme.name} #${mme.tag}`;}
   document.getElementById("sub").textContent=`${WDL[t.getUTCDay()]}, ${t.getUTCDate()}. ${MON[t.getUTCMonth()]}`;
 
   // Meine Teams
@@ -1352,6 +1362,13 @@ function openSettings(first){
   if(!draft.disc) draft.disc=ALL_SUBS();
   draft._first=!!first; drawSettings(); document.getElementById("sheet").hidden=false;
 }
+function profCard(){
+  const me=RD.social&&RD.social.me;
+  if(!me) return `<div class="prof"><div class="pav">?</div><div class="pinfo"><b>Profil wird geladen …</b><small>Deine Matchday-ID erscheint gleich hier.</small></div></div>`;
+  if(RD.editName) return `<div class="prof"><div class="pav">${esc(me.name.charAt(0).toUpperCase())}</div><div class="pinfo" style="flex:1"><input class="tsearch" id="pn-in" value="${esc(me.name)}" maxlength="30" autocomplete="given-name"><div class="chips" style="margin-top:8px"><button type="button" class="chip" aria-pressed="true" id="pn-save">Speichern</button><button type="button" class="chip" id="pn-cancel">Abbrechen</button></div></div></div>`;
+  return `<div class="prof"><div class="pav">${esc(me.name.charAt(0).toUpperCase())}</div><div class="pinfo"><b>${esc(me.name)}</b><span>Matchday-ID ${tagHtml(me.tag)}</span><small>${me.disc?"Freunde können dich finden":"Für andere nicht auffindbar"}</small></div>
+    <div class="pbtns"><button type="button" class="chip" aria-pressed="true" id="pid-share">ID teilen</button><button type="button" class="chip" id="pn-edit">Name ändern</button></div></div>`;
+}
 function drawSettings(q){
   q=q||"";
   const kt=knownTeams().filter(t=>!draft.teams.includes(t)&&q.length>=2&&t.toLowerCase().includes(q.toLowerCase())).slice(0,8);
@@ -1361,7 +1378,7 @@ function drawSettings(q){
    <div class="ph"><h2 id="st-title">${first?"Willkommen bei Matchday":"Einstellungen"}</h2>${first?"":`<button type="button" class="xbtn" id="closeset" aria-label="Schließen">×</button>`}</div>
    ${first?'<p class="hint" style="margin-top:-12px">Wähle kurz aus, was dich interessiert. Das lässt sich unten über „Einstellungen“ jederzeit ändern.</p>':""}
    ${first&&rdOn()?`<section class="sg"><div class="sgh">Wie heißt du?</div><p class="hint" style="margin:-8px 0 0">Du bekommst eine eigene Matchday-ID. Damit finden dich Freunde und holen dich in ihre Watch Party.</p><input class="tsearch" id="ob-name" placeholder="Dein Vorname" maxlength="30" autocomplete="given-name" value="${esc(draft.name||"")}"></section>`:""}
-   ${!first&&RD.social&&RD.social.me?`<div class="myid">Deine Matchday-ID: <b>${esc(RD.social.me.name)}</b> ${tagHtml(RD.social.me.tag)}</div>`:""}
+   ${!first&&rdOn()?profCard():""}
    <section class="sg"><div class="sgh">Mein Sport</div>
    <div><h3>Sportarten</h3><div class="chips">${sportsInData().map(sp=>chip(draft.sports.includes(sp),`data-sport="${esc(sp)}"`,`${icon(sp,true)}${esc(sp)}`)).join("")}</div>
      ${Object.keys(SUBS).filter(k=>draft.sports.includes(k)&&SUBS[k].length>1).map(k=>`<div style="margin-top:14px"><p class="hint" style="margin:0 0 8px">${esc(k)}: Disziplinen</p><div class="chips">${SUBS[k].map(u=>chip(draft.disc.includes(u),`data-disc="${esc(u)}"`,esc(u))).join("")}</div></div>`).join("")}</div>
@@ -1405,6 +1422,10 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   if(ev.target.id==="sheet"&&!draft){document.getElementById("sheet").hidden=true;return;}
   const t=ev.target.closest("button"); if(t&&t.id==="closenow"){document.getElementById("sheet").hidden=true;return;}
   if(t&&t.id==="closeset"){document.getElementById("sheet").hidden=true; draft=null; applyTheme(); return;}
+  if(t&&t.id==="pid-share"){const me=RD.social.me; shareOrCopy(`Füg mich bei Matchday hinzu: ${me.name} #${me.tag} – unter Watch Party → Freunde einfach „#${me.tag}“ suchen. ${SHARE_URL}`,t,"ID teilen"); return;}
+  if(t&&t.id==="pn-edit"){RD.editName=true; drawSettings((document.getElementById("tsearch")||{}).value||""); return;}
+  if(t&&t.id==="pn-cancel"){RD.editName=false; drawSettings((document.getElementById("tsearch")||{}).value||""); return;}
+  if(t&&t.id==="pn-save"){const nm=((document.getElementById("pn-in")||{}).value||"").trim(); if(!nm){toast("Bitte einen Namen eingeben");return;} rpc("md_profile_set",{p_name:nm,p_disc:null,p_device:devName()}).then(j=>{if(j)RD.social=j; RD.editName=false; if(PREFS){PREFS.name=nm; savePrefs();} if(draft) draft.name=nm; toast("Name gespeichert"); drawSettings((document.getElementById("tsearch")||{}).value||""); render();}).catch(()=>toast("Hat nicht geklappt")); return;}
   if(t&&t.id==="ad-back"){RD.people=null; ADPIN=""; document.getElementById("sheet").hidden=true; return;}
   if(t&&t.id==="ad-claim"){rpc("md_admin_claim",{p_pin:ADPIN,p_name:(PREFS&&PREFS.name)||"",p_device:devName()}).then(j=>{if(j&&!j.error){RD.social=j; toast("Du bist jetzt #00001"); openAdmin(ADPIN); render();} else toast("Hat nicht geklappt");}); return;}
   if(t&&t.dataset.adtag){if(!confirm(t.dataset.adname+" #"+t.dataset.adtag+" wirklich löschen? Profil, Freundschaften und Watch-Party-Mitgliedschaft werden entfernt.")) return; rpc("md_admin_delete",{p_pin:ADPIN,p_tag:t.dataset.adtag}).then(j=>{if(j&&!j.error){RD.people=j; drawAdmin(); toast("Gelöscht");}}); return;}
@@ -1460,7 +1481,7 @@ document.addEventListener("click",ev=>{
   if(ev.target.closest("#sync")){location.reload();return;}
   if(ev.target.closest("#nowbtn")){openNow();return;}
   const tbb=ev.target.closest("[data-tabbtn]"); if(tbb){setTab(tbb.dataset.tabbtn); if(tbb.dataset.tabbtn==="runde") rdLoad(); return;}
-  if(ev.target.closest("#tabset")){openSettings(false);return;}
+  if(ev.target.closest("#tabset")||ev.target.closest("#meav")){openSettings(false);return;}
   if(ev.target.closest("#sheet")) return;
   if(ev.target.closest("#pf-create")){const nm=((document.getElementById("pf-name")||{}).value||"").trim(); if(!nm){toast("Bitte deinen Vornamen eintragen");return;} if(PREFS){PREFS.name=PREFS.name||nm; savePrefs();} if(PREFS){PREFS.name=nm; savePrefs();} ensureProfile(nm).then(render); return;}
   if(ev.target.closest("#pf-disc")){const on=!(RD.social&&RD.social.me&&RD.social.me.disc); socialDo("md_profile_set",{p_name:null,p_disc:on,p_device:devName()},on?"Du bist jetzt auffindbar":"Du bist jetzt nicht mehr auffindbar"); return;}
