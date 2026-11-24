@@ -422,11 +422,13 @@ details.sg[open] summary{margin-bottom:12px}
 .fn small{flex-basis:100%;font-size:12px;color:var(--muted)}
 .ftag{font-size:12.5px;color:var(--faint);font-weight:700;font-variant-numeric:tabular-nums}
 .fbtns{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.frow .chip{white-space:nowrap}
 .fmuted{font-size:12.5px;color:var(--faint);font-weight:700}
 .fres{display:flex;flex-direction:column}
 .fres .frow:first-child{border-top:1px solid var(--line)}
 .fcard .tsearch{margin-top:8px}
 .card.inv{border-color:color-mix(in srgb,var(--c-fussball) 45%,var(--line));background:color-mix(in srgb,var(--c-fussball) 8%,var(--surface))}
+.fadm{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-ink);border:1px solid color-mix(in srgb,var(--gold) 50%,var(--line));border-radius:6px;padding:0 5px;margin-left:4px}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -1016,10 +1018,11 @@ function invitesHtml(){
   const so=RD.social; if(!so||!so.invites||!so.invites.length) return "";
   return so.invites.map(i=>`<div class="card inv"><b>${esc(i.from)} lädt dich in „${esc(i.group)}“ ein</b><p>Watch Party · mit Freunden zusammen schauen${RD.state?` · Du wechselst dabei aus „${esc(RD.state.name)}“.`:""}</p><div class="chips"><button type="button" class="chip" aria-pressed="true" data-ia="${esc(i.id)}">Beitreten</button><button type="button" class="chip" data-ir="${esc(i.id)}">Ablehnen</button></div></div>`).join("");
 }
+const tagHtml=t=>`<span class="ftag">#${esc(t)}</span>${t==="00001"?`<span class="fadm">Admin</span>`:""}`;
 function fresHtml(){
   const r=RD.fres; if(!r) return "";
   if(!r.length) return `<p class="hint" style="margin:0">Niemand gefunden. Vielleicht ist die Person nicht auffindbar – dann hilft der Einladungslink.</p>`;
-  return r.map(p=>`<div class="frow"><div class="fn"><b>${esc(p.name)}</b> <span class="ftag">#${esc(p.tag)}</span></div>${p.rel==="friend"?`<span class="fmuted">Befreundet</span>`:p.rel==="sent"?`<span class="fmuted">Angefragt</span>`:p.rel==="incoming"?`<button type="button" class="chip" aria-pressed="true" data-fa="${esc(p.id)}">Annehmen</button>`:`<button type="button" class="chip" aria-pressed="true" data-fadd="${esc(p.id)}">Hinzufügen</button>`}</div>`).join("");
+  return r.map(p=>`<div class="frow"><div class="fn"><b>${esc(p.name)}</b> ${tagHtml(p.tag)}</div>${p.rel==="friend"?`<span class="fmuted">Befreundet</span>`:p.rel==="sent"?`<span class="fmuted">Angefragt</span>`:p.rel==="incoming"?`<button type="button" class="chip" aria-pressed="true" data-fa="${esc(p.id)}">Annehmen</button>`:`<button type="button" class="chip" aria-pressed="true" data-fadd="${esc(p.id)}">Hinzufügen</button>`}</div>`).join("");
 }
 function friendsHtml(){
   if(!rdOn()) return "";
@@ -1028,14 +1031,14 @@ function friendsHtml(){
     <input class="tsearch" id="pf-name" placeholder="Dein Vorname" value="${esc((PREFS&&PREFS.name)||"")}" maxlength="30" autocomplete="given-name">
     <button type="button" class="save" id="pf-create">Profil anlegen</button></div></section>`;
   const fr=so.friends||[], inc=so.incoming||[], out=so.outgoing||[];
-  const row=(p,sub,right)=>`<div class="frow"><div class="fn"><b>${esc(p.name)}</b> <span class="ftag">#${esc(p.tag)}</span>${sub?`<small>${sub}</small>`:""}</div><div class="fbtns">${right}</div></div>`;
+  const row=(p,sub,right)=>`<div class="frow"><div class="fn"><b>${esc(p.name)}</b> ${tagHtml(p.tag)}${sub?`<small>${sub}</small>`:""}</div><div class="fbtns">${right}</div></div>`;
   return `<section class="sec"><div class="sec-h"><h2>Freunde</h2><span>${fr.length||""}</span></div><div class="card fcard">
-    <div class="frow me"><div class="fn"><b>${esc(me.name)}</b> <span class="ftag">#${esc(me.tag)}</span><small>Das bist du</small></div><button type="button" class="chip" id="pf-disc" aria-pressed="${me.disc}">${me.disc?"Auffindbar ✓":"Nicht auffindbar"}</button></div>
+    <div class="frow me"><div class="fn"><b>${esc(me.name)}</b> ${tagHtml(me.tag)}<small>Das bist du</small></div><button type="button" class="chip" id="pf-disc" aria-pressed="${me.disc}">${me.disc?"Auffindbar ✓":"Nicht auffindbar"}</button></div>
     ${inc.map(p=>row(p,"möchte mit dir befreundet sein",`<button type="button" class="chip" aria-pressed="true" data-fa="${esc(p.id)}">Annehmen</button><button type="button" class="chip" data-fd="${esc(p.id)}">Ablehnen</button>`)).join("")}
     ${fr.map(p=>row(p,p.inGroup?"in deiner Watch Party":p.invited?"Einladung gesendet":"",`${RD.state&&!p.inGroup&&!p.invited?`<button type="button" class="chip" data-fi="${esc(p.id)}">In Watch Party holen</button>`:""}<button type="button" class="xbtn sm" data-fr="${esc(p.id)}" data-fname="${esc(p.name)}" aria-label="Freund entfernen">×</button>`)).join("")}
     ${out.map(p=>row(p,"Anfrage gesendet","")).join("")}
-    ${!fr.length&&!inc.length&&!out.length?`<p class="hint" style="margin:0">Noch keine Freunde. Such unten nach dem Namen, zum Beispiel „Tom“ oder „Tom#4821“.</p>`:""}
-    <input class="tsearch" id="fs-q" type="search" placeholder="Freunde suchen, z. B. Tom" value="${esc(RD.fq||"")}" autocomplete="off">
+    ${!fr.length&&!inc.length&&!out.length?`<p class="hint" style="margin:0">Noch keine Freunde. Such unten nach dem Namen, zum Beispiel „Tom“ oder direkt nach dem Kennzeichen wie „#00002“.</p>`:""}
+    <input class="tsearch" id="fs-q" type="search" placeholder="Name oder Kennzeichen, z. B. Tom oder #00002" value="${esc(RD.fq||"")}" autocomplete="off">
     <div class="fres" id="fs-res">${fresHtml()}</div>
     ${me.disc?"":`<p class="hint" style="margin:0">Du bist gerade nicht auffindbar. Freunde finden dich erst, wenn du oben „Auffindbar“ einschaltest.</p>`}
   </div></section>`;
@@ -1060,7 +1063,7 @@ function adminHtml(){
   const a=RD.admin;
   if(!a) return `<input class="tsearch" id="ad-pin" type="password" placeholder="Admin-PIN" autocomplete="off"><div class="chips" style="margin-top:8px"><button type="button" class="chip" id="ad-go">Übersicht öffnen</button></div>${RD.adminErr?`<p class="hint" style="color:var(--soon-ink);margin-top:8px">${esc(RD.adminErr)}</p>`:""}`;
   const ago=t=>{const m=Math.round((Date.now()-new Date(t).getTime())/60000);return m<2?"gerade eben":m<60?`vor ${m} Min.`:m<1440?`vor ${Math.round(m/60)} Std.`:`vor ${Math.round(m/1440)} Tagen`;};
-  return `<p class="hint">${a.members.length} Geräte in ${a.groups} ${a.groups===1?"Gruppe":"Gruppen"}</p><div class="adl">${a.members.map(m=>`<div class="adr"><div><b>${esc(m.name)}</b> <span>· ${esc(m.group)}</span><br><span>${esc(m.device||"?")}${m.standalone?" · Home-Bildschirm":""} · zuletzt ${ago(m.last_seen)} · ${m.watch} ${m.watch===1?"Spiel":"Spiele"} markiert</span></div><button type="button" class="xbtn sm" data-adrm="${esc(m.name)}" data-adcode="${esc(m.code)}" aria-label="Entfernen">×</button></div>`).join("")}</div><div class="chips" style="margin-top:8px"><button type="button" class="chip" id="ad-close">Schließen</button></div>`;
+  return `<p class="hint">${a.members.length} Geräte in ${a.groups} ${a.groups===1?"Gruppe":"Gruppen"}</p><div class="adl">${a.members.map(m=>`<div class="adr"><div><b>${esc(m.name)}</b> <span>· ${esc(m.group)}</span><br><span>${esc(m.device||"?")}${m.standalone?" · Home-Bildschirm":""} · zuletzt ${ago(m.last_seen)} · ${m.watch} ${m.watch===1?"Spiel":"Spiele"} markiert</span></div><button type="button" class="xbtn sm" data-adrm="${esc(m.name)}" data-adcode="${esc(m.code)}" aria-label="Entfernen">×</button></div>`).join("")}</div><div class="chips" style="margin-top:8px">${RD.social&&RD.social.me&&RD.social.me.tag==="00001"?`<span class="fmuted">Dein Profil hat das Kennzeichen #00001 ✓</span>`:`<button type="button" class="chip" aria-pressed="true" id="ad-claim">Kennzeichen #00001 für mein Profil übernehmen</button>`}<button type="button" class="chip" id="ad-close">Schließen</button></div>`;
 }
 
 /* ---- Kompakte Darstellung ---- */
@@ -1350,6 +1353,7 @@ document.getElementById("sheet").addEventListener("click",ev=>{
     draft.group=draft.group.filter(x=>x.n!==f.n).concat([f]); drawSettings(q);}
   else if(t.dataset.rmfriend){draft.group=draft.group.filter(x=>x.n!==t.dataset.rmfriend); drawSettings(q);}
   else if(t.id==="ad-go"){const pin=document.getElementById("ad-pin").value; ADPIN=pin; rpc("md_admin_list",{p_pin:pin}).then(j=>{if(j&&j.error){RD.admin=null;RD.adminErr=j.error==="locked"?"Zu viele Versuche – bitte 15 Minuten warten.":j.error==="default"?"Bitte zuerst in Supabase eine eigene PIN setzen.":"PIN falsch.";}else{RD.admin=j;RD.adminErr="";} document.getElementById("adminbox").innerHTML=adminHtml();}).catch(()=>{RD.adminErr="Nicht erreichbar.";document.getElementById("adminbox").innerHTML=adminHtml();});}
+  else if(t.id==="ad-claim"){rpc("md_admin_claim",{p_pin:ADPIN,p_name:(PREFS&&PREFS.name)||"",p_device:devName()}).then(j=>{if(j&&!j.error){RD.social=j; toast("Du bist jetzt #00001");} else toast("Hat nicht geklappt"); document.getElementById("adminbox").innerHTML=adminHtml(); render();}).catch(()=>toast("Hat nicht geklappt"));}
   else if(t.id==="ad-close"){RD.admin=null; ADPIN=""; document.getElementById("adminbox").innerHTML=adminHtml();}
   else if(t.dataset.adrm){if(!confirm(t.dataset.adrm+" aus der Watch Party entfernen?")) return; rpc("md_admin_remove",{p_pin:ADPIN,p_name:t.dataset.adrm,p_code:t.dataset.adcode}).then(j=>{if(j&&!j.error){RD.admin=j;} document.getElementById("adminbox").innerHTML=adminHtml(); rdLoad();});}
   else if(t.id==="sharelink"){navigator.share({title:"Matchday",text:SHARE_TEXT,url:SHARE_URL}).catch(()=>{});}
