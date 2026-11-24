@@ -412,6 +412,21 @@ details.sg[open] summary{margin-bottom:12px}
 .ico svg{width:24px;height:24px}
 .ico.sm svg{width:20px;height:20px}
 @media (max-width:380px){.list>.row,.konfl>.row{grid-template-columns:44px 1fr auto}}
+/* Freunde */
+.fcard{gap:4px;padding:8px 14px 14px}
+.frow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.frow:first-child{border-top:0}
+.frow.me{padding-top:6px}
+.fn{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px;min-width:0}
+.fn b{font-size:15px;font-weight:800}
+.fn small{flex-basis:100%;font-size:12px;color:var(--muted)}
+.ftag{font-size:12.5px;color:var(--faint);font-weight:700;font-variant-numeric:tabular-nums}
+.fbtns{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.fmuted{font-size:12.5px;color:var(--faint);font-weight:700}
+.fres{display:flex;flex-direction:column}
+.fres .frow:first-child{border-top:1px solid var(--line)}
+.fcard .tsearch{margin-top:8px}
+.card.inv{border-color:color-mix(in srgb,var(--c-fussball) 45%,var(--line));background:color-mix(in srgb,var(--c-fussball) 8%,var(--surface))}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -915,6 +930,7 @@ async function rdLoad(force){
     RD.state=st; RD.err="";
     if(st&&!RD.pinged){RD.pinged=true; rpc("md_ping",Object.assign({p_name:PREFS&&PREFS.name||""},myArgs())).catch(()=>{});}
     if(st&&PREFS&&PREFS.gc!==st.code){PREFS.gc=st.code; savePrefs();}
+    try{RD.social=await rpc("md_social");}catch(e){}
     if(pendingCode&&!st) await rdPeek();
   }catch(e){RD.err="Die Watch Party ist gerade nicht erreichbar.";}
   RD.loading=false; render();
@@ -926,7 +942,7 @@ async function rdDo(fn,args,after){
   catch(e){RD.err="Das hat nicht geklappt. Bitte gleich nochmal versuchen. ("+(e&&e.message||"Fehler")+")";}
   RD.loading=false; render();
 }
-function joinedState(j){RD.state=j; if(PREFS){PREFS.gc=j.code; savePrefs();} pendingCode=null; try{sessionStorage.removeItem("md-pc");}catch(e){}}
+function joinedState(j){setTimeout(rdSocial,50); RD.state=j; if(PREFS){PREFS.gc=j.code; savePrefs();} pendingCode=null; try{sessionStorage.removeItem("md-pc");}catch(e){}}
 const others=()=>RD.state?RD.state.members.filter(m=>m.id!==RD.state.me):[];
 const nameOf=id=>{const m=RD.state&&RD.state.members.find(x=>x.id===id);return m?m.name:"?";};
 function watchersOf(id){if(!RD.state) return []; return RD.state.watch.filter(w=>w.ev===id);}
@@ -948,7 +964,8 @@ function setPlace(id,place){
 function toggleWatch(id){const mp=myPlan(id); setPlan(id,mp&&mp.s==="yes"?null:"yes");}
 const EYE='<svg class="pp" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.3 8S3.8 3.3 8 3.3 14.7 8 14.7 8 12.2 12.7 8 12.7 1.3 8 1.3 8z"/><circle cx="8" cy="8" r="2"/></svg>';
 function inviteLink(){return SHARE_URL+"#g="+RD.state.code;}
-function rundeHtml(ev,n){
+function rundeHtml(ev,n){return invitesHtml()+rundeMain(ev,n)+friendsHtml();}
+function rundeMain(ev,n){
   if(!rdOn()) return `<div class="card"><b>Watch Party kommt gleich</b><p>Hier siehst du bald mit deinen Freunden, wer welches Spiel schauen will. Die Funktion wird gerade eingerichtet.</p></div>`;
   const err=RD.err?`<div class="rerr">${esc(RD.err)}</div>`:"";
   if(!RD.state){
@@ -993,6 +1010,52 @@ function rundeHtml(ev,n){
    ${tg.length?`<section class="sec"><div class="sec-h"><h2>Teams eurer Gruppe</h2></div><div class="list">${tg.map(e=>row(Object.assign({},e,{_showDate:true}),n)).join("")}</div></section>`:""}
    <p class="rnote">Die Watch Party speichert Vornamen, gewählte Teams, Gerätetyp und „Will ich schauen“-Markierungen. <button type="button" class="linkbtn" id="rd-leave">Watch Party verlassen</button></p>`;
 }
+/* ---- Freunde ---- */
+async function rdSocial(){ if(!rdOn()) return; try{ RD.social=await rpc("md_social"); }catch(e){} render(); }
+function invitesHtml(){
+  const so=RD.social; if(!so||!so.invites||!so.invites.length) return "";
+  return so.invites.map(i=>`<div class="card inv"><b>${esc(i.from)} lädt dich in „${esc(i.group)}“ ein</b><p>Watch Party · mit Freunden zusammen schauen${RD.state?` · Du wechselst dabei aus „${esc(RD.state.name)}“.`:""}</p><div class="chips"><button type="button" class="chip" aria-pressed="true" data-ia="${esc(i.id)}">Beitreten</button><button type="button" class="chip" data-ir="${esc(i.id)}">Ablehnen</button></div></div>`).join("");
+}
+function fresHtml(){
+  const r=RD.fres; if(!r) return "";
+  if(!r.length) return `<p class="hint" style="margin:0">Niemand gefunden. Vielleicht ist die Person nicht auffindbar – dann hilft der Einladungslink.</p>`;
+  return r.map(p=>`<div class="frow"><div class="fn"><b>${esc(p.name)}</b> <span class="ftag">#${esc(p.tag)}</span></div>${p.rel==="friend"?`<span class="fmuted">Befreundet</span>`:p.rel==="sent"?`<span class="fmuted">Angefragt</span>`:p.rel==="incoming"?`<button type="button" class="chip" aria-pressed="true" data-fa="${esc(p.id)}">Annehmen</button>`:`<button type="button" class="chip" aria-pressed="true" data-fadd="${esc(p.id)}">Hinzufügen</button>`}</div>`).join("");
+}
+function friendsHtml(){
+  if(!rdOn()) return "";
+  const so=RD.social, me=so&&so.me;
+  if(!me) return `<section class="sec"><div class="sec-h"><h2>Freunde</h2></div><div class="card"><b>Freunde finden</b><p>Leg ein Profil an. Dann können dich Freunde in Matchday finden, und du holst sie direkt in deine Watch Party, ganz ohne Link.</p>
+    <input class="tsearch" id="pf-name" placeholder="Dein Vorname" value="${esc((PREFS&&PREFS.name)||"")}" maxlength="30" autocomplete="given-name">
+    <button type="button" class="save" id="pf-create">Profil anlegen</button></div></section>`;
+  const fr=so.friends||[], inc=so.incoming||[], out=so.outgoing||[];
+  const row=(p,sub,right)=>`<div class="frow"><div class="fn"><b>${esc(p.name)}</b> <span class="ftag">#${esc(p.tag)}</span>${sub?`<small>${sub}</small>`:""}</div><div class="fbtns">${right}</div></div>`;
+  return `<section class="sec"><div class="sec-h"><h2>Freunde</h2><span>${fr.length||""}</span></div><div class="card fcard">
+    <div class="frow me"><div class="fn"><b>${esc(me.name)}</b> <span class="ftag">#${esc(me.tag)}</span><small>Das bist du</small></div><button type="button" class="chip" id="pf-disc" aria-pressed="${me.disc}">${me.disc?"Auffindbar ✓":"Nicht auffindbar"}</button></div>
+    ${inc.map(p=>row(p,"möchte mit dir befreundet sein",`<button type="button" class="chip" aria-pressed="true" data-fa="${esc(p.id)}">Annehmen</button><button type="button" class="chip" data-fd="${esc(p.id)}">Ablehnen</button>`)).join("")}
+    ${fr.map(p=>row(p,p.inGroup?"in deiner Watch Party":p.invited?"Einladung gesendet":"",`${RD.state&&!p.inGroup&&!p.invited?`<button type="button" class="chip" data-fi="${esc(p.id)}">In Watch Party holen</button>`:""}<button type="button" class="xbtn sm" data-fr="${esc(p.id)}" data-fname="${esc(p.name)}" aria-label="Freund entfernen">×</button>`)).join("")}
+    ${out.map(p=>row(p,"Anfrage gesendet","")).join("")}
+    ${!fr.length&&!inc.length&&!out.length?`<p class="hint" style="margin:0">Noch keine Freunde. Such unten nach dem Namen, zum Beispiel „Tom“ oder „Tom#4821“.</p>`:""}
+    <input class="tsearch" id="fs-q" type="search" placeholder="Freunde suchen, z. B. Tom" value="${esc(RD.fq||"")}" autocomplete="off">
+    <div class="fres" id="fs-res">${fresHtml()}</div>
+    ${me.disc?"":`<p class="hint" style="margin:0">Du bist gerade nicht auffindbar. Freunde finden dich erst, wenn du oben „Auffindbar“ einschaltest.</p>`}
+  </div></section>`;
+}
+let fsT=null;
+document.addEventListener("input",ev=>{
+  if(ev.target.id!=="fs-q") return;
+  RD.fq=ev.target.value; clearTimeout(fsT);
+  fsT=setTimeout(async()=>{
+    const q=RD.fq.trim(); if(q.length<2){RD.fres=null;}
+    else{ try{RD.fres=await rpc("md_search",{p_q:q});}catch(e){RD.fres=[];} }
+    const el=document.getElementById("fs-res"); if(el) el.innerHTML=fresHtml();
+  },300);
+});
+async function socialDo(fn,args,msg){
+  try{ RD.social=await rpc(fn,args); if(RD.fq&&RD.fq.trim().length>=2){ try{RD.fres=await rpc("md_search",{p_q:RD.fq.trim()});}catch(e){} } if(msg) toast(msg); }
+  catch(e){ toast("Hat nicht geklappt – bitte nochmal versuchen"); }
+  render();
+}
+
 function adminHtml(){
   const a=RD.admin;
   if(!a) return `<input class="tsearch" id="ad-pin" type="password" placeholder="Admin-PIN" autocomplete="off"><div class="chips" style="margin-top:8px"><button type="button" class="chip" id="ad-go">Übersicht öffnen</button></div>${RD.adminErr?`<p class="hint" style="color:var(--soon-ink);margin-top:8px">${esc(RD.adminErr)}</p>`:""}`;
@@ -1157,7 +1220,7 @@ function render(){
   if(!(ae&&ae.closest&&ae.closest("#runde")&&ae.tagName==="INPUT")) document.getElementById("runde").innerHTML=rundeHtml(ev,n);
   document.querySelectorAll(".tab").forEach(t=>t.hidden=t.dataset.tab!==TAB);
   document.querySelectorAll("[data-tabbtn]").forEach(b=>{if(b.dataset.tabbtn===TAB)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
-  document.getElementById("rdot").hidden=!(pendingCode&&!RD.state&&rdOn());
+  document.getElementById("rdot").hidden=!((pendingCode&&!RD.state&&rdOn())||(RD.social&&((RD.social.incoming||[]).length||(RD.social.invites||[]).length)));
   document.getElementById("foot").hidden=TAB==="runde";
 
   // Jetzt-Karte + Abendplan
@@ -1317,6 +1380,15 @@ document.addEventListener("click",ev=>{
   const tbb=ev.target.closest("[data-tabbtn]"); if(tbb){setTab(tbb.dataset.tabbtn); if(tbb.dataset.tabbtn==="runde") rdLoad(); return;}
   if(ev.target.closest("#tabset")){openSettings(false);return;}
   if(ev.target.closest("#sheet")) return;
+  if(ev.target.closest("#pf-create")){const nm=((document.getElementById("pf-name")||{}).value||"").trim(); if(!nm){toast("Bitte deinen Vornamen eintragen");return;} if(PREFS){PREFS.name=PREFS.name||nm; savePrefs();} socialDo("md_profile_set",{p_name:nm,p_disc:true,p_device:devName()},"Profil angelegt – du bist auffindbar"); return;}
+  if(ev.target.closest("#pf-disc")){const on=!(RD.social&&RD.social.me&&RD.social.me.disc); socialDo("md_profile_set",{p_name:null,p_disc:on,p_device:devName()},on?"Du bist jetzt auffindbar":"Du bist jetzt nicht mehr auffindbar"); return;}
+  const fadd=ev.target.closest("[data-fadd]"); if(fadd){socialDo("md_friend_add",{p_id:fadd.dataset.fadd},"Anfrage gesendet"); return;}
+  const fa=ev.target.closest("[data-fa]"); if(fa){socialDo("md_friend_add",{p_id:fa.dataset.fa},"Ihr seid jetzt befreundet"); return;}
+  const fd=ev.target.closest("[data-fd]"); if(fd){socialDo("md_friend_answer",{p_id:fd.dataset.fd,p_accept:false},"Anfrage abgelehnt"); return;}
+  const frm=ev.target.closest("[data-fr]"); if(frm){if(!confirm(frm.dataset.fname+" als Freund entfernen?")) return; socialDo("md_friend_remove",{p_id:frm.dataset.fr},"Entfernt"); return;}
+  const fi=ev.target.closest("[data-fi]"); if(fi){socialDo("md_invite_send",{p_id:fi.dataset.fi},"Einladung gesendet"); return;}
+  const ia=ev.target.closest("[data-ia]"); if(ia){rpc("md_invite_answer",Object.assign({p_invite:ia.dataset.ia,p_accept:true},myArgs())).then(j=>{if(j&&j.social) RD.social=j.social; if(j&&j.state){joinedState(j.state); toast("Willkommen in der Watch Party!");} else if(j&&j.error==="full") toast("Diese Gruppe ist voll"); render();}).catch(()=>toast("Hat nicht geklappt – bitte nochmal versuchen")); return;}
+  const ir=ev.target.closest("[data-ir]"); if(ir){rpc("md_invite_answer",Object.assign({p_invite:ir.dataset.ir,p_accept:false},myArgs())).then(j=>{if(j&&j.social) RD.social=j.social; render();}); return;}
   const wb=ev.target.closest("[data-w]"); if(wb){toggleWatch(wb.dataset.w); return;}
   const val=id=>((document.getElementById(id)||{}).value||"").trim();
   if(ev.target.closest("#rd-create")){const nm=val("rd-name"), gn=val("rd-gname"); if(!nm||!gn){RD.err="Bitte deinen Vornamen und einen Namen für eure Gruppe eintragen."; render(); return;} if(PREFS){PREFS.name=nm;} rdDo("md_create",Object.assign({p_group:gn,p_name:nm},myArgs()),joinedState); return;}
