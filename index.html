@@ -332,6 +332,8 @@ const SERVICES=[
 let PREFS=null;
 function encPrefs(p){const o={s:p.sports,d:p.disc,t:p.teams,v:p.services,h:p.hideOther?1:0};return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
 function decPrefs(str){try{const o=JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));return {sports:o.s||[],disc:o.d||null,teams:o.t||[],services:o.v||[],hideOther:!!o.h,v:2};}catch(e){return null;}}
+const SHARE_URL="https://lucartb.github.io/matchday";
+const SHARE_TEXT="Schau mal: Matchday zeigt, welcher Sport heute und diese Woche im TV läuft. Link in Safari öffnen, Sportarten auswählen, speichern und dann über Teilen → „Zum Home-Bildschirm“ hinzufügen.";
 function prefsLink(){return location.origin+location.pathname+"#p="+encPrefs(PREFS);}
 // 1. Einstellungen aus dem Link (robust, überlebt gelöschten Browserspeicher)
 if(location.hash.startsWith("#p=")) PREFS=decPrefs(location.hash.slice(3));
@@ -556,6 +558,9 @@ function drawSettings(q){
    ${PREFS&&!draft._first?`<div><h3>Mein persönlicher Link</h3><p class="hint">Dieser Link enthält deine Auswahl. Lege genau diesen Link auf den Home-Bildschirm, dann bleiben deine Einstellungen immer erhalten.</p>
      <div class="switch" style="cursor:default;word-break:break-all;font-size:12px;color:var(--muted)">${esc(prefsLink())}</div>
      <button type="button" class="chip" id="copylink" style="margin-top:10px">Link kopieren</button></div>`:""}
+   <div><h3>Mit Freunden teilen</h3><p class="hint">Dieser Link ist ohne deine Einstellungen. Jeder wählt beim ersten Öffnen selbst aus.</p>
+     <div class="switch" style="cursor:default;word-break:break-all;font-size:13px">${SHARE_URL}</div>
+     <div class="chips" style="margin-top:10px">${navigator.share?'<button type="button" class="chip" id="sharelink" aria-pressed="true">Link senden …</button>':""}<button type="button" class="chip" id="copyshare">Link kopieren</button></div></div>
    <button type="button" class="save" id="savesettings">Speichern</button>`;
   const inp=document.getElementById("tsearch");
   inp.addEventListener("input",()=>{const v=inp.value; drawSettings(v); const i2=document.getElementById("tsearch"); i2.focus(); i2.setSelectionRange(v.length,v.length);});
@@ -570,6 +575,8 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   else if(t.dataset.svc){tog(draft.services,t.dataset.svc); drawSettings(q);}
   else if(t.dataset.addteam){draft.teams.push(t.dataset.addteam.trim()); drawSettings("");}
   else if(t.dataset.rmteam){draft.teams=draft.teams.filter(x=>x!==t.dataset.rmteam); drawSettings(q);}
+  else if(t.id==="sharelink"){navigator.share({title:"Matchday",text:SHARE_TEXT,url:SHARE_URL}).catch(()=>{});}
+  else if(t.id==="copyshare"){navigator.clipboard.writeText(SHARE_TEXT+" "+SHARE_URL).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren";});}
   else if(t.id==="copylink"){navigator.clipboard.writeText(prefsLink()).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren und kopieren";});}
   else if(t.id==="savesettings"){
     if(!draft.sports.length){alertBox("Bitte mindestens eine Sportart wählen."); return;}
