@@ -400,6 +400,18 @@ details.sg[open] summary{margin-bottom:12px}
 .homehint details summary{font-size:13px;font-weight:700;color:var(--gold-ink);cursor:pointer}
 .homehint ol{margin:6px 0 0;padding-left:20px;font-size:13.5px}
 .homehint label{padding:8px 10px;font-size:13.5px}
+/* Farbleiste + kleines Sport-Symbol */
+.list>.row,.konfl>.row{grid-template-columns:50px 1fr auto;position:relative}
+.list>.row::before,.konfl>.row::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--sc,transparent)}
+.list.res>.row{grid-template-columns:38px 1fr auto}
+.list.res>.row::before{display:none}
+.mi{display:inline-flex;vertical-align:-3px;margin-right:5px;color:var(--sc)}
+.mi svg{width:16px;height:16px}
+.ico{border-radius:50%}
+.ico.sm{border-radius:50%}
+.ico svg{width:24px;height:24px}
+.ico.sm svg{width:20px;height:20px}
+@media (max-width:380px){.list>.row,.konfl>.row{grid-template-columns:44px 1fr auto}}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -607,20 +619,24 @@ function knownTeams(){
   return [...set].sort((a,b)=>a.localeCompare(b,"de"));
 }
 
-const ICONS={
-  "Fußball":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.2" cy="3.6" r="2.1" fill="currentColor" stroke="none"/><path d="M12.7 6.6l-1.6 5.6"/><path d="M12.5 7.8l-4.2 2"/><path d="M12.6 7.8l3.4-.6 1.6 2"/><path d="M11.1 12.2l-1 4.6.5 4.4"/><path d="M11.1 12.2l3.6 2.4 2.8-1.2"/><circle cx="20" cy="15.4" r="2.2" fill="currentColor" stroke="none"/></svg>',
-  "Darts":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 21.4l3.8-3.8"/><path d="M6.6 17.4l4.6-4.6" stroke-width="3.6"/><path d="M11.2 12.8l4.6-4.6"/><path d="M15.8 8.2L14.4 2.6l3.4 2.4zM15.8 8.2l5.6 1.4-2.4-3.4z" fill="currentColor"/></svg>',
-  "Rugby":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="12" cy="12" rx="9.5" ry="5.6" transform="rotate(-35 12 12)"/><path d="M9 15l6-6M10.2 11.6l2.2 2.2M11.8 10l2.2 2.2"/></svg>',
-  "Handball":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="5.4" r="2.1" fill="currentColor" stroke="none"/><path d="M11 8.2l-1.2 5.6"/><path d="M11.4 9l3.2-2.4 1.4-3.2"/><path d="M11 9.2l-4 1.8"/><path d="M9.8 13.8l3.4 2.2-.6 4.2"/><path d="M9.8 13.8l-2.6 3.4-2.6-.6"/><circle cx="17.4" cy="2.6" r="2.2" fill="currentColor" stroke="none"/></svg>',
-  "Motorsport":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.2 15.4l3.4-1.6h5l1.5-2.4h2.6l1.2 2.2h5.4V10h2.6v5.4z" fill="currentColor" fill-opacity=".3"/><path d="M19.4 10h3.4"/><circle cx="12.3" cy="10.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="6.4" cy="16" r="2.5" fill="currentColor"/><circle cx="17.6" cy="16" r="2.5" fill="currentColor"/></svg>',
-  "Wintersport":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5v19M3.8 7.2l16.4 9.6M3.8 16.8l16.4-9.6"/><path d="M9.6 4.2L12 6.6l2.4-2.4M9.6 19.8L12 17.4l2.4 2.4M4.3 10.2l3.3.9-.9 3.3M19.7 13.8l-3.3-.9.9-3.3M6.7 9.6l.9 3.3M17.3 14.4l-.9-3.3"/></svg>',
-  "American Football":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 19.8C2.6 13 7 5.6 19.8 4.2 21.4 11 17 18.4 4.2 19.8z"/><path d="M6.5 13.5l4 4M13.5 6.5l4 4M9.5 14.5l5-5M10.5 11.5l2 2M12 10l2 2"/></svg>',
-  "Leichtathletik":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="14.6" cy="3.8" r="2" fill="currentColor" stroke="none"/><path d="M13.6 7.2l-2.4 5.4"/><path d="M13.4 7.6l-4.2 1.2-1.8 3"/><path d="M13.4 7.6l2.4 3.4 3.4.6"/><path d="M11.2 12.6l3.6 2.8-.8 5.6"/><path d="M11.2 12.6l-2.2 4.2-4.4 1"/></svg>',
-  "Schwimmen":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="17.5" cy="7.5" r="2" fill="currentColor" stroke="none"/><path d="M3.5 11.5l5.5-2.5 3 2.6 4-1.8"/><path d="M2.5 16c1.6 0 1.6-1.2 3.2-1.2S7.3 16 8.9 16s1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2S20.1 16 21.5 16"/><path d="M2.5 20c1.6 0 1.6-1.2 3.2-1.2S7.3 20 8.9 20s1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2S20.1 20 21.5 20"/></svg>',
-  "Beachvolleyball":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3c-1 4 0 7 3 9.5M21 12c-4-1.5-7-1-9.5 1.5M4.2 16.8c3.5-.3 6.2-1.8 7.8-4.8M12 12c-1.8-3.2-4.5-5-8.4-5.2M12 12c.6 3.6 2.4 6.3 5.4 8"/></svg>',
-  "Radsport":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.4" cy="16.4" r="3.8"/><circle cx="18.6" cy="16.4" r="3.8"/><path d="M5.4 16.4l3.8-7.4h6.6l2.8 7.4M9.2 9l3 7.4 3.6-7.4M7.6 7h3.2M15.8 9l-.8-2.6h2.4"/><circle cx="12.2" cy="16.4" r="1.1" fill="currentColor" stroke="none"/></svg>',
-  "_":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0z"/><path d="M7 6H4v1a3 3 0 003 3M17 6h3v1a3 3 0 01-3 3"/></svg>'
+const S_='stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+const T_='stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+const ICI={
+"Fußball":`<circle cx="10" cy="3.6" r="2.2" fill="currentColor"/><path ${S_} d="M10.2 7l-1.4 5.6M10 8.2l-4 2.2M10.2 8.2l3.6-.4 1.8 2.2M8.8 12.6l-1.6 4.4.8 4.4M8.8 12.6l4.4 2 3.2-.8"/><circle cx="19.6" cy="16.8" r="2.4" fill="currentColor"/>`,
+"Darts":`<circle cx="6.2" cy="4.6" r="2.2" fill="currentColor"/><path ${S_} d="M6.6 7.8l.4 6.4M6.8 8.8l3.8-1.2 1.6-2.4M6.6 9l-2.4 3.4M7 14.2l-1.6 7M7 14.2l2.2 6.8"/><circle cx="19" cy="9.4" r="3.9" ${T_}/><circle cx="19" cy="9.4" r="1.3" fill="currentColor"/><path ${T_} d="M13.2 5.2l3.6 2.4"/>`,
+"Rugby":`<circle cx="14.6" cy="3.6" r="2.2" fill="currentColor"/><path ${S_} d="M14 7l-2.6 5.4M13.6 8l-3.8 1M13.8 8l2.4 2.8M11.4 12.4l3.6 3.2-1.4 5M11.4 12.4l-4 2.4-3.2-1.2"/><ellipse cx="18.6" cy="12.4" rx="3.4" ry="2.1" transform="rotate(-30 18.6 12.4)" fill="currentColor"/>`,
+"Handball":`<circle cx="9.2" cy="5.6" r="2.2" fill="currentColor"/><circle cx="17.6" cy="2.9" r="2.2" fill="currentColor"/><path ${S_} d="M9.8 8.8l-1 5M10 9.4l3.2-2.4 2.6-2.6M9.8 9.6l-4 2.2M8.8 13.8l3.8 2.6-1.2 4.6M8.8 13.8l-3.2 3.6.6 3.4"/>`,
+"Radsport":`<circle cx="5.4" cy="17.2" r="3.7" ${T_}/><circle cx="18.6" cy="17.2" r="3.7" ${T_}/><path ${T_} d="M5.4 17.2l4.4-6.6h6.4l2.4 6.6M9.8 10.6l2.6 6.6 3.8-6.6"/><circle cx="15.4" cy="3.6" r="2.1" fill="currentColor"/><path ${S_} d="M14.4 6.2l-5 3.8M14 6.6l2.8 3.6M9.4 10l2.8 3.2-.6 3.6"/>`,
+"Motorsport":`<path fill="currentColor" d="M1.2 16.2l1.2-2.4h5l2.6-2.4h4.2l1.6 1.8h4.6l1.4-2h1.4v5z"/><circle cx="12" cy="11" r="1.5" fill="currentColor"/><circle cx="6.4" cy="17" r="2.8" fill="currentColor"/><circle cx="17.8" cy="17" r="2.8" fill="currentColor"/><circle cx="6.4" cy="17" r="1" fill="#000" fill-opacity=".45"/><circle cx="17.8" cy="17" r="1" fill="#000" fill-opacity=".45"/>`,
+"Wintersport":`<circle cx="7.4" cy="5.2" r="2.2" fill="currentColor"/><path ${S_} d="M9 8l4.8 3.2M13.8 11.2l-3.4 3.4 2.6 3.6M9.6 8.6L6 11.6M13.8 11.2l2.2 3.2"/><path ${T_} d="M2.6 16.4l18.8 5M6 11.6l9.6 4.2"/>`,
+"American Football":`<circle cx="11.6" cy="4.6" r="2.5" fill="currentColor"/><path ${T_} d="M13.4 5.4l1.6.6"/><path ${S_} d="M11.2 7.6l-.6 5.6M11 8.6l-3.4-1.4-1.8-2.6M11.2 8.6l3.8 1.6M10.6 13.2l3.6 2.8-.6 5M10.6 13.2l-3.4 2.8-.8 4"/><ellipse cx="4.6" cy="3.2" rx="2.5" ry="1.4" transform="rotate(35 4.6 3.2)" fill="currentColor"/>`,
+"Leichtathletik":`<circle cx="15.4" cy="3.4" r="2.2" fill="currentColor"/><path ${S_} d="M14.6 6.6l-2.8 6M14.2 7.4l-4.4.6-2 3.2M14.2 7.4l2.6 3.4 3.6.4M11.8 12.6l4.2 2.6-.6 5.6M11.8 12.6l-2.6 4.6-5 .8"/><path ${T_} d="M1.8 21.4h20.4" opacity=".55"/>`,
+"Schwimmen":`<circle cx="17.2" cy="7.6" r="2.2" fill="currentColor"/><path ${S_} d="M3.4 13c2.4-.6 4.4-2.6 5.6-5.2l3.4 3.2 3.4-1.6"/><path ${T_} d="M2.4 16.4c1.6 0 1.6-1.2 3.2-1.2s1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2M2.4 20.4c1.6 0 1.6-1.2 3.2-1.2s1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2 1.6-1.2 3.2-1.2 1.6 1.2 3.2 1.2"/>`,
+"Beachvolleyball":`<path ${T_} d="M3 21.5V5M3 5.4h5.4v4.8H3M5.7 5.4v4.8M3 7.8h5.4"/><circle cx="20.2" cy="3.2" r="2.2" fill="currentColor"/><circle cx="13.6" cy="6.6" r="2.1" fill="currentColor"/><path ${S_} d="M14 9.6l-.4 5.4M14.2 10.4l2.8-2.6 1.8-2.6M14 10.6l-3.4 1.6M13.6 15l3 2.6-.6 3.6M13.6 15l-2.6 3 .4 2.8"/><path ${T_} d="M8.5 21.5h13" opacity=".55"/>`
 };
+const ICONS=Object.fromEntries(Object.entries(ICI).map(([k,v])=>[k,`<svg viewBox="0 0 24 24" fill="none">${v}</svg>`]));
+ICONS._='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0z"/><path d="M7 6H4v1a3 3 0 003 3M17 6h3v1a3 3 0 01-3 3"/></svg>';
+const glyph=s=>`<span class="mi">${ICONS[s]||ICONS._}</span>`;
 const COLOR={"Wintersport":"--c-winter","American Football":"--c-af","Leichtathletik":"--c-la","Schwimmen":"--c-swim","Beachvolleyball":"--c-beach","Radsport":"--c-rad","Fußball":"--c-fussball","Darts":"--c-darts","Rugby":"--c-rugby","Handball":"--c-handball","Motorsport":"--c-motorsport"};
 const DUR={"Wintersport":90,"American Football":200,"Leichtathletik":180,"Schwimmen":150,"Beachvolleyball":60,"Radsport":90,"Fußball":115,"Darts":210,"Rugby":110,"Handball":100,"Motorsport":120};
 const sc=s=>`var(${COLOR[s]||"--c-sonst"})`;
@@ -669,10 +685,9 @@ function row(e,n){
   if(ws.length) chip=`<span class="wch" title="Wollen schauen">${EYE}${esc(ws.map(w=>(w.m===RD.state.me?"Du":nameOf(w.m))+(w.s==="maybe"?"?":"")).join(", "))}</span>`;
   else if(fr.length) chip=`<span class="grp" title="Fans in deiner Watch Party">${PPL}${esc(fr.join(", "))}</span>`;
   else if(e._na) chip=`<span class="na-tag">nicht in deinen Diensten</span>`;
-  return `<div class="row${e._na?" na":""}${st==="past"?" past":""}${tap?" tap":""}${open?" open":""}"${tap?` data-id="${esc(id)}" role="button" tabindex="0" aria-expanded="${open}"`:""}>
+  return `<div class="row${e._na?" na":""}${st==="past"?" past":""}${tap?" tap":""}${open?" open":""}" style="--sc:${sc(e.s)}"${tap?` data-id="${esc(id)}" role="button" tabindex="0" aria-expanded="${open}"`:""}>
     <div class="tcol">${e._showDate?`<span class="dd">${e.d===n.d?"Heute":WD[x0.getUTCDay()]+" "+x0.getUTCDate()+"."}</span>`:""}<div class="time${e.t?"":" open"}">${e.t||"offen"}</div></div>
-    ${icon(e.s)}
-    <div class="body">${pairHtml(e)}<div class="meta">${esc(compOf(e))} · <b>${esc(tvText(e))}</b></div>${chip?`<div class="chipl">${chip}</div>`:""}</div>
+    <div class="body">${pairHtml(e)}<div class="meta">${glyph(e.s)}${esc(compOf(e))} · <b>${esc(tvText(e))}</b></div>${chip?`<div class="chipl">${chip}</div>`:""}</div>
     <div class="side">${pill}${isFree(e)?FTV:""}${tap?CHEV:""}</div>
     ${tap&&open?`<div class="info"><div class="it"><b>${esc(e.ti)}</b> · ${esc(e.c)}</div>${e.i?`<div class="it">${esc(e.i)}</div>`:""}${e.n?`<div class="it">${esc(e.n)}</div>`:""}<div class="acts">${RD.state?`<button type="button" class="act${mp&&mp.s==="yes"?" on":""}" data-w="${esc(id)}">${mp&&mp.s==="yes"?"✓ Will ich schauen":"Will ich schauen"}</button>`:""}<button type="button" class="act" data-inv="${esc(id)}">Per Nachricht einladen</button></div></div>`:""}
   </div>`;
@@ -1045,7 +1060,7 @@ function konfHtml(o,n){
   const op=expanded.has(o.k), games=o.rest.reduce((a,e)=>a+e.ti.split(",").length,0);
   const tvs=[...new Set(o.rest.flatMap(e=>e.tv||[]))].join(" · ");
   const live=state(o.rest[0],n)==="live";
-  return `<button type="button" class="row konf${op?" open":""}" data-konf="${esc(o.k)}"><div class="tcol"><div class="time">${o.time}</div></div>${icon(o.rest[0].s)}<div class="body"><div class="title">${games} weitere ${games===1?"Spiel":"Spiele"} parallel</div><div class="meta">${esc(o.c)} · <b>${esc(tvs||"Sender offen")}</b></div></div><div class="side">${live?`<span class="pill live"><span class="pulse"></span>Live</span>`:""}${CHEV}</div></button>${op?`<div class="konfl">${o.rest.map(e=>row(e,n)).join("")}</div>`:""}`;
+  return `<button type="button" class="row konf${op?" open":""}" data-konf="${esc(o.k)}" style="--sc:${sc(o.rest[0].s)}"><div class="tcol"><div class="time">${o.time}</div></div><div class="body"><div class="title">${games} weitere ${games===1?"Spiel":"Spiele"} parallel</div><div class="meta">${glyph(o.rest[0].s)}${esc(o.c)} · <b>${esc(tvs||"Sender offen")}</b></div></div><div class="side">${live?`<span class="pill live"><span class="pulse"></span>Live</span>`:""}${CHEV}</div></button>${op?`<div class="konfl">${o.rest.map(e=>row(e,n)).join("")}</div>`:""}`;
 }
 /* ---- Hinweis-Toast ---- */
 let toastT=null;
