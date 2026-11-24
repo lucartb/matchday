@@ -230,12 +230,13 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .sec-h .seg{margin-left:auto}
 /* Zeitstrahl */
-.tl{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tlw{max-height:340px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.tl{position:relative}
 .tl .hr{position:absolute;left:0;right:0;border-top:1px dashed var(--line)}
 .tl .hr span{position:absolute;left:10px;top:-8px;font-size:10.5px;font-weight:700;color:var(--faint);background:var(--surface);padding-right:4px;font-variant-numeric:tabular-nums}
 .tl .blk{position:absolute;border-radius:10px;padding:5px 7px;background:color-mix(in srgb,var(--sc) 15%,var(--surface));border:0;border-left:3px solid var(--sc);overflow:hidden;font-size:11.5px;line-height:1.25;display:flex;flex-direction:column;gap:1px;cursor:pointer;text-align:left;color:var(--ink)}
 .tl .blk .bt{font-weight:800;color:var(--sc);font-variant-numeric:tabular-nums}
-.tl .blk b{font-weight:800;font-size:12.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tl .blk b{font-weight:800;font-size:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .tl .blk .bv{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tl .blk.past{opacity:.4}
 .tl .blk.hlb{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 55%,transparent)}
@@ -287,6 +288,9 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 .friendbar[hidden],.recap[hidden]{display:none}
 .calrow{display:flex;flex-wrap:wrap;gap:8px}
 a.chip{text-decoration:none}
+.fab{position:fixed;right:calc(16px + env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.fab svg{width:22px;height:22px}
+.wrap{padding-top:calc(30px + env(safe-area-inset-top))}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -358,6 +362,7 @@ a.chip{text-decoration:none}
 
   <footer id="foot"></footer>
 </div>
+<button type="button" class="fab" id="fab" aria-label="Einstellungen" title="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="st-title"><div class="panel" id="panel"></div></div>
 
 <script>document.write('<script src="data.js?v='+Date.now()+'"><\/script>');</script>
@@ -622,7 +627,7 @@ function timelineHtml(evs,n){
   let tim=evs.filter(e=>e.t).sort(byTime); const un=evs.filter(e=>!e.t);
   const main=tim.filter(e=>!e.x||e._fav||e.hl); if(main.length) tim=main;
   if(!tim.length) return listHtml(evs,"today",n);
-  const PX=1.05, st=e=>mins(e.t), en=e=>mins(e.t)+(DUR[e.s]||120);
+  const PX=0.75, st=e=>mins(e.t), en=e=>mins(e.t)+(DUR[e.s]||120);
   const t0=Math.floor(Math.min(...tim.map(st))/60)*60, t1=Math.ceil(Math.max(...tim.map(en))/60)*60;
   const top=14, H=(t1-t0)*PX+top+10;
   const placed=[]; let cl=[], clEnd=-1;
@@ -636,10 +641,10 @@ function timelineHtml(evs,n){
   placed.forEach(({e,lane,L})=>{
     const s0=st(e), y=(s0-t0)*PX+top, hgt=Math.max(34,(en(e)-s0)*PX-4), stt=state(e,n);
     const label=L>=3?shortTi(e):e.ti;
-    h+=`<button type="button" class="blk${stt==="past"?" past":""}${e.hl?" hlb":""}${e._fav?" favb":""}" data-tl="${esc(rid(e))}" style="--sc:${sc(e.s)};top:${y}px;height:${hgt}px;left:calc(48px + (100% - 56px) * ${lane} / ${L});width:calc((100% - 56px) / ${L} - 4px)" title="${esc(e.ti)} · ${esc(tvText(e))}"><span class="bt">${e.t}${stt==="live"?" · Live":""}</span><b>${esc(label)}</b>${hgt>70?`<span class="bv">${esc(tvText(e))}</span>`:""}</button>`;
+    h+=`<button type="button" class="blk${stt==="past"?" past":""}${e.hl?" hlb":""}${e._fav?" favb":""}" data-tl="${esc(rid(e))}" style="--sc:${sc(e.s)};top:${y}px;height:${hgt}px;left:calc(48px + (100% - 56px) * ${lane} / ${L});width:calc((100% - 56px) / ${L} - 4px)" title="${esc(e.ti)} · ${esc(tvText(e))}"><span class="bt">${e.t}${stt==="live"?" · Live":""}</span><b>${esc(label)}</b>${hgt>60?`<span class="bv">${esc(tvText(e))}</span>`:""}</button>`;
   });
   if(n.m>=t0&&n.m<=t1&&evs.some(e=>e.d===n.d)) h+=`<div class="nowl" style="top:${(n.m-t0)*PX+top}px"></div>`;
-  return `<div class="tl" style="height:${H}px">${h}</div>${un.length?`<div class="tl-open">Ohne feste Zeit: ${un.map(e=>esc(e.ti)).join(" · ")}</div>`:""}`;
+  return `<div class="tlw" id="tlw"><div class="tl" style="height:${H}px">${h}</div></div>${un.length?`<div class="tl-open">Ohne feste Zeit: ${un.map(e=>esc(e.ti)).join(" · ")}</div>`:""}`;
 }
 function conflicts(ev,n){
   const end=new Date(P(n.d).getTime()+7*864e5).toISOString().slice(0,10);
@@ -770,7 +775,10 @@ function render(){
     const next=ev.filter(e=>e.hl&&state(e,n)==="future").sort((a,b)=>delta(a,n)-delta(b,n))[0];
     th=`<div class="list"><div class="empty">Heute läuft nichts Größeres.${next?` Nächstes Highlight: <b style="color:var(--ink)">${esc(next.ti)}</b>, ${WD[P(next.d).getUTCDay()]} ${next.t} Uhr.`:""}</div></div>`;
   }
+  const ow=document.getElementById("tlw"), keep=ow?ow.scrollTop:null;
   document.getElementById("today").innerHTML=th;
+  const nw=document.getElementById("tlw");
+  if(nw){ if(keep!==null) nw.scrollTop=keep; else { const nl=nw.querySelector(".nowl"); nw.scrollTop=nl?Math.max(0,nl.offsetTop-90):0; } }
 
   // Überschneidungen
   const cfs=conflicts(ev,n);
@@ -889,7 +897,7 @@ document.getElementById("homedone").addEventListener("change",e=>{if(e.target.ch
 function alertBox(msg){const b=document.getElementById("savesettings"); b.textContent=msg; setTimeout(()=>{if(b.isConnected) b.textContent="Speichern";},2200);}
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&PREFS&&!document.getElementById("sheet").hidden){document.getElementById("sheet").hidden=true; draft=null; applyTheme();}});
 document.addEventListener("click",ev=>{
-  if(ev.target.closest("#gear")){openSettings(false);return;}
+  if(ev.target.closest("#gear")||ev.target.closest("#fab")){openSettings(false);return;}
   if(ev.target.closest("#sync")){location.reload();return;}
   if(ev.target.closest("#nowbtn")){openNow();return;}
   if(ev.target.closest("#sheet")) return;
