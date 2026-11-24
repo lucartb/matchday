@@ -89,6 +89,7 @@ header{display:flex;flex-direction:column;gap:4px}
 .homehint label{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--ink);background:var(--shade);border-radius:12px;padding:11px 12px;cursor:pointer}
 .homehint input{width:22px;height:22px;accent-color:var(--gold)}
 .gear{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+
 .gear svg{width:18px;height:18px}
 .brand .sync{margin-left:auto}
 .row.fav{box-shadow:inset 3px 0 0 var(--gold)}
@@ -225,7 +226,7 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1><button id="sync" class="sync" type="button"></button><button id="gear" class="gear" type="button" aria-label="Einstellungen" title="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
+    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1><button id="sync" class="sync" type="button"></button><button id="sharetop" class="gear" type="button" aria-label="Mit Freunden teilen" title="Mit Freunden teilen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button id="gear" class="gear" type="button" aria-label="Einstellungen" title="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
     <div class="sub" id="sub"></div>
   </header>
 
@@ -659,6 +660,7 @@ updateHomeHint();
 if(!PREFS) openSettings(true);
 setInterval(()=>{if(document.getElementById("sheet").hidden) render();},30000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden) render();});
+document.getElementById("sharetop").addEventListener("click",e=>{const b=e.currentTarget;if(navigator.share){navigator.share({title:"Matchday",text:SHARE_TEXT,url:SHARE_URL}).catch(()=>{});}else{navigator.clipboard.writeText(SHARE_TEXT+" "+SHARE_URL).then(()=>{b.title="Link kopiert ✓";b.style.color="var(--gold-ink)";setTimeout(()=>{b.style.color="";},1500);});}});
 </script>
 </body>
 </html>
