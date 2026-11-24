@@ -172,7 +172,7 @@ header{display:flex;flex-direction:column;gap:4px}
 .chev{width:14px;height:14px;flex:0 0 auto;color:var(--faint);transition:transform .2s;align-self:center}
 .row.open .chev{transform:rotate(180deg)}
 .info{grid-column:2 / -1;font-size:13px;line-height:1.5;color:var(--info-ink);background:var(--surface-2);border-radius:10px;padding:9px 11px;margin-top:2px}
-.hlstar{color:var(--gold);font-size:12px}
+.favstar{color:var(--gold);font-size:12px;margin-left:5px}
 .row.past{opacity:.38}
 .more{width:100%;background:transparent;border:0;border-top:1px solid var(--line);padding:12px;color:var(--muted);font-weight:600;font-size:13.5px;cursor:pointer}
 .more:hover{color:var(--ink)}
@@ -339,11 +339,11 @@ function badge(name,ov){
 }
 function sides(e){const p=e.ti.split(" – "); return (p.length===2 && !e.ti.includes(",") && !/\(/.test(e.ti))?p:null;}
 function titleHtml(e,big){
-  const p=sides(e), star=e.hl?' <span class="hlstar">★</span>':"";
-  const heart=e._fav?'<span class="heart" title="Mein Team">♥</span>':"";
-  if(!p) return `<div class="${big?"t":"title"}">${esc(e.ti)}${star}${heart}</div>`;
+  const p=sides(e), mine=x=>!!(PREFS&&PREFS.teams.some(t=>x.includes(t)));
+  const star='<span class="favstar" title="Mein Team">★</span>';
+  if(!p) return `<div class="${big?"t":"title"}">${esc(e.ti)}${e._fav?star:""}</div>`;
   const ov=[e.h,e.a];
-  return `<div class="mu${big?" big":""}">${p.map((x,i)=>`<div class="tm">${badge(x,ov[i])}<span>${esc(x)}${i===1?star+heart:""}</span></div>`).join("")}</div>`;
+  return `<div class="mu${big?" big":""}">${p.map((x,i)=>`<div class="tm">${badge(x,ov[i])}<span>${esc(x)}${mine(x)?star:""}</span></div>`).join("")}</div>`;
 }
 
 /* ---- Personalisierung (pro Gerät gespeichert) ---- */
