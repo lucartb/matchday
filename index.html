@@ -1357,7 +1357,7 @@ function render(){
 
 let draft=null, ADPIN="";
 function openSettings(first){
-  draft=PREFS?JSON.parse(JSON.stringify(PREFS)):{sports:sportsInData(),disc:ALL_SUBS(),teams:[],services:SERVICES.map(s=>s.k),hideOther:false,name:"",group:[],spoiler:false,v:2};
+  draft=PREFS?JSON.parse(JSON.stringify(PREFS)):{sports:[],disc:ALL_SUBS(),teams:[],services:SERVICES.map(s=>s.k),hideOther:false,name:"",group:[],spoiler:false,v:2};
   draft.group=draft.group||[];
   if(!draft.disc) draft.disc=ALL_SUBS();
   draft._first=!!first; drawSettings(); document.getElementById("sheet").hidden=false;
@@ -1380,7 +1380,7 @@ function drawSettings(q){
    ${first&&rdOn()?`<section class="sg"><div class="sgh">Wie heißt du?</div><p class="hint" style="margin:-8px 0 0">Du bekommst eine eigene Matchday-ID. Damit finden dich Freunde und holen dich in ihre Watch Party.</p><input class="tsearch" id="ob-name" placeholder="Dein Vorname" maxlength="30" autocomplete="given-name" value="${esc(draft.name||"")}"></section>`:""}
    ${!first&&rdOn()?profCard():""}
    <section class="sg"><div class="sgh">Mein Sport</div>
-   <div><h3>Sportarten</h3><div class="chips">${sportsInData().map(sp=>chip(draft.sports.includes(sp),`data-sport="${esc(sp)}"`,`${icon(sp,true)}${esc(sp)}`)).join("")}</div>
+   <div><h3>Sportarten</h3>${first?'<p class="hint">Tippe alle Sportarten an, die dich interessieren.</p>':""}<div class="chips">${sportsInData().map(sp=>chip(draft.sports.includes(sp),`data-sport="${esc(sp)}"`,`${icon(sp,true)}${esc(sp)}`)).join("")}</div>
      ${Object.keys(SUBS).filter(k=>draft.sports.includes(k)&&SUBS[k].length>1).map(k=>`<div style="margin-top:14px"><p class="hint" style="margin:0 0 8px">${esc(k)}: Disziplinen</p><div class="chips">${SUBS[k].map(u=>chip(draft.disc.includes(u),`data-disc="${esc(u)}"`,esc(u))).join("")}</div></div>`).join("")}</div>
    <div><h3>Meine Teams & Spieler</h3><p class="hint">Diese Spiele stehen ganz oben und bekommen einen ★.</p>
      <div class="chips" style="margin-bottom:10px">${draft.teams.map(t=>`<button type="button" class="chip" aria-pressed="true" data-rmteam="${esc(t)}">${badge(t)}${esc(t)}<span class="x" aria-hidden="true">×</span></button>`).join("")||'<span class="hint" style="margin:0">Noch keine ausgewählt.</span>'}</div>
@@ -1455,7 +1455,7 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   else if(t.id==="copyshare"){navigator.clipboard.writeText(SHARE_TEXT+" "+SHARE_URL).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren";});}
   else if(t.id==="copylink"){navigator.clipboard.writeText(prefsLink()).then(()=>{t.textContent="Kopiert ✓";},()=>{shareOrCopy(prefsLink(),t,"Sicherungslink kopieren");});}
   else if(t.id==="savesettings"){
-    if(!draft.sports.length){alertBox("Bitte mindestens eine Sportart wählen."); return;}
+    if(!draft.sports.length){alertBox("Bitte wähle mindestens eine Sportart aus, die dich interessiert."); return;}
     const wasFirst=draft._first;
     if(wasFirst&&rdOn()&&!(draft.name||"").trim()){alertBox("Bitte gib deinen Vornamen ein."); const i=document.getElementById("ob-name"); if(i) i.focus(); return;}
     if(wasFirst&&rdOn()&&!draft.k) draft.k=newKey();
