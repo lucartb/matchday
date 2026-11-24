@@ -466,6 +466,9 @@ details.sg[open] summary{margin-bottom:12px}
 /* sanfte Übergänge */
 .tab:not([hidden]){animation:tabin .22s ease}
 @keyframes tabin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pill.fin{background:var(--surface-2);color:var(--ink);font-variant-numeric:tabular-nums}
+.pill.live{font-variant-numeric:tabular-nums}
+.hero .hsc{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;align-self:center}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -709,6 +712,8 @@ const dayNum=d=>Math.round(P(d).getTime()/864e5);
 // Minuten bis Start (relativ zu jetzt, deutsche Zeit); null ohne Uhrzeit
 function delta(e,n){ if(!e.t) return null; return (dayNum(e.d)-dayNum(n.d))*1440 + mins(e.t) - n.m; }
 function state(e,n){
+  const lv=typeof liveOf==="function"?liveOf(e):null;
+  if(lv){ if(isLiveSt(lv.st)) return "live"; if(lv.st==="FINISHED"&&e.d<=n.d) return "past"; }
   const dl=delta(e,n); if(dl===null) return "open";
   if(dl>0) return "future";
   if(-dl < (DUR[e.s]||120)) return "live";
@@ -732,7 +737,9 @@ const CHEV='<svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentCol
 function row(e,n){
   const st=state(e,n), dl=delta(e,n), id=rid(e), open=openRows.has(id), tap=!e._notap; ROWS[id]=e;
   let pill="";
-  if(st==="live") pill=`<span class="pill live"><span class="pulse"></span>Live</span>`;
+  const lv=liveOf(e), sct=lv&&!hideScore(e)?scoreTxt(lv):"";
+  if(st==="live") pill=`<span class="pill live"><span class="pulse"></span>${sct?`${sct}${lv.st==="PAUSED"?" · HZ":lv.m?` · ${lv.m}'`:""}`:"Live"}</span>`;
+  else if(lv&&lv.st==="FINISHED"&&sct&&e.d===n.d) pill=`<span class="pill fin">${sct} · Ende</span>`;
   else if(st==="future" && e.d===n.d) pill=`<span class="pill${dl<=120?" soon":""}">${countdown(dl)}</span>`;
   const x0=P(e.d), ws=watchersOf(id), fr=friendsOf(e), mp=myPlan(id);
   let chip="";
@@ -795,7 +802,7 @@ function resRow(e){
 }
 function yHtml(yday){
   const ev=prep(DATA.events), res=DATA.gestern||[];
-  const yev=ev.filter(e=>e.d===yday).map(e=>{const r=res.find(x=>x.ti===e.ti); return Object.assign({},e,r?{r:r.r,_real:true}:{});});
+  const yev=ev.filter(e=>e.d===yday).map(e=>{const r=res.find(x=>x.ti===e.ti); if(r) return Object.assign({},e,{r:r.r,_real:true}); const lv=liveOf(e); return Object.assign({},e,lv&&lv.st==="FINISHED"&&scoreTxt(lv)?{r:scoreTxt(lv),_real:true}:{});});
   res.forEach(r=>{if(!yev.some(e=>e.ti===r.ti)) yev.push(Object.assign({},r,{_real:true}));});
   yev.sort(byTime);
   if(!yev.length) return `<div class="list"><div class="empty">Gestern lief nichts Größeres.</div></div>`;
@@ -805,6 +812,11 @@ function yHtml(yday){
   return `<div class="list res">${shown.map(e=>resRow(e.r?e:Object.assign({},e,{r:"Ergebnis folgt"}))).join("")}${more}</div>`;
 }
 function progHtml(e,n){
+  const lv=liveOf(e);
+  if(lv&&isLiveSt(lv.st)&&(lv.m||lv.st==="PAUSED")){
+    const mm=lv.st==="PAUSED"?45:Math.min(lv.m,120), pc=Math.max(3,Math.min(100,mm/(mm>90?120:90)*100));
+    return `<div class="live-foot"><div class="prog"><i style="width:${pc.toFixed(0)}%"></i></div><span class="progl">${lv.st==="PAUSED"?"Halbzeitpause":lv.m+". Minute"}</span></div>`;
+  }
   const el=-delta(e,n), D=DUR[e.s]||120, pct=Math.max(3,Math.min(100,el/D*100));
   let lab;
   if(e.s==="Fußball") lab=el<=47?`ca. ${Math.max(1,el)}. Minute`:el<=62?"Halbzeitpause":`ca. ${Math.min(90,el-15)}. Minute`;
@@ -1185,7 +1197,7 @@ function heroHtml(ev,n){
   if(live.length){
     const top=live.slice(0,2);
     return `<div class="hero live"><div class="hh"><span class="live-badge"><span class="pulse"></span>Jetzt live</span><span class="hn">${live.length} ${live.length===1?"Übertragung":"Übertragungen"}</span></div>
-      ${top.map(e=>`<div class="hi">${icon(e.s,true)}<div class="hb">${pairHtml(e)}<div class="meta">${esc(compOf(e))} · <b>${esc(tvText(e))}</b></div>${progHtml(e,n)}</div></div>`).join("")}
+      ${top.map(e=>{const lv=liveOf(e), sct=lv&&!hideScore(e)?scoreTxt(lv):""; return `<div class="hi">${icon(e.s,true)}<div class="hb">${pairHtml(e)}<div class="meta">${esc(compOf(e))} · <b>${esc(tvText(e))}</b></div>${progHtml(e,n)}</div>${sct?`<div class="hsc">${sct}</div>`:""}</div>`;}).join("")}
       <button type="button" class="hmore" id="heromore">${live.length>2?`Alle ${live.length} anzeigen`:"Was läuft gleich?"} →</button></div>`;
   }
   const fut=ev.filter(e=>state(e,n)==="future").sort((a,b)=>delta(a,n)-delta(b,n));
@@ -1293,13 +1305,49 @@ async function disablePush(){
   await rpc("md_push_delete",{}); RD.state.push=false;
 }
 
+/* ---- Live-Spielstände ---- */
+let LIVE=[];
+const SYN={neapel:"napoli",mailand:"milano",inter:"internazionale",lissabon:"lisboa",prag:"praha",bruegge:"brugge",kopenhagen:"kobenhavn",belgrad:"beograd",athen:"athens",moskau:"moskva",turin:"torino",rom:"roma",florenz:"fiorentina",sevilla:"sevilla",muenchen:"munchen",koeln:"koln",gladbach:"monchengladbach",moenchengladbach:"monchengladbach"};
+function ntoks(x){
+  return String(x||"").toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss")
+    .normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9 ]/g," ").split(/\s+/)
+    .map(w=>SYN[w]||w).map(w=>w.replace(/oe/g,"o").replace(/ue/g,"u").replace(/ae/g,"a")).filter(w=>w.length>=4&&!["borussia","united","olympique","athletic","club"].includes(w));
+}
+const ovl=(a,b)=>a.some(x=>b.some(y=>x===y||(x.length>=5&&y.startsWith(x))||(y.length>=5&&x.startsWith(y))));
+const berlinHM=iso=>new Intl.DateTimeFormat("sv-SE",{timeZone:"Europe/Berlin",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(iso));
+const LMEMO={};
+function liveOf(e){
+  if(!LIVE.length||e.s!=="Fußball"||!e.t) return null;
+  const k=rid(e); if(k in LMEMO) return LMEMO[k];
+  const p=sides(e); if(!p||e.ti.includes(",")) return (LMEMO[k]=null);
+  const th=ntoks(p[0]), ta=ntoks(p[1]); let best=null, bs=0, ties=0;
+  LIVE.forEach(l=>{
+    const bh=berlinHM(l.k); if(bh.slice(0,10)!==e.d) return;
+    if(Math.abs(mins(bh.slice(11,16))-mins(e.t))>30) return;
+    const lh=ntoks(l.h), la=ntoks(l.a);
+    const s1=(ovl(th,lh)?1:0)+(ovl(ta,la)?1:0), s2=(ovl(th,la)?1:0)+(ovl(ta,lh)?1:0);
+    const sc2=Math.max(s1,s2); if(!sc2) return;
+    if(sc2>bs){bs=sc2; ties=0; best=Object.assign({},l,{swap:s2>s1});} else if(sc2===bs) ties++;
+  });
+  if(!best||(bs===1&&ties>0)) return (LMEMO[k]=null);
+  const r={st:best.st,m:best.m,hs:best.swap?best.as:best.hs,as:best.swap?best.hs:best.as};
+  return (LMEMO[k]=r);
+}
+const isLiveSt=st=>st==="IN_PLAY"||st==="PAUSED"||st==="LIVE";
+const scoreTxt=l=>(l&&l.hs!=null&&l.as!=null)?`${l.hs}:${l.as}`:"";
+function hideScore(e){return PREFS&&PREFS.spoiler&&!revealed.has("r|"+e.ti);}
+async function loadLive(){
+  if(!rdOn()) return;
+  try{ const j=await rpc("md_live_feed"); if(Array.isArray(j)){LIVE=j; for(const k in LMEMO) delete LMEMO[k]; render();} }catch(e){}
+}
+
 async function softRefresh(){
   try{
     const r=await fetch("data.js?v="+Date.now(),{cache:"no-store"}); const t=await r.text();
     const nd=(new Function(t.replace(/^\s*const\s+DATA\s*=\s*/,"return ")))();
     if(nd&&nd.events){Object.keys(DATA).forEach(k=>delete DATA[k]); Object.assign(DATA,nd);}
   }catch(e){}
-  render(); await rdLoad();
+  render(); await Promise.all([rdLoad(),loadLive()]);
 }
 (function(){
   const ind=document.createElement("div"); ind.className="ptr"; ind.setAttribute("aria-hidden","true");
@@ -1575,9 +1623,10 @@ applyTheme();
 if(pendingCode) TAB="runde";
 render();
 updateHomeHint();
-rdLoad();
+rdLoad(); loadLive();
 setInterval(()=>{if(!document.hidden&&TAB==="runde") rdLoad();},45000);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden) rdLoad();});
+setInterval(()=>{if(!document.hidden) loadLive();},60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){rdLoad(); loadLive();}});
 if(!PREFS) openSettings(true);
 setInterval(()=>{if(document.getElementById("sheet").hidden) render();},30000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden) render();});
