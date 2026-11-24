@@ -89,6 +89,8 @@ begin
   select id into g from md_groups where code = upper(trim(p_code));
   if g is null then return json_build_object('error','code'); end if;
   if (select count(*) from md_members where group_id = g) >= 50 then return json_build_object('error','full'); end if;
+  -- gleiches Handy (z. B. erst Safari, dann Home-Bildschirm) nicht doppelt zählen
+  delete from md_members where group_id = g and id <> auth.uid() and lower(name) = lower(trim(p_name)) and device = left(p_device,60);
   insert into md_members(id,group_id,name,teams,device,standalone)
     values (auth.uid(), g, left(trim(p_name),30), coalesce(p_teams[1:40],'{}'), left(p_device,60), coalesce(p_standalone,false))
     on conflict (id) do update set group_id = excluded.group_id, name = excluded.name, teams = excluded.teams, device = excluded.device, standalone = excluded.standalone, last_seen = now();
