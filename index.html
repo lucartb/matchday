@@ -236,7 +236,8 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
 .tlbar button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;height:32px;min-width:32px;padding:0 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .tlbar button.now{color:var(--live);border-color:color-mix(in srgb,var(--live) 40%,var(--line))}
 .tlbar button:disabled{opacity:.35}
-.tlw{height:min(64vh,var(--tlh,64vh));min-height:220px;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y;background:var(--surface);border:1px solid var(--line);border-radius:18px;position:relative}
+.tlw{height:min(64vh,var(--tlh,64vh));min-height:220px;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;background:var(--surface);border:1px solid var(--line);border-radius:18px;position:relative;cursor:grab;-webkit-user-select:none;user-select:none}
+.tlw.drag{cursor:grabbing}
 .tlsel{margin-top:10px}
 .tl{position:relative;min-width:100%}
 .tl .hr.half{border-top:1px dotted color-mix(in srgb,var(--line) 60%,transparent)}
@@ -843,6 +844,45 @@ let VIEW=(()=>{try{return localStorage.getItem("md-view")||"list";}catch(e){retu
 const TLZ=[0.75,1.1,1.6,2.4];
 let TLZI=(()=>{try{const v=+localStorage.getItem("md-tlz");return v>=0&&v<4&&localStorage.getItem("md-tlz")!==null?v:1;}catch(e){return 1;}})(), TLSEL=null, TLBUSY=0;
 function tlScrollNow(w){const nl=w.querySelector(".nowl"); w.scrollTo({top:nl?Math.max(0,nl.offsetTop-w.clientHeight*0.3):0,behavior:"smooth"});}
+/* Zeitstrahl selbst verschieben (zuverlässig auch auf dem iPhone) */
+let TLDRAG=0;
+function tlPan(w){
+  let sx=null,sy,st,sl,mode=null,hist=[],raf=0;
+  const maxT=()=>w.scrollHeight-w.clientHeight, maxL=()=>w.scrollWidth-w.clientWidth;
+  const begin=(x,y)=>{cancelAnimationFrame(raf); sx=x; sy=y; st=w.scrollTop; sl=w.scrollLeft; mode=null; hist=[{x,y,t:performance.now()}]; TLBUSY=Date.now();};
+  const move=(x,y)=>{
+    const dx=x-sx, dy=y-sy;
+    if(mode===null){
+      if(Math.abs(dx)<2&&Math.abs(dy)<2) return true;
+      const vert=Math.abs(dy)>=Math.abs(dx);
+      mode=(vert&&((dy>0&&st<=0)||(dy<0&&st>=maxT()-1)))?"page":"pan";
+    }
+    if(mode!=="pan") return false;
+    w.scrollTop=st-dy; w.scrollLeft=sl-dx; TLBUSY=Date.now();
+    if(Math.abs(dx)>6||Math.abs(dy)>6){TLDRAG=performance.now(); w.classList.add("drag");}
+    hist.push({x,y,t:performance.now()}); if(hist.length>5) hist.shift();
+    return true;
+  };
+  const end=()=>{
+    w.classList.remove("drag");
+    if(mode==="pan"&&hist.length>1){
+      const a=hist[0], b=hist[hist.length-1], dt=Math.max(16,b.t-a.t);
+      let vx=(b.x-a.x)/dt*16, vy=(b.y-a.y)/dt*16;
+      if(performance.now()-b.t<80){
+        const step=()=>{ vx*=.94; vy*=.94; w.scrollLeft-=vx; w.scrollTop-=vy; TLBUSY=Date.now();
+          if(Math.abs(vx)>.4||Math.abs(vy)>.4) raf=requestAnimationFrame(step); };
+        raf=requestAnimationFrame(step);
+      }
+    }
+    sx=null; mode=null;
+  };
+  w.addEventListener("touchstart",e=>{ if(e.touches.length!==1){sx=null;return;} const t=e.touches[0]; begin(t.clientX,t.clientY); },{passive:true});
+  w.addEventListener("touchmove",e=>{ if(sx===null||e.touches.length!==1) return; const t=e.touches[0]; if(move(t.clientX,t.clientY)&&e.cancelable) e.preventDefault(); },{passive:false});
+  w.addEventListener("touchend",end,{passive:true}); w.addEventListener("touchcancel",end,{passive:true});
+  w.addEventListener("mousedown",e=>{ if(e.button!==0) return; begin(e.clientX,e.clientY);
+    const mm=ev=>{ if(sx!==null) move(ev.clientX,ev.clientY); }, mu=()=>{ end(); removeEventListener("mousemove",mm); removeEventListener("mouseup",mu); };
+    addEventListener("mousemove",mm); addEventListener("mouseup",mu); });
+}
 function timelineHtml(evs,n){
   let tim=evs.filter(e=>e.t).sort(byTime); const un=evs.filter(e=>!e.t);
   const main=tim.filter(e=>!e.x||e._fav||e.hl); if(main.length) tim=main;
@@ -1440,7 +1480,7 @@ function render(){
   const ow=document.getElementById("tlw"), keep=ow?ow.scrollTop:null, keepL=ow?ow.scrollLeft:0, keepR=ow?ow.scrollTop/(ow.scrollHeight||1):null;
   document.getElementById("today").innerHTML=th;
   const nw=document.getElementById("tlw");
-  if(nw){ nw.addEventListener("scroll",()=>{TLBUSY=Date.now();},{passive:true}); nw.addEventListener("touchstart",()=>{TLBUSY=Date.now();},{passive:true}); nw.addEventListener("touchmove",()=>{TLBUSY=Date.now();},{passive:true}); nw.scrollLeft=keepL; if(keep!==null) nw.scrollTop=render._zoom?keepR*nw.scrollHeight:keep; else { const nl=nw.querySelector(".nowl"); nw.scrollTop=nl?Math.max(0,nl.offsetTop-nw.clientHeight*0.3):0; } render._zoom=false; }
+  if(nw){ nw.addEventListener("scroll",()=>{TLBUSY=Date.now();},{passive:true}); tlPan(nw); nw.scrollLeft=keepL; if(keep!==null) nw.scrollTop=render._zoom?keepR*nw.scrollHeight:keep; else { const nl=nw.querySelector(".nowl"); nw.scrollTop=nl?Math.max(0,nl.offsetTop-nw.clientHeight*0.3):0; } render._zoom=false; }
 
   // Überschneidungen
   const cfs=conflicts(ev,n);
@@ -1623,7 +1663,7 @@ document.addEventListener("click",ev=>{
   const vw=ev.target.closest("[data-view]"); if(vw){VIEW=vw.dataset.view; try{localStorage.setItem("md-view",VIEW);}catch(x){} render(); return;}
   const tz=ev.target.closest("[data-tlz]"); if(tz){TLZI=Math.max(0,Math.min(TLZ.length-1,TLZI+(+tz.dataset.tlz))); try{localStorage.setItem("md-tlz",String(TLZI));}catch(x){} TLBUSY=0; render._zoom=true; render(); return;}
   if(ev.target.closest("[data-tlnow]")){const w=document.getElementById("tlw"); if(w) tlScrollNow(w); return;}
-  const tb=ev.target.closest("[data-tl]"); if(tb){TLSEL=TLSEL===tb.dataset.tl?null:tb.dataset.tl; TLBUSY=0; render(); const d=document.querySelector(".tlsel"); if(d) d.scrollIntoView({behavior:"smooth",block:"nearest"}); return;}
+  const tb=ev.target.closest("[data-tl]"); if(tb&&TLDRAG&&performance.now()-TLDRAG<350) return; if(tb){TLSEL=TLSEL===tb.dataset.tl?null:tb.dataset.tl; TLBUSY=0; render(); const d=document.querySelector(".tlsel"); if(d) d.scrollIntoView({behavior:"smooth",block:"nearest"}); return;}
   const rh=ev.target.closest("#recaphide"); if(rh){try{localStorage.setItem("md-recap",rh.dataset.k);}catch(x){} render(); return;}
   const rs=ev.target.closest("#recapshare"); if(rs){shareOrCopy(recapText(prep(DATA.events),nowB()),rs,"Teilen"); return;}
   if(ev.target.closest("#pfadd")&&pendingFriend){PREFS.group=(PREFS.group||[]).filter(x=>x.n!==pendingFriend.n).concat([pendingFriend]); savePrefs(); pendingFriend=null; try{sessionStorage.removeItem("md-pf");}catch(x){} render(); return;}
