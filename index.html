@@ -429,6 +429,19 @@ details.sg[open] summary{margin-bottom:12px}
 .fcard .tsearch{margin-top:8px}
 .card.inv{border-color:color-mix(in srgb,var(--c-fussball) 45%,var(--line));background:color-mix(in srgb,var(--c-fussball) 8%,var(--surface))}
 .fadm{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-ink);border:1px solid color-mix(in srgb,var(--gold) 50%,var(--line));border-radius:6px;padding:0 5px;margin-left:4px}
+.myid{font-size:14px;color:var(--muted);margin-top:-10px}
+.myid b{color:var(--ink)}
+.adstats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.adstats div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 4px;text-align:center}
+.adstats strong{display:block;font-size:20px;font-weight:800}
+.adstats small{font-size:10.5px;color:var(--muted);font-weight:600}
+.adp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.adp.warn{border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.adh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.adh b{font-size:15px}
+.adg{display:flex;flex-wrap:wrap;gap:6px}
+.adg span{font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:7px;padding:3px 7px}
+.adw{font-size:12.5px;font-weight:700;color:var(--soon-ink)}
 @media (prefers-reduced-motion: reduce){.pulse{animation:none}}
 @media (max-width:380px){.row{grid-template-columns:44px 30px 1fr auto;gap:10px}.ico{width:30px;height:30px;border-radius:9px}.ico svg{width:18px;height:18px}}
 </style>
@@ -585,8 +598,8 @@ const SERVICES=[
  {k:"euro",l:"Eurosport / HBO Max",m:x=>/eurosport|hbo/i.test(x)&&!FREE.includes(x.toLowerCase())}
 ];
 let PREFS=null;
-function encPrefs(p){const o={s:p.sports,d:p.disc,t:p.teams,v:p.services,h:p.hideOther?1:0,m:p.theme||"dark"};if(p.name)o.n=p.name;if(p.gc)o.c=p.gc;if(p.group&&p.group.length)o.g=p.group.map(f=>[f.n,f.t]);if(p.spoiler)o.x=1;return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
-function decPrefs(str){try{const o=JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));return {sports:o.s||[],disc:o.d||null,teams:o.t||[],services:o.v||[],hideOther:!!o.h,theme:o.m||"dark",name:o.n||"",gc:o.c||"",group:(o.g||[]).map(x=>({n:x[0],t:x[1]||[]})),spoiler:!!o.x,v:2};}catch(e){return null;}}
+function encPrefs(p){const o={s:p.sports,d:p.disc,t:p.teams,v:p.services,h:p.hideOther?1:0,m:p.theme||"dark"};if(p.name)o.n=p.name;if(p.gc)o.c=p.gc;if(p.k)o.k=p.k;if(p.group&&p.group.length)o.g=p.group.map(f=>[f.n,f.t]);if(p.spoiler)o.x=1;return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+function decPrefs(str){try{const o=JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));return {sports:o.s||[],disc:o.d||null,teams:o.t||[],services:o.v||[],hideOther:!!o.h,theme:o.m||"dark",name:o.n||"",gc:o.c||"",k:o.k||"",group:(o.g||[]).map(x=>({n:x[0],t:x[1]||[]})),spoiler:!!o.x,v:2};}catch(e){return null;}}
 const SHARE_URL="https://lucartb.github.io/matchday";
 const SHARE_TEXT="Schau mal: Matchday zeigt, welcher Sport heute und diese Woche im TV läuft. Link in Safari öffnen, Sportarten auswählen, speichern und dann über Teilen → „Zum Home-Bildschirm“ hinzufügen.";
 const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
@@ -915,28 +928,87 @@ async function rpc(fn,args){
   if(!r.ok){let m="";try{const j=await r.json();m=j.message||j.hint||j.code||"";}catch(x){} throw new Error(fn+" "+r.status+(m?": "+m:""));}
   const tx=await r.text(); return tx?JSON.parse(tx):null;
 }
+const myArgs=()=>({p_teams:(PREFS&&PREFS.teams)||[],p_device:devName(),p_standalone:isStandalone()});
 function devName(){
   const u=navigator.userAgent;
-  const d=/iPhone/.test(u)?"iPhone":(/iPad/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1))?"iPad":/Android/.test(u)?"Android":/Mac/.test(u)?"Mac":/Windows/.test(u)?"Windows":"Gerät";
-  const b=/GSA\//.test(u)?"Google-App":/Instagram|FBAN|FBAV/.test(u)?"In-App-Browser":/EdgiOS|Edg\//.test(u)?"Edge":/CriOS|Chrome\//.test(u)?"Chrome":/FxiOS|Firefox\//.test(u)?"Firefox":/Safari\//.test(u)?"Safari":"Browser";
-  return d+" · "+b;
+  let d=/iPhone/.test(u)?"iPhone":(/iPad/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1))?"iPad":/Android/.test(u)?"Android":/Mac/.test(u)?"Mac":/Windows/.test(u)?"Windows":"Gerät";
+  if(d==="iPhone"){
+    const w=Math.min(screen.width,screen.height), h=Math.max(screen.width,screen.height);
+    const M={"320x568":"iPhone SE (1.)","375x667":"iPhone SE/8","414x736":"iPhone 8 Plus","375x812":"iPhone X/11 Pro/12 mini","360x780":"iPhone 12/13 mini","414x896":"iPhone 11/XR/11 Pro Max","390x844":"iPhone 12–14/16e","428x926":"iPhone 12–14 Plus/Pro Max","393x852":"iPhone 14 Pro/15/16","430x932":"iPhone 15/16 Plus/Pro Max","402x874":"iPhone 16 Pro","440x956":"iPhone 16 Pro Max","420x912":"iPhone Air"};
+    d=M[w+"x"+h]||"iPhone";
+  }
+  const os=u.match(/OS (\d+)_(\d+)/), av=u.match(/Android (\d+)/);
+  const ver=os?` iOS ${os[1]}.${os[2]}`:av?` ${av[1]}`:"";
+  const b=isStandalone()?"App":/GSA\//.test(u)?"Google-App":/Instagram|FBAN|FBAV/.test(u)?"In-App-Browser":/EdgiOS|Edg\//.test(u)?"Edge":/CriOS|Chrome\//.test(u)?"Chrome":/FxiOS|Firefox\//.test(u)?"Firefox":/Safari\//.test(u)?"Safari":"Browser";
+  return (d+ver+" · "+b).slice(0,60);
 }
-const myArgs=()=>({p_teams:(PREFS&&PREFS.teams)||[],p_device:devName(),p_standalone:isStandalone()});
+const newKey=()=>{const a=new Uint8Array(18); crypto.getRandomValues(a); return btoa(String.fromCharCode(...a)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");};
+async function ensureProfile(nameIn){
+  if(!PREFS) return;
+  const own=RD.state?RD.state.members.find(m=>m.id===RD.state.me):null;
+  const nm=(nameIn||PREFS.name||(own&&own.name)||"").trim();
+  if(!nm){openNamePrompt(); return;}
+  if(!PREFS.k){PREFS.k=newKey();}
+  PREFS.name=nm; savePrefs();
+  const so=await rpc("md_profile_create",{p_name:nm,p_key:PREFS.k,p_device:devName(),p_standalone:isStandalone()});
+  if(so){RD.social=so; if(so.me) toast(`Willkommen, ${so.me.name}! Deine Matchday-ID: #${so.me.tag}`);}
+}
 async function rdLoad(force){
   if(!rdOn()||RD.loading) return;
-  if(!getAuth()&&!(PREFS&&PREFS.gc)&&SUPA.url!=="mock"){if(pendingCode&&!RD.peek) rdPeek(); return;}
   RD.loading=true;
   try{
+    let so=await rpc("md_hello",{p_device:devName(),p_standalone:isStandalone()});
+    if(so&&!so.me&&PREFS&&PREFS.k){const c=await rpc("md_claim",{p_key:PREFS.k}); if(c&&c.ok&&c.social) so=c.social;}
+    RD.social=so;
     let st=await rpc("md_state");
     if(!st&&PREFS&&PREFS.gc&&PREFS.name){const j=await rpc("md_join",Object.assign({p_code:PREFS.gc,p_name:PREFS.name},myArgs())); st=j&&!j.error?j:null;}
     RD.state=st; RD.err="";
     if(st&&!RD.pinged){RD.pinged=true; rpc("md_ping",Object.assign({p_name:PREFS&&PREFS.name||""},myArgs())).catch(()=>{});}
     if(st&&PREFS&&PREFS.gc!==st.code){PREFS.gc=st.code; savePrefs();}
-    try{RD.social=await rpc("md_social");}catch(e){}
+    if(PREFS&&RD.social&&!RD.social.me) await ensureProfile();
+    else if(PREFS&&RD.social&&RD.social.me&&!PREFS.k){PREFS.k=newKey(); PREFS.name=PREFS.name||RD.social.me.name; savePrefs(); rpc("md_profile_create",{p_name:RD.social.me.name,p_key:PREFS.k,p_device:devName(),p_standalone:isStandalone()}).catch(()=>{});}
     if(pendingCode&&!st) await rdPeek();
   }catch(e){RD.err="Die Watch Party ist gerade nicht erreichbar.";}
   RD.loading=false; render();
 }
+function openNamePrompt(){
+  if(!document.getElementById("sheet").hidden) return;
+  draft=null;
+  document.getElementById("panel").innerHTML=`<h2>Wie heißt du?</h2><p class="hint" style="margin-top:-12px">Matchday hat ein Update: Jeder bekommt jetzt eine eigene ID. Damit können dich Freunde finden und in ihre Watch Party holen.</p>
+    <input class="tsearch" id="np-name" placeholder="Dein Vorname" maxlength="30" autocomplete="given-name">
+    <button type="button" class="save" id="np-go">Weiter</button>`;
+  document.getElementById("sheet").hidden=false;
+  setTimeout(()=>{const i=document.getElementById("np-name"); if(i) i.focus();},100);
+}
+/* ---- Admin-Übersicht ---- */
+const agoTxt=t=>{const m=Math.round((Date.now()-new Date(t).getTime())/60000);return m<2?"gerade eben":m<60?`vor ${m} Min.`:m<1440?`vor ${Math.round(m/60)} Std.`:`vor ${Math.round(m/1440)} Tagen`;};
+function drawAdmin(){
+  const a=RD.people, q=(RD.aq||"").toLowerCase();
+  const ppl=(a.people||[]).filter(p=>!q||(p.name+" #"+(p.tag||"")+" "+(p.device||"")+" "+(p.group||"")).toLowerCase().includes(q));
+  const all=a.people||[], wk=all.filter(p=>Date.now()-new Date(p.last_seen).getTime()<7*864e5).length;
+  const home=all.filter(p=>p.standalone).length, dups=all.filter(p=>p.dup&&p.dup.length).length;
+  const meTag=RD.social&&RD.social.me&&RD.social.me.tag;
+  document.getElementById("panel").innerHTML=`<div class="ph"><h2>Admin-Übersicht</h2><button type="button" class="xbtn" id="ad-back" aria-label="Zurück">×</button></div>
+    <div class="adstats"><div><strong>${all.length}</strong><small>Personen</small></div><div><strong>${wk}</strong><small>aktiv (7 Tage)</small></div><div><strong>${home}</strong><small>Home-Bildschirm</small></div><div><strong>${a.groups}</strong><small>Gruppen</small></div></div>
+    ${dups?`<div class="rerr">⚠ ${dups} ${dups===1?"Konto":"Konten"} mit möglichem Doppelkonto (gleiches Gerät und Netzwerk)</div>`:""}
+    ${meTag==="00001"?"":`<button type="button" class="chip" aria-pressed="true" id="ad-claim">Kennzeichen #00001 für mein Profil übernehmen</button>`}
+    <input class="tsearch" id="ad-q" type="search" placeholder="Suchen: Name, ID, Gerät, Gruppe" value="${esc(RD.aq||"")}" autocomplete="off">
+    <div class="adl">${ppl.map(p=>`<div class="adp${p.dup&&p.dup.length?" warn":""}">
+      <div class="adh"><div><b>${esc(p.name)}</b> ${p.tag?tagHtml(p.tag):`<span class="fmuted">ohne ID (altes Konto)</span>`}${p.tag===meTag?` <span class="fmuted">· du</span>`:""}</div>${p.tag&&p.tag!==meTag?`<button type="button" class="xbtn sm" data-adtag="${esc(p.tag)}" data-adname="${esc(p.name)}" aria-label="Löschen">×</button>`:""}</div>
+      <div class="adg"><span>📱 ${esc(p.device||"unbekannt")}</span><span>${p.standalone?"🏠 Home-Bildschirm":"🌐 Browser"}</span><span>🕒 zuletzt ${agoTxt(p.last_seen)}</span><span>📅 seit ${new Date(p.created_at).toLocaleDateString("de-DE")}</span><span>👥 ${p.group?esc(p.group):"keine Gruppe"}</span><span>🤝 ${p.friends} ${p.friends===1?"Freund":"Freunde"}</span><span>👀 ${p.watch} markiert</span><span>${p.push?"🔔 Erinnerungen an":"🔕 keine Erinnerungen"}</span>${p.disc?"":`<span>🙈 nicht auffindbar</span>`}</div>
+      ${p.dup&&p.dup.length?`<div class="adw">⚠ Mögliches Doppelkonto mit ${p.dup.map(t=>"#"+esc(t)).join(", ")}</div>`:""}
+    </div>`).join("")||`<p class="hint">Niemand gefunden.</p>`}</div>`;
+  const i=document.getElementById("ad-q");
+  i.addEventListener("input",()=>{RD.aq=i.value; const pos=i.value.length; drawAdmin(); const j=document.getElementById("ad-q"); j.focus(); j.setSelectionRange(pos,pos);});
+}
+async function openAdmin(pin){
+  try{
+    const j=await rpc("md_admin_people",{p_pin:pin});
+    if(j&&j.error){RD.adminErr=j.error==="locked"?"Zu viele Versuche – bitte 15 Minuten warten.":j.error==="default"?"Bitte zuerst in Supabase eine eigene PIN setzen.":"PIN falsch."; const b=document.getElementById("adminbox"); if(b) b.innerHTML=adminHtml(); return;}
+    ADPIN=pin; RD.people=j; RD.adminErr=""; draft=null; drawAdmin();
+  }catch(e){RD.adminErr="Nicht erreichbar."; const b=document.getElementById("adminbox"); if(b) b.innerHTML=adminHtml();}
+}
+
 async function rdPeek(){try{RD.peek=await rpc("md_peek",{p_code:pendingCode});}catch(e){RD.peek=null;} render();}
 async function rdDo(fn,args,after){
   RD.loading=true; render();
@@ -1060,10 +1132,7 @@ async function socialDo(fn,args,msg){
 }
 
 function adminHtml(){
-  const a=RD.admin;
-  if(!a) return `<input class="tsearch" id="ad-pin" type="password" placeholder="Admin-PIN" autocomplete="off"><div class="chips" style="margin-top:8px"><button type="button" class="chip" id="ad-go">Übersicht öffnen</button></div>${RD.adminErr?`<p class="hint" style="color:var(--soon-ink);margin-top:8px">${esc(RD.adminErr)}</p>`:""}`;
-  const ago=t=>{const m=Math.round((Date.now()-new Date(t).getTime())/60000);return m<2?"gerade eben":m<60?`vor ${m} Min.`:m<1440?`vor ${Math.round(m/60)} Std.`:`vor ${Math.round(m/1440)} Tagen`;};
-  return `<p class="hint">${a.members.length} Geräte in ${a.groups} ${a.groups===1?"Gruppe":"Gruppen"}</p><div class="adl">${a.members.map(m=>`<div class="adr"><div><b>${esc(m.name)}</b> <span>· ${esc(m.group)}</span><br><span>${esc(m.device||"?")}${m.standalone?" · Home-Bildschirm":""} · zuletzt ${ago(m.last_seen)} · ${m.watch} ${m.watch===1?"Spiel":"Spiele"} markiert</span></div><button type="button" class="xbtn sm" data-adrm="${esc(m.name)}" data-adcode="${esc(m.code)}" aria-label="Entfernen">×</button></div>`).join("")}</div><div class="chips" style="margin-top:8px">${RD.social&&RD.social.me&&RD.social.me.tag==="00001"?`<span class="fmuted">Dein Profil hat das Kennzeichen #00001 ✓</span>`:`<button type="button" class="chip" aria-pressed="true" id="ad-claim">Kennzeichen #00001 für mein Profil übernehmen</button>`}<button type="button" class="chip" id="ad-close">Schließen</button></div>`;
+  return `<p class="hint">Alle Personen, Geräte und Gruppen auf einen Blick.</p><input class="tsearch" id="ad-pin" type="password" placeholder="Admin-PIN" autocomplete="off"><div class="chips" style="margin-top:8px"><button type="button" class="chip" aria-pressed="true" id="ad-go">Übersicht öffnen</button></div>${RD.adminErr?`<p class="hint" style="color:var(--soon-ink);margin-top:8px">${esc(RD.adminErr)}</p>`:""}`;
 }
 
 /* ---- Kompakte Darstellung ---- */
@@ -1291,6 +1360,8 @@ function drawSettings(q){
   document.getElementById("panel").innerHTML=`
    <div class="ph"><h2 id="st-title">${first?"Willkommen bei Matchday":"Einstellungen"}</h2>${first?"":`<button type="button" class="xbtn" id="closeset" aria-label="Schließen">×</button>`}</div>
    ${first?'<p class="hint" style="margin-top:-12px">Wähle kurz aus, was dich interessiert. Das lässt sich unten über „Einstellungen“ jederzeit ändern.</p>':""}
+   ${first&&rdOn()?`<section class="sg"><div class="sgh">Wie heißt du?</div><p class="hint" style="margin:-8px 0 0">Du bekommst eine eigene Matchday-ID. Damit finden dich Freunde und holen dich in ihre Watch Party.</p><input class="tsearch" id="ob-name" placeholder="Dein Vorname" maxlength="30" autocomplete="given-name" value="${esc(draft.name||"")}"></section>`:""}
+   ${!first&&RD.social&&RD.social.me?`<div class="myid">Deine Matchday-ID: <b>${esc(RD.social.me.name)}</b> ${tagHtml(RD.social.me.tag)}</div>`:""}
    <section class="sg"><div class="sgh">Mein Sport</div>
    <div><h3>Sportarten</h3><div class="chips">${sportsInData().map(sp=>chip(draft.sports.includes(sp),`data-sport="${esc(sp)}"`,`${icon(sp,true)}${esc(sp)}`)).join("")}</div>
      ${Object.keys(SUBS).filter(k=>draft.sports.includes(k)&&SUBS[k].length>1).map(k=>`<div style="margin-top:14px"><p class="hint" style="margin:0 0 8px">${esc(k)}: Disziplinen</p><div class="chips">${SUBS[k].map(u=>chip(draft.disc.includes(u),`data-disc="${esc(u)}"`,esc(u))).join("")}</div></div>`).join("")}</div>
@@ -1323,6 +1394,7 @@ function drawSettings(q){
   inp.addEventListener("input",()=>{const v=inp.value; drawSettings(v); const i2=document.getElementById("tsearch"); i2.focus(); i2.setSelectionRange(v.length,v.length);});
   document.getElementById("hideother").addEventListener("change",e=>{draft.hideOther=e.target.checked;});
   document.getElementById("spoiler").addEventListener("change",e=>{draft.spoiler=e.target.checked;});
+  const obn=document.getElementById("ob-name"); if(obn) obn.addEventListener("input",()=>{draft.name=obn.value.trim();});
   const psw=document.getElementById("pushsw");
   if(psw) psw.addEventListener("change",async e=>{const on=e.target.checked; e.target.disabled=true;
     try{ if(on) await enablePush(); else await disablePush(); toast(on?"Erinnerungen sind an":"Erinnerungen sind aus"); }
@@ -1333,6 +1405,11 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   if(ev.target.id==="sheet"&&!draft){document.getElementById("sheet").hidden=true;return;}
   const t=ev.target.closest("button"); if(t&&t.id==="closenow"){document.getElementById("sheet").hidden=true;return;}
   if(t&&t.id==="closeset"){document.getElementById("sheet").hidden=true; draft=null; applyTheme(); return;}
+  if(t&&t.id==="ad-back"){RD.people=null; ADPIN=""; document.getElementById("sheet").hidden=true; return;}
+  if(t&&t.id==="ad-claim"){rpc("md_admin_claim",{p_pin:ADPIN,p_name:(PREFS&&PREFS.name)||"",p_device:devName()}).then(j=>{if(j&&!j.error){RD.social=j; toast("Du bist jetzt #00001"); openAdmin(ADPIN); render();} else toast("Hat nicht geklappt");}); return;}
+  if(t&&t.dataset.adtag){if(!confirm(t.dataset.adname+" #"+t.dataset.adtag+" wirklich löschen? Profil, Freundschaften und Watch-Party-Mitgliedschaft werden entfernt.")) return; rpc("md_admin_delete",{p_pin:ADPIN,p_tag:t.dataset.adtag}).then(j=>{if(j&&!j.error){RD.people=j; drawAdmin(); toast("Gelöscht");}}); return;}
+  if(t&&t.id==="np-go"){const nm=((document.getElementById("np-name")||{}).value||"").trim(); if(!nm){toast("Bitte deinen Vornamen eintragen"); return;} document.getElementById("sheet").hidden=true; ensureProfile(nm).then(render); return;}
+  if(ev.target.id==="sheet"&&(RD.people||document.getElementById("np-go"))) return;
   if(!t||!draft) return;
   const tog=(arr,v)=>{const i=arr.indexOf(v); i>=0?arr.splice(i,1):arr.push(v);};
   const q=(document.getElementById("tsearch")||{}).value||"";
@@ -1352,17 +1429,18 @@ document.getElementById("sheet").addEventListener("click",ev=>{
     if(!f){t.textContent="Link nicht erkannt"; setTimeout(()=>{if(t.isConnected)t.textContent="Freund hinzufügen";},2000); return;}
     draft.group=draft.group.filter(x=>x.n!==f.n).concat([f]); drawSettings(q);}
   else if(t.dataset.rmfriend){draft.group=draft.group.filter(x=>x.n!==t.dataset.rmfriend); drawSettings(q);}
-  else if(t.id==="ad-go"){const pin=document.getElementById("ad-pin").value; ADPIN=pin; rpc("md_admin_list",{p_pin:pin}).then(j=>{if(j&&j.error){RD.admin=null;RD.adminErr=j.error==="locked"?"Zu viele Versuche – bitte 15 Minuten warten.":j.error==="default"?"Bitte zuerst in Supabase eine eigene PIN setzen.":"PIN falsch.";}else{RD.admin=j;RD.adminErr="";} document.getElementById("adminbox").innerHTML=adminHtml();}).catch(()=>{RD.adminErr="Nicht erreichbar.";document.getElementById("adminbox").innerHTML=adminHtml();});}
-  else if(t.id==="ad-claim"){rpc("md_admin_claim",{p_pin:ADPIN,p_name:(PREFS&&PREFS.name)||"",p_device:devName()}).then(j=>{if(j&&!j.error){RD.social=j; toast("Du bist jetzt #00001");} else toast("Hat nicht geklappt"); document.getElementById("adminbox").innerHTML=adminHtml(); render();}).catch(()=>toast("Hat nicht geklappt"));}
-  else if(t.id==="ad-close"){RD.admin=null; ADPIN=""; document.getElementById("adminbox").innerHTML=adminHtml();}
-  else if(t.dataset.adrm){if(!confirm(t.dataset.adrm+" aus der Watch Party entfernen?")) return; rpc("md_admin_remove",{p_pin:ADPIN,p_name:t.dataset.adrm,p_code:t.dataset.adcode}).then(j=>{if(j&&!j.error){RD.admin=j;} document.getElementById("adminbox").innerHTML=adminHtml(); rdLoad();});}
+  else if(t.id==="ad-go"){openAdmin(document.getElementById("ad-pin").value);}
   else if(t.id==="sharelink"){navigator.share({title:"Matchday",text:SHARE_TEXT,url:SHARE_URL}).catch(()=>{});}
   else if(t.id==="copyshare"){navigator.clipboard.writeText(SHARE_TEXT+" "+SHARE_URL).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren";});}
   else if(t.id==="copylink"){navigator.clipboard.writeText(prefsLink()).then(()=>{t.textContent="Kopiert ✓";},()=>{shareOrCopy(prefsLink(),t,"Sicherungslink kopieren");});}
   else if(t.id==="savesettings"){
     if(!draft.sports.length){alertBox("Bitte mindestens eine Sportart wählen."); return;}
+    const wasFirst=draft._first;
+    if(wasFirst&&rdOn()&&!(draft.name||"").trim()){alertBox("Bitte gib deinen Vornamen ein."); const i=document.getElementById("ob-name"); if(i) i.focus(); return;}
+    if(wasFirst&&rdOn()&&!draft.k) draft.k=newKey();
     delete draft._first; PREFS=draft; draft=null; savePrefs(); applyTheme();
     document.getElementById("sheet").hidden=true; sel=null; render(); showLinkHint();
+    if(wasFirst&&rdOn()) ensureProfile(PREFS.name).then(()=>{render(); if(pendingCode) setTab("runde");});
   }
 });
 function isStandalone(){try{return window.navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;}catch(e){return false;}}
@@ -1384,7 +1462,7 @@ document.addEventListener("click",ev=>{
   const tbb=ev.target.closest("[data-tabbtn]"); if(tbb){setTab(tbb.dataset.tabbtn); if(tbb.dataset.tabbtn==="runde") rdLoad(); return;}
   if(ev.target.closest("#tabset")){openSettings(false);return;}
   if(ev.target.closest("#sheet")) return;
-  if(ev.target.closest("#pf-create")){const nm=((document.getElementById("pf-name")||{}).value||"").trim(); if(!nm){toast("Bitte deinen Vornamen eintragen");return;} if(PREFS){PREFS.name=PREFS.name||nm; savePrefs();} socialDo("md_profile_set",{p_name:nm,p_disc:true,p_device:devName()},"Profil angelegt – du bist auffindbar"); return;}
+  if(ev.target.closest("#pf-create")){const nm=((document.getElementById("pf-name")||{}).value||"").trim(); if(!nm){toast("Bitte deinen Vornamen eintragen");return;} if(PREFS){PREFS.name=PREFS.name||nm; savePrefs();} if(PREFS){PREFS.name=nm; savePrefs();} ensureProfile(nm).then(render); return;}
   if(ev.target.closest("#pf-disc")){const on=!(RD.social&&RD.social.me&&RD.social.me.disc); socialDo("md_profile_set",{p_name:null,p_disc:on,p_device:devName()},on?"Du bist jetzt auffindbar":"Du bist jetzt nicht mehr auffindbar"); return;}
   const fadd=ev.target.closest("[data-fadd]"); if(fadd){socialDo("md_friend_add",{p_id:fadd.dataset.fadd},"Anfrage gesendet"); return;}
   const fa=ev.target.closest("[data-fa]"); if(fa){socialDo("md_friend_add",{p_id:fa.dataset.fa},"Ihr seid jetzt befreundet"); return;}
