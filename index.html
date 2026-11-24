@@ -985,7 +985,7 @@ function drawSettings(q){
   const chip=(on,attr,label)=>`<button type="button" class="chip" aria-pressed="${on}" ${attr}>${label}</button>`;
   document.getElementById("panel").innerHTML=`
    <h2 id="st-title">${draft._first?"Willkommen bei Matchday":"Einstellungen"}</h2>
-   ${draft._first?'<p class="hint" style="margin-top:-12px">Wähle kurz aus, was dich interessiert. Das gilt nur auf diesem Gerät und lässt sich oben über das Zahnrad jederzeit ändern.</p>':""}
+   ${draft._first?'<p class="hint" style="margin-top:-12px">Wähle kurz aus, was dich interessiert. Das gilt nur auf diesem Gerät und lässt sich unten über „Einstellungen“ jederzeit ändern.</p>':""}
    <div><h3>Darstellung</h3><div class="chips">${[["dark","Dunkel"],["light","Hell"],["auto","Wie iPhone"]].map(([k,l])=>chip((draft.theme||"dark")===k,`data-theme-opt="${k}"`,l)).join("")}</div></div>
    <div><h3>Sportarten</h3><div class="chips">${sportsInData().map(sp=>chip(draft.sports.includes(sp),`data-sport="${esc(sp)}"`,`${icon(sp,true)}${esc(sp)}`)).join("")}</div>
      ${Object.keys(SUBS).filter(k=>draft.sports.includes(k)&&SUBS[k].length>1).map(k=>`<div style="margin-top:14px"><p class="hint" style="margin:0 0 8px">${esc(k)}: Disziplinen</p><div class="chips">${SUBS[k].map(u=>chip(draft.disc.includes(u),`data-disc="${esc(u)}"`,esc(u))).join("")}</div></div>`).join("")}</div>
