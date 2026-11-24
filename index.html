@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>(function(){var t="dark";try{var h=location.hash;if(h.indexOf("#p=")===0){var o=JSON.parse(decodeURIComponent(escape(atob(h.slice(3).replace(/-/g,"+").replace(/_/g,"/")))));if(o.m)t=o.m;}else{var p=JSON.parse(localStorage.getItem("md-prefs")||"null");if(p&&p.theme)t=p.theme;}}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <style>
 /* Matchday – dunkles, ruhiges Programmheft. Reihenfolge: Live → Heute (Zeitleiste) → Highlights der Woche → Woche nach Tagen. */
 :root{
@@ -41,7 +42,31 @@
   --c-swim:#7fb3c4;
   --c-beach:#d6a06a;
   --c-sonst:#9aa0b3;
+  --gold:#d4b46a;
+  --gold-ink:#f3e2b3;
+  --soon-ink:#e9b4a3;
+  --live-ink:#ff9aa5;
+  --info-ink:#c3c8d6;
+  --shade:rgba(0,0,0,.25);
   color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#f4f5f8;--surface:#ffffff;--surface-2:#eceef3;--line:#dfe2ea;--ink:#13151c;--muted:#5d6475;--faint:#8b91a2;
+  --accent:#c4593c;--live:#e0283b;
+  --c-fussball:#3f8a66;--c-darts:#b35a5a;--c-rugby:#98723f;--c-handball:#4a71a3;--c-motorsport:#6d60a6;--c-rad:#985b83;
+  --c-winter:#4f7fb0;--c-af:#a1633b;--c-la:#937a2f;--c-swim:#2f849c;--c-beach:#ae6d35;--c-sonst:#6b7183;
+  --gold:#b08a2e;--gold-ink:#7a5a12;--soon-ink:#a4472c;--live-ink:#c41d30;--info-ink:#3b4150;--shade:rgba(0,0,0,.05);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: light){
+  :root[data-theme="auto"]{
+    --bg:#f4f5f8;--surface:#ffffff;--surface-2:#eceef3;--line:#dfe2ea;--ink:#13151c;--muted:#5d6475;--faint:#8b91a2;
+    --accent:#c4593c;--live:#e0283b;
+    --c-fussball:#3f8a66;--c-darts:#b35a5a;--c-rugby:#98723f;--c-handball:#4a71a3;--c-motorsport:#6d60a6;--c-rad:#985b83;
+    --c-winter:#4f7fb0;--c-af:#a1633b;--c-la:#937a2f;--c-swim:#2f849c;--c-beach:#ae6d35;--c-sonst:#6b7183;
+    --gold:#b08a2e;--gold-ink:#7a5a12;--soon-ink:#a4472c;--live-ink:#c41d30;--info-ink:#3b4150;--shade:rgba(0,0,0,.05);
+    color-scheme:light;
+  }
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg)}
@@ -58,16 +83,16 @@ header{display:flex;flex-direction:column;gap:4px}
 .sync.ok{color:#7fb39a;border-color:color-mix(in srgb,#7fb39a 40%,var(--line))}
 .homehint{border-radius:16px;padding:14px 16px;background:linear-gradient(135deg,rgba(212,180,106,.22),rgba(212,180,106,.08));border:1.5px solid rgba(212,180,106,.6);display:flex;flex-direction:column;gap:10px}
 .homehint[hidden]{display:none}
-.homehint b.t{font-size:16px;font-weight:800;color:#f3e2b3}
+.homehint b.t{font-size:16px;font-weight:800;color:var(--gold-ink)}
 .homehint ol{margin:0;padding-left:20px;font-size:14px;line-height:1.55;color:var(--ink)}
 .homehint .why{font-size:12.5px;color:var(--muted)}
-.homehint label{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--ink);background:rgba(0,0,0,.25);border-radius:12px;padding:11px 12px;cursor:pointer}
-.homehint input{width:22px;height:22px;accent-color:#d4b46a}
+.homehint label{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--ink);background:var(--shade);border-radius:12px;padding:11px 12px;cursor:pointer}
+.homehint input{width:22px;height:22px;accent-color:var(--gold)}
 .gear{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
 .gear svg{width:18px;height:18px}
 .brand .sync{margin-left:auto}
-.row.fav{box-shadow:inset 3px 0 0 #d4b46a}
-.heart{color:#d4b46a;font-size:12px;margin-left:5px}
+.row.fav{box-shadow:inset 3px 0 0 var(--gold)}
+.heart{color:var(--gold);font-size:12px;margin-left:5px}
 .na-tag{display:inline-block;font-size:10.5px;font-weight:700;color:var(--faint);border:1px dashed var(--line);border-radius:5px;padding:0 5px;margin-left:6px}
 .row.na .body,.row.na .ico{opacity:.55}
 .tcol .dd{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -123,10 +148,12 @@ header{display:flex;flex-direction:column;gap:4px}
 .meta b{font-weight:600;color:var(--ink);opacity:.85}
 .side{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .pill{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
-.pill.soon{background:color-mix(in srgb,var(--accent) 18%,transparent);color:#e9b4a3}
-.pill.live{background:color-mix(in srgb,var(--live) 22%,transparent);color:#ff9aa5;display:inline-flex;align-items:center;gap:6px}
-.star{color:#d4b46a;font-size:13px}
-.ftv{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px 2px 5px;border-radius:6px;background:#f3f4f8;color:#0a0b10;vertical-align:1px;white-space:nowrap}
+.pill.soon{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--soon-ink)}
+.pill.live{background:color-mix(in srgb,var(--live) 22%,transparent);color:var(--live-ink);display:inline-flex;align-items:center;gap:6px}
+.star{color:var(--gold);font-size:13px}
+.ftv{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px 2px 5px;border-radius:6px;background:var(--ink);color:var(--bg);vertical-align:1px;white-space:nowrap}
+[data-theme="light"] .crest{outline:1px solid var(--line)}
+@media (prefers-color-scheme: light){[data-theme="auto"] .crest{outline:1px solid var(--line)}}
 .ftv svg{width:11px;height:11px}
 .mu{display:flex;flex-direction:column;gap:5px;margin-bottom:3px}
 .tm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;line-height:1.25}
@@ -143,8 +170,8 @@ header{display:flex;flex-direction:column;gap:4px}
 .row.tap .title{display:flex;align-items:baseline;gap:6px}
 .chev{width:14px;height:14px;flex:0 0 auto;color:var(--faint);transition:transform .2s;align-self:center}
 .row.open .chev{transform:rotate(180deg)}
-.info{grid-column:2 / -1;font-size:13px;line-height:1.5;color:#c3c8d6;background:var(--surface-2);border-radius:10px;padding:9px 11px;margin-top:2px}
-.hlstar{color:#d4b46a;font-size:12px}
+.info{grid-column:2 / -1;font-size:13px;line-height:1.5;color:var(--info-ink);background:var(--surface-2);border-radius:10px;padding:9px 11px;margin-top:2px}
+.hlstar{color:var(--gold);font-size:12px}
 .row.past{opacity:.38}
 .more{width:100%;background:transparent;border:0;border-top:1px solid var(--line);padding:12px;color:var(--muted);font-weight:600;font-size:13.5px;cursor:pointer}
 .more:hover{color:var(--ink)}
@@ -330,8 +357,8 @@ const SERVICES=[
  {k:"euro",l:"Eurosport / HBO Max",m:x=>/eurosport|hbo/i.test(x)&&!FREE.includes(x.toLowerCase())}
 ];
 let PREFS=null;
-function encPrefs(p){const o={s:p.sports,d:p.disc,t:p.teams,v:p.services,h:p.hideOther?1:0};return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
-function decPrefs(str){try{const o=JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));return {sports:o.s||[],disc:o.d||null,teams:o.t||[],services:o.v||[],hideOther:!!o.h,v:2};}catch(e){return null;}}
+function encPrefs(p){const o={s:p.sports,d:p.disc,t:p.teams,v:p.services,h:p.hideOther?1:0,m:p.theme||"dark"};return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+function decPrefs(str){try{const o=JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,"+").replace(/_/g,"/")))));return {sports:o.s||[],disc:o.d||null,teams:o.t||[],services:o.v||[],hideOther:!!o.h,theme:o.m||"dark",v:2};}catch(e){return null;}}
 const SHARE_URL="https://lucartb.github.io/matchday";
 const SHARE_TEXT="Schau mal: Matchday zeigt, welcher Sport heute und diese Woche im TV läuft. Link in Safari öffnen, Sportarten auswählen, speichern und dann über Teilen → „Zum Home-Bildschirm“ hinzufügen.";
 function prefsLink(){return location.origin+location.pathname+"#p="+encPrefs(PREFS);}
@@ -343,6 +370,11 @@ if(PREFS&&!location.hash.startsWith("#p=")){try{history.replaceState(null,"","#p
 if(PREFS&&PREFS.v!==2){
   ["Wintersport","American Football","Leichtathletik","Schwimmen","Beachvolleyball"].forEach(x=>{if(!PREFS.sports.includes(x)) PREFS.sports.push(x);});
   PREFS.disc=ALL_SUBS(); PREFS.v=2; try{localStorage.setItem("md-prefs",JSON.stringify(PREFS));}catch(e){}
+}
+function applyTheme(){
+  const t=(PREFS&&PREFS.theme)||"dark"; document.documentElement.setAttribute("data-theme",t);
+  const light=t==="light"||(t==="auto"&&matchMedia("(prefers-color-scheme: light)").matches);
+  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content",light?"#f4f5f8":"#0a0b10");
 }
 function savePrefs(){try{localStorage.setItem("md-prefs",JSON.stringify(PREFS));}catch(e){} try{history.replaceState(null,"","#p="+encPrefs(PREFS));}catch(e){}}
 function sportsInData(){return [...new Set(ALL_SPORTS.concat(DATA.events.map(e=>e.s)))];}
@@ -403,7 +435,7 @@ function state(e,n){
 function countdown(dl){
   if(dl<60) return `in ${dl} Min.`;
   const h=Math.floor(dl/60), m=dl%60;
-  return m?`in ${h} Std. ${m} Min.`:`in ${h} Std.`;
+  return `in ${h}:${String(m).padStart(2,"0")} h`;
 }
 const FREE=["ard","das erste","zdf","sport1","rtl","rtl+ free","nitro","prosieben","pro7","sat.1","sat1","kabel eins","welt","welt tv","joyn","eurosport 1","dmax","tele 5","sportschau","sportstudio","n-tv","ntv","servustv","sky sport news","dazn (free)","magentasport (free)","dyn (free)","mdr","ndr","wdr","br","hr","swr","rbb"];
 const isFree=e=>(e.tv||[]).some(x=>FREE.includes(String(x).toLowerCase().trim()));
@@ -546,6 +578,7 @@ function drawSettings(q){
   document.getElementById("panel").innerHTML=`
    <h2 id="st-title">${draft._first?"Willkommen bei Matchday":"Einstellungen"}</h2>
    ${draft._first?'<p class="hint" style="margin-top:-12px">Wähle kurz aus, was dich interessiert. Das gilt nur auf diesem Gerät und lässt sich oben über das Zahnrad jederzeit ändern.</p>':""}
+   <div><h3>Darstellung</h3><div class="chips">${[["dark","Dunkel"],["light","Hell"],["auto","Wie iPhone"]].map(([k,l])=>chip((draft.theme||"dark")===k,`data-theme-opt="${k}"`,l)).join("")}</div></div>
    <div><h3>Sportarten</h3><div class="chips">${sportsInData().map(sp=>chip(draft.sports.includes(sp),`data-sport="${esc(sp)}"`,`${icon(sp,true)}${esc(sp)}`)).join("")}</div>
      ${Object.keys(SUBS).filter(k=>draft.sports.includes(k)&&SUBS[k].length>1).map(k=>`<div style="margin-top:14px"><p class="hint" style="margin:0 0 8px">${esc(k)}: Disziplinen</p><div class="chips">${SUBS[k].map(u=>chip(draft.disc.includes(u),`data-disc="${esc(u)}"`,esc(u))).join("")}</div></div>`).join("")}</div>
    <div><h3>Meine Teams & Spieler</h3><p class="hint">Diese Spiele stehen oben unter „Meine Teams“ und werden nie eingeklappt.</p>
@@ -571,6 +604,7 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   const tog=(arr,v)=>{const i=arr.indexOf(v); i>=0?arr.splice(i,1):arr.push(v);};
   const q=(document.getElementById("tsearch")||{}).value||"";
   if(t.dataset.sport){tog(draft.sports,t.dataset.sport); drawSettings(q);}
+  else if(t.dataset.themeOpt){draft.theme=t.dataset.themeOpt; document.documentElement.setAttribute("data-theme",draft.theme); drawSettings(q);}
   else if(t.dataset.disc){tog(draft.disc,t.dataset.disc); drawSettings(q);}
   else if(t.dataset.svc){tog(draft.services,t.dataset.svc); drawSettings(q);}
   else if(t.dataset.addteam){draft.teams.push(t.dataset.addteam.trim()); drawSettings("");}
@@ -580,7 +614,7 @@ document.getElementById("sheet").addEventListener("click",ev=>{
   else if(t.id==="copylink"){navigator.clipboard.writeText(prefsLink()).then(()=>{t.textContent="Kopiert ✓";},()=>{t.textContent="Bitte Link oben markieren und kopieren";});}
   else if(t.id==="savesettings"){
     if(!draft.sports.length){alertBox("Bitte mindestens eine Sportart wählen."); return;}
-    delete draft._first; PREFS=draft; draft=null; savePrefs();
+    delete draft._first; PREFS=draft; draft=null; savePrefs(); applyTheme();
     document.getElementById("sheet").hidden=true; sel=null; render(); showLinkHint();
   }
 });
@@ -590,7 +624,7 @@ function updateHomeHint(){document.getElementById("homehint").hidden=!PREFS||isS
 function showLinkHint(){updateHomeHint(); window.scrollTo({top:0,behavior:"smooth"});}
 document.getElementById("homedone").addEventListener("change",e=>{if(e.target.checked){try{localStorage.setItem("md-homedone","1");}catch(x){} setTimeout(()=>{document.getElementById("homehint").hidden=true;},400);}});
 function alertBox(msg){const b=document.getElementById("savesettings"); b.textContent=msg; setTimeout(()=>{if(b.isConnected) b.textContent="Speichern";},2200);}
-document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&PREFS&&!document.getElementById("sheet").hidden){document.getElementById("sheet").hidden=true; draft=null;}});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&PREFS&&!document.getElementById("sheet").hidden){document.getElementById("sheet").hidden=true; draft=null; applyTheme();}});
 document.addEventListener("click",ev=>{
   if(ev.target.closest("#gear")){openSettings(false);return;}
   if(ev.target.closest("#sync")){location.reload();return;}
@@ -617,6 +651,7 @@ document.addEventListener("click",ev=>{
   },{passive:true});
 })();
 document.addEventListener("keydown",ev=>{const r=ev.target.closest&&ev.target.closest(".row.tap"); if(r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault(); r.click();}});
+applyTheme();
 render();
 updateHomeHint();
 if(!PREFS) openSettings(true);
