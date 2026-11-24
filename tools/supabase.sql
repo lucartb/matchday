@@ -46,7 +46,7 @@ revoke all on md_groups, md_members, md_watch, md_admin from anon, authenticated
 
 -- Zustand der eigenen Runde
 create or replace function md_state() returns json
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 declare g uuid; r json;
 begin
   select group_id into g from md_members where id = auth.uid();
@@ -64,7 +64,7 @@ end $$;
 
 -- Neue Runde anlegen (Gerät wird erstes Mitglied)
 create or replace function md_create(p_group text, p_name text, p_teams text[], p_device text, p_standalone boolean) returns json
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 declare g uuid; c text;
 begin
   if auth.uid() is null then raise exception 'not signed in'; end if;
@@ -82,7 +82,7 @@ end $$;
 
 -- Per Code beitreten
 create or replace function md_join(p_code text, p_name text, p_teams text[], p_device text, p_standalone boolean) returns json
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 declare g uuid;
 begin
   if auth.uid() is null then raise exception 'not signed in'; end if;
@@ -98,14 +98,14 @@ end $$;
 
 -- Name der Runde für die Einladung anzeigen (ohne Mitglieder)
 create or replace function md_peek(p_code text) returns json
-language sql security definer set search_path = public as $$
+language sql security definer set search_path = public, extensions as $$
   select json_build_object('name', name, 'count', (select count(*) from md_members m where m.group_id = g.id))
   from md_groups g where code = upper(trim(p_code));
 $$;
 
 -- Lebenszeichen: Teams/Gerät aktualisieren
 create or replace function md_ping(p_name text, p_teams text[], p_device text, p_standalone boolean) returns void
-language sql security definer set search_path = public as $$
+language sql security definer set search_path = public, extensions as $$
   update md_members set name = coalesce(nullif(left(trim(p_name),30),''), name), teams = coalesce(p_teams[1:40], teams),
     device = left(p_device,60), standalone = coalesce(p_standalone,false), last_seen = now()
   where id = auth.uid();
@@ -113,7 +113,7 @@ $$;
 
 -- „Will ich schauen“ an/aus
 create or replace function md_watch_set(p_ev text, p_on boolean) returns json
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 declare g uuid;
 begin
   select group_id into g from md_members where id = auth.uid();
@@ -130,13 +130,13 @@ end $$;
 
 -- Runde verlassen
 create or replace function md_leave() returns void
-language sql security definer set search_path = public as $$
+language sql security definer set search_path = public, extensions as $$
   delete from md_members where id = auth.uid();
 $$;
 
 -- Admin-Übersicht (nur mit PIN; nach 5 Fehlversuchen 15 Min. gesperrt)
 create or replace function md_admin_list(p_pin text) returns json
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 declare a md_admin%rowtype;
 begin
   select * into a from md_admin where id = 1;
@@ -157,7 +157,7 @@ end $$;
 
 -- Admin: Mitglied entfernen
 create or replace function md_admin_remove(p_pin text, p_name text, p_code text) returns json
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 begin
   if (md_admin_list(p_pin)->>'error') is not null then return json_build_object('error','pin'); end if;
   delete from md_members m using md_groups g where g.id = m.group_id and g.code = p_code and m.name = p_name;
@@ -168,5 +168,5 @@ revoke all on function md_state, md_create, md_join, md_peek, md_ping, md_watch_
 grant execute on function md_state, md_create, md_join, md_peek, md_ping, md_watch_set, md_leave, md_admin_list, md_admin_remove to authenticated;
 
 -- >>> HIER DEINE ADMIN-PIN EINTRAGEN (mind. 8 Zeichen) und dann ausführen <<<
-insert into md_admin(id, pin_hash) values (1, crypt('HIER-DEINE-PIN', gen_salt('bf')))
+insert into md_admin(id, pin_hash) values (1, extensions.crypt('HIER-DEINE-PIN', extensions.gen_salt('bf')))
   on conflict (id) do update set pin_hash = excluded.pin_hash, fails = 0, locked_until = null;
