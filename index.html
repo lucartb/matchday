@@ -787,7 +787,7 @@ const getAuth=()=>{try{return JSON.parse(localStorage.getItem("md-auth")||"null"
 const putAuth=a=>{try{localStorage.setItem("md-auth",JSON.stringify(a));}catch(e){}};
 async function authReq(path,body){
   const r=await fetch(SUPA.url+"/auth/v1/"+path,{method:"POST",headers:{apikey:SUPA.key,"Content-Type":"application/json"},body:JSON.stringify(body)});
-  if(!r.ok) throw new Error("auth "+r.status);
+  if(!r.ok){let m="";try{const j=await r.json();m=j.msg||j.message||j.error_description||j.error||j.code||"";}catch(x){} throw new Error("Anmeldung "+r.status+(m?": "+m:""));}
   const j=await r.json(); const a={at:j.access_token,rt:j.refresh_token,exp:j.expires_at||Math.floor(Date.now()/1000)+(j.expires_in||3600)}; putAuth(a); return a.at;
 }
 async function token(){
@@ -800,7 +800,7 @@ async function rpc(fn,args){
   if(SUPA.url==="mock") return window.MDMOCK(fn,args||{});
   const t=await token();
   const r=await fetch(SUPA.url+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SUPA.key,Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify(args||{})});
-  if(!r.ok) throw new Error(fn+" "+r.status);
+  if(!r.ok){let m="";try{const j=await r.json();m=j.message||j.hint||j.code||"";}catch(x){} throw new Error(fn+" "+r.status+(m?": "+m:""));}
   const tx=await r.text(); return tx?JSON.parse(tx):null;
 }
 function devName(){
@@ -828,7 +828,7 @@ async function rdPeek(){try{RD.peek=await rpc("md_peek",{p_code:pendingCode});}c
 async function rdDo(fn,args,after){
   RD.loading=true; render();
   try{const j=await rpc(fn,args); if(j&&j.error){RD.err=j.error==="code"?"Diesen Code gibt es nicht.":j.error==="full"?"Diese Runde ist voll.":"Das hat nicht geklappt."; } else {RD.err=""; if(after) after(j);} }
-  catch(e){RD.err="Das hat nicht geklappt. Bitte gleich nochmal versuchen.";}
+  catch(e){RD.err="Das hat nicht geklappt. Bitte gleich nochmal versuchen. ("+(e&&e.message||"Fehler")+")";}
   RD.loading=false; render();
 }
 function joinedState(j){RD.state=j; if(PREFS){PREFS.gc=j.code; savePrefs();} pendingCode=null; try{sessionStorage.removeItem("md-pc");}catch(e){}}
