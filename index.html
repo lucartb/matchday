@@ -348,6 +348,7 @@ function resRow(e){
 let sel=null;
 function render(){
   const n=nowB();
+  const yday=new Date(P(n.d).getTime()-864e5).toISOString().slice(0,10);
   const ev=DATA.events;
   const t=P(n.d);
   document.getElementById("sub").textContent=`${WDL[t.getUTCDay()]}, ${t.getUTCDate()}. ${MON[t.getUTCMonth()]}`;
@@ -369,15 +370,19 @@ function render(){
   }
   document.getElementById("today").innerHTML=th;
 
-  // Gestern
-  const g=DATA.gestern||[];
-  document.getElementById("gestern-count").textContent=g.length?`${g.length} ${g.length===1?"Ergebnis":"Ergebnisse"}`:"";
-  if(!g.length){document.getElementById("gestern").innerHTML=`<div class="list"><div class="empty">Ergebnisse vom Vortag erscheinen hier nach der morgendlichen Aktualisierung.</div></div>`;}
+  // Gestern: Programm vom Vortag, Ergebnisse wo vorhanden
+  const res=DATA.gestern||[];
+  const yev=ev.filter(e=>e.d===yday).map(e=>{const r=res.find(x=>x.ti===e.ti); return Object.assign({},e,r?{r:r.r}:{});});
+  res.forEach(r=>{if(!yev.some(e=>e.ti===r.ti)) yev.push(r);});
+  yev.sort(byTime);
+  const nres=yev.filter(e=>e.r).length;
+  document.getElementById("gestern-count").textContent=yev.length?(nres?`${nres} ${nres===1?"Ergebnis":"Ergebnisse"}`:`${yev.length} ${yev.length===1?"Übertragung":"Übertragungen"}`):"";
+  if(!yev.length){document.getElementById("gestern").innerHTML=`<div class="list"><div class="empty">Gestern lief nichts Größeres.</div></div>`;}
   else{
-    const gk="gestern", open=expanded.has(gk), top=g.filter(e=>!e.x), rest=g.filter(e=>e.x);
-    const shown=open?g:(top.length?top:g);
-    const more=(top.length&&rest.length)?`<button class="more" data-k="${gk}">${open?"Weniger anzeigen":`${rest.length} weitere ${rest.length===1?"Ergebnis":"Ergebnisse"} anzeigen`}</button>`:"";
-    document.getElementById("gestern").innerHTML=`<div class="list res">${shown.map(resRow).join("")}${more}</div>`;
+    const gk="gestern", open=expanded.has(gk), top=yev.filter(e=>!e.x), rest=yev.filter(e=>e.x);
+    const shown=open?yev:(top.length?top:yev);
+    const more=(top.length&&rest.length)?`<button class="more" data-k="${gk}">${open?"Weniger anzeigen":`${rest.length} weitere anzeigen`}</button>`:"";
+    document.getElementById("gestern").innerHTML=`<div class="list res">${shown.map(e=>e.r?resRow(e):resRow(Object.assign({},e,{r:(e.t?e.t+" Uhr":"")}))).join("")}${more}</div>`;
   }
 
   // Highlights
@@ -392,11 +397,11 @@ function render(){
       <div class="foot"><div class="tv">${esc(tvText(e))}</div>${isFree(e)?FTV:""}</div></button>`;}).join("") || `<div class="sub">Keine weiteren Highlights in dieser Woche.</div>`;
 
   // Woche
-  const days=[]; for(let d=P(DATA.von); d<=P(DATA.bis); d=new Date(d.getTime()+864e5)){const s=d.toISOString().slice(0,10); if(s>=n.d) days.push(s);}
-  if(!sel || !days.includes(sel)) sel=days.find(d=>d>n.d)||days[0];
+  const days=[]; for(let d=P(DATA.von); d<=P(DATA.bis); d=new Date(d.getTime()+864e5)){const s=d.toISOString().slice(0,10); if(s>=yday) days.push(s);}
+  if(!sel || !days.includes(sel)) sel=days.find(d=>d>n.d)||days[days.length-1];
   document.getElementById("days").innerHTML=days.map(d=>{
     const x=P(d), sports=[...new Set(ev.filter(e=>e.d===d).map(e=>e.s))];
-    return `<button class="day" aria-pressed="${d===sel}" data-d="${d}"><span class="wd">${d===n.d?"Heute":WD[x.getUTCDay()]}</span><span class="dn">${x.getUTCDate()}</span><span class="dots">${sports.map(s=>`<i style="--sc:${sc(s)}"></i>`).join("")}</span></button>`;}).join("");
+    return `<button class="day" aria-pressed="${d===sel}" data-d="${d}"><span class="wd">${d===n.d?"Heute":d===yday?"Gestern":WD[x.getUTCDay()]}</span><span class="dn">${x.getUTCDate()}</span><span class="dots">${sports.map(s=>`<i style="--sc:${sc(s)}"></i>`).join("")}</span></button>`;}).join("");
   const sx=P(sel);
   document.getElementById("dayhead").innerHTML=`${WDL[sx.getUTCDay()]}, ${sx.getUTCDate()}. ${MON[sx.getUTCMonth()]} <span class="swipehint">· wischen für nächsten Tag</span>`;
   document.getElementById("daylist").innerHTML=listHtml(ev.filter(e=>e.d===sel),"d-"+sel,n);
