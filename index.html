@@ -56,6 +56,13 @@ header{display:flex;flex-direction:column;gap:4px}
 .sync{margin-left:auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
 .sync svg{width:18px;height:18px}
 .sync.ok{color:#7fb39a;border-color:color-mix(in srgb,#7fb39a 40%,var(--line))}
+.homehint{border-radius:16px;padding:14px 16px;background:linear-gradient(135deg,rgba(212,180,106,.22),rgba(212,180,106,.08));border:1.5px solid rgba(212,180,106,.6);display:flex;flex-direction:column;gap:10px}
+.homehint[hidden]{display:none}
+.homehint b.t{font-size:16px;font-weight:800;color:#f3e2b3}
+.homehint ol{margin:0;padding-left:20px;font-size:14px;line-height:1.55;color:var(--ink)}
+.homehint .why{font-size:12.5px;color:var(--muted)}
+.homehint label{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--ink);background:rgba(0,0,0,.25);border-radius:12px;padding:11px 12px;cursor:pointer}
+.homehint input{width:22px;height:22px;accent-color:#d4b46a}
 .gear{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
 .gear svg{width:18px;height:18px}
 .brand .sync{margin-left:auto}
@@ -192,6 +199,17 @@ footer{font-size:12px;color:var(--faint);line-height:1.5}
     <div class="brand"><span class="dot" aria-hidden="true"></span><h1>Matchday</h1><button id="sync" class="sync" type="button"></button><button id="gear" class="gear" type="button" aria-label="Einstellungen" title="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
     <div class="sub" id="sub"></div>
   </header>
+
+  <div class="homehint" id="homehint" hidden role="note">
+    <b class="t">⚠️ Wichtig: Auswahl dauerhaft speichern</b>
+    <ol>
+      <li>Unten in Safari auf <b>Teilen</b> tippen (Quadrat mit Pfeil)</li>
+      <li><b>„Zum Home-Bildschirm“</b> wählen und <b>Hinzufügen</b></li>
+      <li>Ab jetzt Matchday immer über das neue Icon öffnen</li>
+    </ol>
+    <span class="why">Nur so bleiben deine Sportarten, Teams und Dienste gespeichert.</span>
+    <label><input type="checkbox" id="homedone"> Erledigt – hab ich gemacht</label>
+  </div>
 
   <section class="sec" id="fav-sec" hidden>
     <div class="sec-h"><h2>Meine Teams</h2><span id="fav-count"></span></div>
@@ -559,13 +577,11 @@ document.getElementById("sheet").addEventListener("click",ev=>{
     document.getElementById("sheet").hidden=true; sel=null; render(); showLinkHint();
   }
 });
-function showLinkHint(){
-  try{if(localStorage.getItem("md-hint")) return; localStorage.setItem("md-hint","1");}catch(e){}
-  const d=document.createElement("div");
-  d.style.cssText="position:fixed;left:12px;right:12px;bottom:16px;z-index:60;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.45;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.5)";
-  d.innerHTML='Gespeichert. Damit deine Auswahl sicher erhalten bleibt: jetzt in Safari <b>Teilen → Zum Home-Bildschirm</b> wählen. Der Link enthält deine Einstellungen. <button type="button" style="margin-left:6px;font:700 13px var(--font);background:none;border:0;color:var(--muted);cursor:pointer">OK</button>';
-  d.querySelector("button").onclick=()=>d.remove(); document.body.appendChild(d); setTimeout(()=>d.remove(),12000);
-}
+function isStandalone(){try{return window.navigator.standalone===true||matchMedia("(display-mode: standalone)").matches;}catch(e){return false;}}
+function homeDone(){try{return localStorage.getItem("md-homedone")==="1";}catch(e){return false;}}
+function updateHomeHint(){document.getElementById("homehint").hidden=!PREFS||isStandalone()||homeDone();}
+function showLinkHint(){updateHomeHint(); window.scrollTo({top:0,behavior:"smooth"});}
+document.getElementById("homedone").addEventListener("change",e=>{if(e.target.checked){try{localStorage.setItem("md-homedone","1");}catch(x){} setTimeout(()=>{document.getElementById("homehint").hidden=true;},400);}});
 function alertBox(msg){const b=document.getElementById("savesettings"); b.textContent=msg; setTimeout(()=>{if(b.isConnected) b.textContent="Speichern";},2200);}
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&PREFS&&!document.getElementById("sheet").hidden){document.getElementById("sheet").hidden=true; draft=null;}});
 document.addEventListener("click",ev=>{
@@ -595,6 +611,7 @@ document.addEventListener("click",ev=>{
 })();
 document.addEventListener("keydown",ev=>{const r=ev.target.closest&&ev.target.closest(".row.tap"); if(r&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault(); r.click();}});
 render();
+updateHomeHint();
 if(!PREFS) openSettings(true);
 setInterval(()=>{if(document.getElementById("sheet").hidden) render();},30000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden) render();});
