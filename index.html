@@ -400,6 +400,19 @@ a.chip{text-decoration:none}
 /* Einstellungen in Gruppen */
 .sg{display:flex;flex-direction:column;gap:18px;padding:16px;border:1px solid var(--line);border-radius:18px;background:color-mix(in srgb,var(--ink) 2%,var(--bg))}
 .sgh{font-size:17px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.sg.accs{gap:0;padding:14px 16px 4px}
+.sg.accs>.sgh{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding-bottom:4px}
+.sg.accs>label.switch{padding:14px 0;margin:0;background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;font-size:15.5px;font-weight:700}
+details.acc{border-top:1px solid var(--line)}
+details.acc>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc .at{font-size:15.5px;font-weight:700;color:var(--ink)}
+details.acc .as{flex:1;text-align:right;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+details.acc .ac{width:16px;height:16px;color:var(--faint);flex:none;transition:transform .2s;margin-left:auto}
+details.acc .as+.ac{margin-left:0}
+details.acc[open] .ac{transform:rotate(180deg)}
+details.acc>.ab{padding:0 0 16px}
+details.acc>.ab>.hint:first-child{margin-top:0}
 details.sg summary{cursor:pointer;list-style:none}
 details.sg summary::-webkit-details-marker{display:none}
 details.sg summary::after{content:" ›";color:var(--faint)}
@@ -549,7 +562,7 @@ details.sg[open] summary{margin-bottom:12px}
   <button type="button" data-tabbtn="heute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Heute</button>
   <button type="button" data-tabbtn="woche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Woche</button>
   <button type="button" data-tabbtn="runde"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 2.9-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="8.5" r="2.5"/><path d="M17.5 14.3c2 .4 3.2 2 3.6 4.4"/></svg>Watch Party<i class="tdot" id="rdot" hidden></i></button>
-  <button type="button" id="tabset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>Einstellungen</button>
+  <button type="button" id="tabset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.53 5.45 L10.09 2.59 L13.91 2.59 L14.47 5.45 L14.89 5.62 L17.30 4.00 L20.00 6.70 L18.38 9.11 L18.55 9.53 L21.41 10.09 L21.41 13.91 L18.55 14.47 L18.38 14.89 L20.00 17.30 L17.30 20.00 L14.89 18.38 L14.47 18.55 L13.91 21.41 L10.09 21.41 L9.53 18.55 L9.11 18.38 L6.70 20.00 L4.00 17.30 L5.62 14.89 L5.45 14.47 L2.59 13.91 L2.59 10.09 L5.45 9.53 L5.62 9.11 L4.00 6.70 L6.70 4.00 L9.11 5.62Z"/><circle cx="12" cy="12" r="3.2"/></svg>Einstellungen</button>
 </nav>
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="st-title"><div class="panel" id="panel"></div></div>
 
@@ -1528,6 +1541,29 @@ function profCard(){
   return `<div class="prof"><div class="pav">${esc(me.name.charAt(0).toUpperCase())}</div><div class="pinfo"><b>${esc(me.name)}</b><span>Matchday-ID ${tagHtml(me.tag)}</span><small>${me.disc?"Freunde können dich finden":"Für andere nicht auffindbar"}</small></div>
     <div class="pbtns"><button type="button" class="chip" aria-pressed="true" id="pid-share">ID teilen</button><button type="button" class="chip" id="pn-edit">Name ändern</button></div></div>`;
 }
+const SETOPEN=new Set();
+function accSum(t){
+  const d=draft||{}, n=(x,one,many)=>x?`${x} ${x===1?one:many}`:"";
+  return ({"Sportarten":n((d.sports||[]).length,"Sportart","Sportarten")||"keine",
+    "Meine Teams & Spieler":(d.teams||[]).length?(d.teams.length<=2?d.teams.join(", "):`${d.teams.length} ausgewählt`):"keine",
+    "Meine Dienste":n((d.services||[]).length,"Dienst","Dienste")||"keine",
+    "Erinnerungen":RD.state&&RD.state.push?"an":"aus",
+    "Farbschema":({dark:"Dunkel",light:"Hell",auto:"Wie iPhone"})[d.theme||"dark"]})[t]||"";
+}
+function accify(root){
+  root.querySelectorAll("section.sg").forEach(sec=>{
+    sec.classList.add("accs");
+    [...sec.children].forEach(ch=>{
+      if(ch.classList.contains("sgh")||ch.tagName==="LABEL") return;
+      const h=ch.querySelector(":scope>h3"), title=h?h.textContent:ch.dataset.acc; if(!title) return;
+      const det=document.createElement("details"); det.className="acc"; if(SETOPEN.has(title)) det.open=true;
+      const sm=document.createElement("summary"); const sum=accSum(title);
+      sm.innerHTML=`<span class="at">${esc(title)}</span>${sum?`<span class="as">${esc(sum)}</span>`:""}<svg class="ac" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>`;
+      ch.replaceWith(det); det.appendChild(sm); if(h) h.remove(); ch.classList.add("ab"); det.appendChild(ch);
+      det.addEventListener("toggle",()=>{det.open?SETOPEN.add(title):SETOPEN.delete(title);});
+    });
+  });
+}
 function drawSettings(q){
   q=q||"";
   const kt=knownTeams().filter(t=>!draft.teams.includes(t)&&q.length>=2&&t.toLowerCase().includes(q.toLowerCase())).slice(0,8);
@@ -1550,12 +1586,12 @@ function drawSettings(q){
      <label class="switch" style="margin-top:12px"><span>Spiele auf anderen Diensten ganz ausblenden</span><input type="checkbox" id="hideother" ${draft.hideOther?"checked":""}></label></div>
    </section>
    ${first?"":`<section class="sg"><div class="sgh">Erinnerungen & Kalender</div>
-   <div id="pushbox">${pushHtml()}</div>
+   <div id="pushbox" data-acc="Erinnerungen">${pushHtml()}</div>
    <div><h3>Kalender-Abo</h3><p class="hint">Die Spiele landen automatisch in deinem iPhone-Kalender und bleiben aktuell. Antippen und „Abonnieren“ wählen.</p>
      <div class="calrow">${draft.teams.map(t=>`<a class="chip" href="${CAL_BASE}${slug(calName(t))}.ics">${badge(calName(t))}${esc(t)}</a>`).join("")}<a class="chip" href="${CAL_BASE}highlights.ics">★ Alle Highlights</a></div></div>
    </section>`}
    <section class="sg"><div class="sgh">Darstellung</div>
-   <div class="chips">${[["dark","Dunkel"],["light","Hell"],["auto","Wie iPhone"]].map(([k,l])=>chip((draft.theme||"dark")===k,`data-theme-opt="${k}"`,l)).join("")}</div>
+   <div data-acc="Farbschema"><div class="chips">${[["dark","Dunkel"],["light","Hell"],["auto","Wie iPhone"]].map(([k,l])=>chip((draft.theme||"dark")===k,`data-theme-opt="${k}"`,l)).join("")}</div></div>
    <label class="switch"><span>Spoiler-frei<small>Ergebnisse erst nach Antippen zeigen</small></span><input type="checkbox" id="spoiler" ${draft.spoiler?"checked":""}></label>
    </section>
    ${first?"":`<section class="sg"><div class="sgh">Teilen & Sichern</div>
@@ -1566,6 +1602,7 @@ function drawSettings(q){
    </section>`}
    ${rdOn()&&!first?`<details class="sg adm"${RD.admin?" open":""}><summary class="sgh">Admin</summary><div id="adminbox">${adminHtml()}</div></details>`:""}
    <button type="button" class="save" id="savesettings">Speichern</button>`;
+  if(!first) accify(document.getElementById("panel"));
   const inp=document.getElementById("tsearch");
   inp.addEventListener("input",()=>{const v=inp.value; drawSettings(v); const i2=document.getElementById("tsearch"); i2.focus(); i2.setSelectionRange(v.length,v.length);});
   document.getElementById("hideother").addEventListener("change",e=>{draft.hideOther=e.target.checked;});
