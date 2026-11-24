@@ -748,7 +748,7 @@ function yHtml(yday){
   const gk="gestern", open=expanded.has(gk), top=yev.filter(e=>!e.x), rest=yev.filter(e=>e.x);
   const shown=open?yev:(top.length?top:yev);
   const more=(top.length&&rest.length)?`<button class="more" data-k="${gk}">${open?"Weniger anzeigen":`${rest.length} weitere anzeigen`}</button>`:"";
-  return `<div class="list res">${shown.map(e=>resRow(e.r?e:Object.assign({},e,{r:(e.t?e.t+" Uhr":"")}))).join("")}${more}</div>`;
+  return `<div class="list res">${shown.map(e=>resRow(e.r?e:Object.assign({},e,{r:"Ergebnis folgt"}))).join("")}${more}</div>`;
 }
 function progHtml(e,n){
   const el=-delta(e,n), D=DUR[e.s]||120, pct=Math.max(3,Math.min(100,el/D*100));
